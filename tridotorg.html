@@ -1205,8 +1205,8 @@
             selectedIndex = -1;
             // Clear rankings context
             currentRankingsData = null;
-            // Display this specific athlete directly
-            displayAthletes([athlete], athlete.athlete_full_name);
+            // Display this specific athlete with the detailed view
+            showAthleteDetail(athlete);
           };
           autocompleteResults.appendChild(item);
         });
@@ -1559,7 +1559,13 @@
         athleteIds.map(id => getAthleteDetails(id))
       );
 
-      displayAthletes(athleteDetails, `Search Results for "${name}"`);
+      // Use detailed view for single result, grid for multiple
+      const validAthletes = athleteDetails.filter(a => a);
+      if (validAthletes.length === 1) {
+        showAthleteDetail(validAthletes[0]);
+      } else {
+        displayAthletes(validAthletes, `Search Results for "${name}"`);
+      }
     }
 
     // --- Fetches top ranked athletes for both genders ---
