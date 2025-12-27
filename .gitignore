@@ -1,0 +1,9 @@
+# Claude Code working files
+.claude/
+
+# Environment variables (will contain API key)
+.env
+.env.local
+
+# OS files
+.DS_Store
