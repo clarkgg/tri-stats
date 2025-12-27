@@ -1051,7 +1051,10 @@
   </div>
 
   <script>
-    const API_KEY = "3030d8bd3cf886d0799605e0ef380168";
+    // API calls go through our serverless proxy (see /api/triathlon.js)
+    // This keeps the API key secure on the server side
+    const API_BASE = '/api/triathlon';
+
     // World Triathlon Championship Series rankings (IDs 15/16 for current WTCS)
     const RANKING_IDS = { male: 15, female: 16 };
 
@@ -1164,9 +1167,7 @@
       autocompleteResults.innerHTML = '<div class="autocomplete-loading">Searching...</div>';
       autocompleteResults.style.display = 'block';
 
-      const response = await fetch(`https://api.triathlon.org/v1/search/athletes?query=${encodeURIComponent(query)}&per_page=5`, {
-        headers: { 'apikey': API_KEY }
-      });
+      const response = await fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=5`);
 
       if (!response.ok) {
         autocompleteResults.style.display = 'none';
@@ -1228,9 +1229,7 @@
     
     // --- Fetches full details for a single athlete ---
     async function getAthleteDetails(athleteId) {
-      const response = await fetch(`https://api.triathlon.org/v1/athletes/${athleteId}`, {
-        headers: { 'apikey': API_KEY }
-      });
+      const response = await fetch(`${API_BASE}?endpoint=/athletes/${athleteId}`);
       if (!response.ok) return null;
       const data = await response.json();
       return data.data;
@@ -1541,9 +1540,7 @@
       const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Searching athletes...</div>';
 
-      const searchResponse = await fetch(`https://api.triathlon.org/v1/search/athletes?query=${encodeURIComponent(name)}`, {
-        headers: { 'apikey': API_KEY }
-      });
+      const searchResponse = await fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(name)}`);
 
       if (!searchResponse.ok) {
         resultsDiv.innerHTML = `<div class="error-message">Error fetching athlete data. Please try again later.</div>`;
@@ -1572,8 +1569,8 @@
 
       try {
         const [menResponse, womenResponse] = await Promise.all([
-          fetch(`https://api.triathlon.org/v1/rankings/${RANKING_IDS.male}`, { headers: { 'apikey': API_KEY } }),
-          fetch(`https://api.triathlon.org/v1/rankings/${RANKING_IDS.female}`, { headers: { 'apikey': API_KEY } })
+          fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
+          fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
         ]);
 
         if (!menResponse.ok || !womenResponse.ok) {
@@ -1616,8 +1613,8 @@
 
         try {
             const [menResponse, womenResponse] = await Promise.all([
-              fetch(`https://api.triathlon.org/v1/rankings/${RANKING_IDS.male}`, { headers: { 'apikey': API_KEY } }),
-              fetch(`https://api.triathlon.org/v1/rankings/${RANKING_IDS.female}`, { headers: { 'apikey': API_KEY } })
+              fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
+              fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
             ]);
 
             if (!menResponse.ok || !womenResponse.ok) {
@@ -1710,9 +1707,7 @@
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading athlete...</div>';
         try {
-            const response = await fetch(`https://api.triathlon.org/v1/search/athletes?query=${encodeURIComponent(name)}&per_page=1`, {
-                headers: { 'apikey': API_KEY }
-            });
+            const response = await fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(name)}&per_page=1`);
             if (!response.ok) throw new Error('Search failed');
             const data = await response.json();
             if (data.data && data.data.length > 0) {
