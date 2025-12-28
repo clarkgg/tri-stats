@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     /* ============================================
        DESIGN SYSTEM - Inspired by PlanetScale/OpenAI
@@ -1006,6 +1007,413 @@
     .nav, .athlete-card, .search-input, .quick-btn, .autocomplete-results {
       transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
+
+    /* ============================================
+       NEW FEATURES - Favorites, Charts, Comparison
+       ============================================ */
+
+    /* Favorite Button */
+    .favorite-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: transparent;
+      border: 1px solid var(--border-primary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .favorite-btn:hover {
+      border-color: var(--text-primary);
+    }
+
+    .favorite-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-secondary);
+      fill: none;
+      transition: all 0.15s ease;
+    }
+
+    .favorite-btn.is-favorite svg {
+      stroke: #f59e0b;
+      fill: #f59e0b;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: var(--space-6);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      padding: var(--space-3) var(--space-6);
+      font-size: 14px;
+      z-index: 1000;
+      animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    /* Chart Container */
+    .chart-container {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      padding: var(--space-6);
+      margin-top: var(--space-4);
+    }
+
+    .chart-container canvas {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    }
+
+    /* Trend Summary */
+    .trend-summary {
+      display: flex;
+      align-items: center;
+      gap: var(--space-6);
+      padding: var(--space-4);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+    }
+
+    .trend-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: var(--space-3);
+      min-width: 80px;
+    }
+
+    .trend-indicator.improving { color: #22c55e; }
+    .trend-indicator.declining { color: #ef4444; }
+    .trend-indicator.stable { color: var(--text-secondary); }
+
+    .trend-icon {
+      font-size: 28px;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .trend-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: var(--space-1);
+    }
+
+    .trend-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      flex: 1;
+    }
+
+    .trend-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trend-stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+
+    .trend-stat-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Comparison Modal */
+    .comparison-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.15s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .comparison-modal {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      width: 100%;
+      max-width: 480px;
+      margin: var(--space-4);
+      animation: slideUp 0.2s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .comparison-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .comparison-modal-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .comparison-modal-close {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .comparison-modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .comparison-modal-body {
+      padding: var(--space-4);
+    }
+
+    .comparison-modal-athlete {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      background: var(--bg-secondary);
+      margin-bottom: var(--space-4);
+    }
+
+    .comparison-modal-athlete-photo {
+      width: 48px;
+      height: 48px;
+      object-fit: cover;
+      background: var(--bg-tertiary);
+    }
+
+    .comparison-modal-athlete-placeholder {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-tertiary);
+      color: var(--text-tertiary);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .comparison-modal-athlete-info {
+      flex: 1;
+    }
+
+    .comparison-modal-athlete-name {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .comparison-modal-athlete-country {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .comparison-modal-search {
+      position: relative;
+    }
+
+    .comparison-modal-search input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      outline: none;
+    }
+
+    .comparison-modal-search input:focus {
+      border-color: var(--text-primary);
+    }
+
+    .comparison-modal-results {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--border-primary);
+      border-top: none;
+    }
+
+    .comparison-modal-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-primary);
+      transition: background 0.1s;
+    }
+
+    .comparison-modal-item:last-child {
+      border-bottom: none;
+    }
+
+    .comparison-modal-item:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .comparison-modal-item-photo {
+      width: 36px;
+      height: 36px;
+      object-fit: cover;
+      background: var(--bg-tertiary);
+    }
+
+    .comparison-modal-item-placeholder {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-tertiary);
+      color: var(--text-tertiary);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .comparison-modal-item-info {
+      flex: 1;
+    }
+
+    .comparison-modal-item-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .comparison-modal-item-country {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .comparison-modal-loading {
+      padding: var(--space-4);
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 14px;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--space-4);
+      align-items: start;
+      margin-bottom: var(--space-6);
+    }
+
+    .comparison-vs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      padding: var(--space-8) var(--space-4);
+    }
+
+    .comparison-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      padding: var(--space-4);
+      text-align: center;
+    }
+
+    .comparison-card-photo {
+      width: 120px;
+      height: 150px;
+      object-fit: cover;
+      margin: 0 auto var(--space-3);
+      background: var(--bg-tertiary);
+    }
+
+    .comparison-card-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+    }
+
+    .comparison-card-country {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .comparison-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-2);
+      text-align: left;
+    }
+
+    .comparison-stat-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+    }
+
+    .comparison-stat-value {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Mobile: hide comparison features */
+    @media (max-width: 768px) {
+      .compare-btn-wrapper {
+        display: none;
+      }
+
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .comparison-vs {
+        padding: var(--space-4);
+      }
+
+      .trend-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .trend-summary {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1014,6 +1422,9 @@
     <div class="nav-inner">
       <a href="#" class="nav-brand" onclick="showHomePage(); return false;">Triathlon Stats</a>
       <div class="nav-actions">
+        <button class="quick-btn" onclick="showFavorites()" aria-label="View favorites">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </button>
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
           <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -1060,6 +1471,83 @@
 
     // Store current rankings data for navigation
     let currentRankingsData = null;
+
+    // Store raw ranking IDs for progressive loading
+    let rankingIds = { men: [], women: [] };
+    let rankingsLoaded = 0;
+    const RANKINGS_PER_PAGE = 10;
+    const RANKINGS_MAX = 30;
+
+    // Cache for athlete details to avoid redundant API calls
+    const athleteCache = new Map();
+
+    // Comparison state
+    let comparisonState = {
+      athlete1: null,
+      athlete2: null,
+      mode: 'idle' // 'idle' | 'selecting' | 'comparing'
+    };
+
+    // Favorites Manager (localStorage with try/catch for private browsing)
+    const favoritesManager = (() => {
+      const STORAGE_KEY = 'triathlon_favorites';
+
+      const getFavorites = () => {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        } catch { return []; }
+      };
+
+      const saveFavorites = (favorites) => {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
+        } catch { /* ignore in private browsing */ }
+      };
+
+      return {
+        getFavorites,
+        addFavorite: (id) => {
+          const favorites = getFavorites();
+          if (!favorites.includes(id)) {
+            favorites.push(id);
+            saveFavorites(favorites);
+          }
+        },
+        removeFavorite: (id) => {
+          const favorites = getFavorites().filter(f => f !== id);
+          saveFavorites(favorites);
+        },
+        isFavorite: (id) => getFavorites().includes(id),
+        toggle: (id) => {
+          const favorites = getFavorites();
+          if (favorites.includes(id)) {
+            favoritesManager.removeFavorite(id);
+            return false;
+          } else {
+            favoritesManager.addFavorite(id);
+            return true;
+          }
+        }
+      };
+    })();
+
+    // Utility: Check if mobile device/screen
+    function isMobile() {
+      return window.innerWidth < 768;
+    }
+
+    // Toast notification
+    function showToast(message) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.remove(), 3000);
+    }
 
     // --- THEME TOGGLE LOGIC ---
     const themeToggle = document.getElementById('theme-toggle');
@@ -1153,7 +1641,7 @@
       }
     });
 
-    // --- Autocomplete handler ---
+    // --- Autocomplete handler (optimized - no detail fetches until click) ---
     async function handleAutocomplete() {
       const query = searchInput.value;
       const autocompleteResults = document.getElementById('autocomplete-results');
@@ -1175,46 +1663,44 @@
       }
 
       const searchData = await response.json();
-      const athleteIds = (searchData.data || []).map(item => item.athlete_id);
+      const athletes = searchData.data || [];
 
-      if (athleteIds.length === 0) {
+      if (athletes.length === 0) {
         autocompleteResults.innerHTML = '<div class="autocomplete-empty">No athletes found</div>';
         return;
       }
 
-      const athleteDetails = await Promise.all(
-        athleteIds.map(id => getAthleteDetails(id))
-      );
-
+      // Display results immediately using search data (no detail fetch needed)
       autocompleteResults.innerHTML = '';
-      const validAthletes = athleteDetails.filter(details => details);
+      selectedIndex = -1;
 
-      if (validAthletes.length > 0) {
-        selectedIndex = -1;
-        validAthletes.forEach(athlete => {
-          const item = document.createElement('div');
-          item.className = 'autocomplete-item';
-          item.textContent = athlete.athlete_full_name;
-          item.setAttribute('role', 'option');
-          item.setAttribute('aria-selected', 'false');
-          item.setAttribute('data-athlete-id', athlete.athlete_id);
-          item.tabIndex = -1;
-          item.onclick = () => {
-            searchInput.value = athlete.athlete_full_name;
-            autocompleteResults.style.display = 'none';
-            selectedIndex = -1;
-            // Clear rankings context
-            currentRankingsData = null;
-            // Display this specific athlete with the detailed view
-            showAthleteDetail(athlete);
-          };
-          autocompleteResults.appendChild(item);
-        });
-        autocompleteResults.style.display = 'block';
-      } else {
-        autocompleteResults.innerHTML = '<div class="autocomplete-empty">No athletes found</div>';
-        selectedIndex = -1;
-      }
+      athletes.forEach(athlete => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.textContent = athlete.athlete_title;
+        item.setAttribute('role', 'option');
+        item.setAttribute('aria-selected', 'false');
+        item.setAttribute('data-athlete-id', athlete.athlete_id);
+        item.tabIndex = -1;
+        item.onclick = async () => {
+          searchInput.value = athlete.athlete_title;
+          autocompleteResults.style.display = 'none';
+          selectedIndex = -1;
+          // Clear rankings context
+          currentRankingsData = null;
+          // Fetch full details
+          const resultsDiv = document.getElementById('results');
+          resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading athlete...</div>';
+          const details = await getAthleteDetails(athlete.athlete_id);
+          if (details) {
+            showAthleteDetail(details);
+          } else {
+            resultsDiv.innerHTML = '<div class="error-message">Unable to load athlete details.</div>';
+          }
+        };
+        autocompleteResults.appendChild(item);
+      });
+      autocompleteResults.style.display = 'block';
     }
 
     // --- Function to create initials from name for placeholders ---
@@ -1227,11 +1713,19 @@
         .toUpperCase();
     }
     
-    // --- Fetches full details for a single athlete ---
+    // --- Fetches full details for a single athlete (with caching) ---
     async function getAthleteDetails(athleteId) {
+      // Return cached data if available
+      if (athleteCache.has(athleteId)) {
+        return athleteCache.get(athleteId);
+      }
+
       const response = await fetch(`${API_BASE}?endpoint=/athletes/${athleteId}`);
       if (!response.ok) return null;
       const data = await response.json();
+
+      // Cache the result for future use
+      athleteCache.set(athleteId, data.data);
       return data.data;
     }
 
@@ -1287,7 +1781,7 @@
                     <div class="gallery-grid">${athlete.latest_images.slice(0, 8).map(img => {
                         const imageUrl = img.thumbnail || img.image_url || '';
                         const fullUrl = img.image_url || '#';
-                        return `<a href="${fullUrl}" target="_blank"><img src="${imageUrl}" alt="" onerror="this.parentElement.style.display='none'"></a>`;
+                        return `<a href="${fullUrl}" target="_blank"><img src="${imageUrl}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></a>`;
                     }).join('')}</div>
                 </div>` : '';
 
@@ -1372,6 +1866,10 @@
     function showAthleteDetail(athlete, rank = null) {
         const resultsDiv = document.getElementById('results');
 
+        // Update URL for sharing
+        const newUrl = `?athlete=${athlete.athlete_id}`;
+        history.pushState({ athleteId: athlete.athlete_id }, '', newUrl);
+
         // Helper to get rank class
         const getRankClass = (rank) => {
             if (rank === 1) return 'athlete-rank gold';
@@ -1390,6 +1888,22 @@
         // Calculate age
         const currentYear = new Date().getFullYear();
         const age = athlete.athlete_yob ? currentYear - parseInt(athlete.athlete_yob) : null;
+
+        // Favorite button
+        const isFav = favoritesManager.isFavorite(athlete.athlete_id);
+        const favoriteBtn = `
+            <button class="favorite-btn ${isFav ? 'is-favorite' : ''}" onclick="toggleFavorite(${athlete.athlete_id}, this)" aria-label="Toggle favorite">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </button>`;
+
+        // Compare button (hidden on mobile via CSS)
+        const compareBtn = `
+            <span class="compare-btn-wrapper">
+                <button class="athlete-link athlete-link-secondary" onclick="startComparison(${athlete.athlete_id})">Compare</button>
+            </span>`;
+
+        // Share button
+        const shareBtn = `<button class="athlete-link athlete-link-secondary" onclick="shareAthlete(${athlete.athlete_id}, '${athlete.athlete_full_name.replace(/'/g, "\\'")}')">Share</button>`;
 
         // Build results HTML
         const resultsHtml = (athlete.latest_results && athlete.latest_results.length > 0) ?
@@ -1411,6 +1925,15 @@
                 }).join('')}</div>
             </div>` : '';
 
+        // Chart HTML - shows recent race finishes (no trend analysis)
+        const chartHtml = (athlete.latest_results && athlete.latest_results.length >= 2) ?
+            `<div class="athlete-section">
+                <div class="athlete-section-title">Recent Race Finishes</div>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="results-chart"></canvas>
+                </div>
+            </div>` : '';
+
         // Build gallery HTML
         const galleryHtml = (athlete.latest_images && athlete.latest_images.length > 0) ?
             `<div class="athlete-section">
@@ -1418,11 +1941,11 @@
                 <div class="gallery-grid">${athlete.latest_images.slice(0, 8).map(img => {
                     const imageUrl = img.thumbnail || img.image_url || '';
                     const fullUrl = img.image_url || '#';
-                    return `<a href="${fullUrl}" target="_blank"><img src="${imageUrl}" alt="" onerror="this.parentElement.style.display='none'"></a>`;
+                    return `<a href="${fullUrl}" target="_blank"><img src="${imageUrl}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></a>`;
                 }).join('')}</div>
             </div>` : '';
 
-        const hasBodyContent = resultsHtml || galleryHtml;
+        const hasBodyContent = resultsHtml || chartHtml || galleryHtml;
 
         // Show back button only if we came from rankings
         const backBtnHtml = currentRankingsData ?
@@ -1441,6 +1964,7 @@
                             <div class="athlete-header">
                                 <span class="athlete-name">${athlete.athlete_full_name}</span>
                                 <img class="athlete-flag" src="${athlete.athlete_flag || ''}" alt="" onerror="this.style.display='none'">
+                                ${favoriteBtn}
                             </div>
                             <div class="athlete-country">${athlete.athlete_country_name || ''}</div>
                             <div class="athlete-stats">
@@ -1450,15 +1974,21 @@
                             </div>
                             <div class="athlete-actions">
                                 <a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a>
-                                ${athlete.athlete_media_listing ? `<a href="${athlete.athlete_media_listing}" class="athlete-link athlete-link-secondary" target="_blank">Media Gallery</a>` : ''}
+                                ${shareBtn}
+                                ${compareBtn}
                             </div>
                         </div>
                     </div>
-                    ${hasBodyContent ? `<div class="athlete-body">${resultsHtml}${galleryHtml}</div>` : ''}
+                    ${hasBodyContent ? `<div class="athlete-body">${chartHtml}${resultsHtml}${galleryHtml}</div>` : ''}
                 </article>
             </section>`;
 
         resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Render chart after DOM update
+        if (athlete.latest_results && athlete.latest_results.length >= 2) {
+            setTimeout(() => renderResultsChart(athlete.latest_results), 0);
+        }
     }
 
     // --- Display rankings using compact rows ---
@@ -1499,11 +2029,21 @@
         const menHtml = men.filter(a => a).map((a, i) => createRankingItem(a, i + 1)).join('');
         const womenHtml = women.filter(a => a).map((a, i) => createRankingItem(a, i + 1)).join('');
 
+        // Show "Load more" button if there are more rankings to load
+        const hasMore = rankingsLoaded < RANKINGS_MAX;
+        const loadMoreHtml = hasMore ? `
+            <div style="text-align: center; margin-top: var(--space-6);">
+                <button id="load-more-btn" class="quick-btn" onclick="loadMoreRankings()" style="padding: var(--space-3) var(--space-6);">
+                    Load More (${rankingsLoaded}/${RANKINGS_MAX})
+                </button>
+            </div>
+        ` : '';
+
         resultsDiv.innerHTML = `
             <section class="results-section">
                 <div class="section-header">
                     <h2 class="section-title">${title}</h2>
-                    <span class="section-meta">${count} athletes</span>
+                    <span class="section-meta">Showing ${count} of ${RANKINGS_MAX * 2} athletes</span>
                 </div>
                 <div class="rankings-grid">
                     <div class="ranking-column">
@@ -1515,6 +2055,7 @@
                         ${womenHtml}
                     </div>
                 </div>
+                ${loadMoreHtml}
             </section>`;
 
         resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1586,26 +2127,61 @@
         const menData = await menResponse.json();
         const womenData = await womenResponse.json();
 
-        const topMenIds = (menData.data?.rankings?.slice(0, 30) || []).map(a => a.athlete_id);
-        const topWomenIds = (womenData.data?.rankings?.slice(0, 30) || []).map(a => a.athlete_id);
+        // Store all ranking IDs for progressive loading
+        rankingIds.men = (menData.data?.rankings?.slice(0, RANKINGS_MAX) || []).map(a => a.athlete_id);
+        rankingIds.women = (womenData.data?.rankings?.slice(0, RANKINGS_MAX) || []).map(a => a.athlete_id);
+        rankingsLoaded = 0;
 
-        const [menDetails, womenDetails] = await Promise.all([
-            Promise.all(topMenIds.map(id => getAthleteDetails(id))),
-            Promise.all(topWomenIds.map(id => getAthleteDetails(id)))
-        ]);
-
-        // Store rankings data for navigation
+        // Initialize rankings data
         currentRankingsData = {
-            men: menDetails,
-            women: womenDetails,
-            title: "Top 30 WTCS Ranked Athletes"
+            men: [],
+            women: [],
+            title: "WTCS Rankings"
         };
 
-        // Use compact rankings display
-        displayRankings();
+        // Load first batch
+        await loadMoreRankings();
 
       } catch (error) {
           resultsDiv.innerHTML = `<div class="error-message">${error.message}</div>`;
+      }
+    }
+
+    // --- Load more rankings progressively ---
+    window.loadMoreRankings = async function() {
+      const resultsDiv = document.getElementById('results');
+      const start = rankingsLoaded;
+      const end = Math.min(rankingsLoaded + RANKINGS_PER_PAGE, RANKINGS_MAX);
+
+      // Show loading indicator on button if it exists
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      if (loadMoreBtn) {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = 'Loading...';
+      }
+
+      try {
+        const menIdsToLoad = rankingIds.men.slice(start, end);
+        const womenIdsToLoad = rankingIds.women.slice(start, end);
+
+        const [menDetails, womenDetails] = await Promise.all([
+            Promise.all(menIdsToLoad.map(id => getAthleteDetails(id))),
+            Promise.all(womenIdsToLoad.map(id => getAthleteDetails(id)))
+        ]);
+
+        // Append to existing data
+        currentRankingsData.men.push(...menDetails);
+        currentRankingsData.women.push(...womenDetails);
+        rankingsLoaded = end;
+
+        // Update display
+        displayRankings();
+
+      } catch (error) {
+        if (loadMoreBtn) {
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.textContent = 'Load More';
+        }
       }
     }
 
@@ -1668,7 +2244,7 @@
             const photoGridHtml = shuffledPhotos.length > 0
                 ? shuffledPhotos.map(photo => `
                     <a class="photo-card" href="${photo.profileUrl}" target="_blank" rel="noopener">
-                        <img src="${photo.thumbnail}" alt="Race photo - ${photo.athleteName}" loading="lazy" onerror="this.parentElement.style.display='none'">
+                        <img src="${photo.thumbnail}" alt="Race photo - ${photo.athleteName}" onerror="this.parentElement.style.display='none'">
                         <div class="photo-card-overlay">
                             <div class="photo-card-name">${photo.athleteName}</div>
                             <div class="photo-card-country">${photo.athleteCountry}</div>
@@ -1729,8 +2305,590 @@
         }
     }
 
-    // --- Load home page on initial visit ---
-    showHomePage();
+    // --- Toggle favorite ---
+    window.toggleFavorite = function(athleteId, btnElement) {
+        const isNowFavorite = favoritesManager.toggle(athleteId);
+        btnElement.classList.toggle('is-favorite', isNowFavorite);
+        showToast(isNowFavorite ? 'Added to favorites' : 'Removed from favorites');
+    };
+
+    // --- Show favorites (consistent with rankings view) ---
+    window.showFavorites = async function() {
+        const favoriteIds = favoritesManager.getFavorites();
+        const resultsDiv = document.getElementById('results');
+
+        // Clear URL
+        history.pushState({}, '', '?view=favorites');
+
+        if (favoriteIds.length === 0) {
+            resultsDiv.innerHTML = `
+                <section class="results-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Favorites</h2>
+                    </div>
+                    <div class="empty-state">No favorites yet. Click the star on any athlete to save them.</div>
+                </section>`;
+            return;
+        }
+
+        resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading favorites...</div>';
+
+        const athletes = await Promise.all(favoriteIds.map(id => getAthleteDetails(id)));
+        const validAthletes = athletes.filter(a => a);
+
+        if (validAthletes.length === 0) {
+            resultsDiv.innerHTML = '<div class="empty-state">No favorites found.</div>';
+            return;
+        }
+
+        // Store for navigation
+        window.favoritesData = validAthletes;
+
+        // Create compact list view like rankings
+        const createFavoriteItem = (athlete, index) => {
+            const hasValidImage = athlete.athlete_profile_image && athlete.athlete_profile_image.startsWith('http');
+            const photoHtml = hasValidImage ?
+                `<img class="ranking-item-photo" src="${athlete.athlete_profile_image}" alt="" onerror="this.onerror=null; this.outerHTML='<div class=\\'ranking-item-placeholder\\'>${getInitials(athlete.athlete_full_name)}</div>'">` :
+                `<div class="ranking-item-placeholder">${getInitials(athlete.athlete_full_name)}</div>`;
+
+            return `
+                <div class="ranking-item" onclick="showAthleteFromFavorites(${index})">
+                    <span class="ranking-item-rank" style="color: #f59e0b;">★</span>
+                    ${photoHtml}
+                    <div class="ranking-item-info">
+                        <span class="ranking-item-name">${athlete.athlete_full_name}</span>
+                        <div class="ranking-item-country">
+                            <img class="ranking-item-flag" src="${athlete.athlete_flag || ''}" alt="" onerror="this.style.display='none'">
+                            <span>${athlete.athlete_country_name || ''}</span>
+                        </div>
+                    </div>
+                    <span class="ranking-item-arrow">›</span>
+                </div>`;
+        };
+
+        const favoritesHtml = validAthletes.map((a, i) => createFavoriteItem(a, i)).join('');
+
+        resultsDiv.innerHTML = `
+            <section class="results-section">
+                <div class="section-header">
+                    <h2 class="section-title">Favorites</h2>
+                    <span class="section-meta">${validAthletes.length} athlete${validAthletes.length !== 1 ? 's' : ''}</span>
+                </div>
+                <div class="ranking-column" style="max-width: 600px;">
+                    ${favoritesHtml}
+                </div>
+            </section>`;
+
+        resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    // --- Show athlete from favorites data ---
+    window.showAthleteFromFavorites = function(index) {
+        if (!window.favoritesData || !window.favoritesData[index]) return;
+        showAthleteDetail(window.favoritesData[index]);
+    };
+
+    // --- Share athlete ---
+    window.shareAthlete = function(athleteId, athleteName) {
+        const url = `${window.location.origin}${window.location.pathname}?athlete=${athleteId}`;
+        if (navigator.share) {
+            navigator.share({ url, title: `${athleteName} - Triathlon Stats` });
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link copied to clipboard');
+            });
+        }
+    };
+
+    // --- Analyze trend ---
+    function analyzeTrend(results) {
+        if (!results || results.length < 4) return null;
+
+        const sorted = [...results]
+            .filter(r => r.event_date && r.position)
+            .sort((a, b) => new Date(a.event_date) - new Date(b.event_date))
+            .map(r => parseInt(r.position));
+
+        if (sorted.length < 4) return null;
+
+        // Split into halves
+        const mid = Math.floor(sorted.length / 2);
+        const firstHalf = sorted.slice(0, mid);
+        const secondHalf = sorted.slice(mid);
+
+        const avgFirst = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+        const avgSecond = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+
+        // Calculate linear regression slope
+        const n = sorted.length;
+        let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+        sorted.forEach((pos, i) => {
+            sumX += i;
+            sumY += pos;
+            sumXY += i * pos;
+            sumX2 += i * i;
+        });
+        const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+
+        return {
+            avgFirst: avgFirst.toFixed(1),
+            avgSecond: avgSecond.toFixed(1),
+            slope,
+            trend: slope < -0.3 ? 'improving' : slope > 0.3 ? 'declining' : 'stable',
+            bestFinish: Math.min(...sorted),
+            avgFinish: (sorted.reduce((a, b) => a + b, 0) / sorted.length).toFixed(1)
+        };
+    }
+
+    // --- Render results chart (ultra-clean styling) ---
+    function renderResultsChart(results) {
+        const ctx = document.getElementById('results-chart');
+        if (!ctx || results.length < 2) return;
+
+        // Sort by date ascending
+        const sortedResults = [...results]
+            .filter(r => r.event_date && r.position)
+            .sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+
+        if (sortedResults.length < 2) return;
+
+        // Get theme colors
+        const styles = getComputedStyle(document.documentElement);
+        const textColor = styles.getPropertyValue('--text-primary').trim();
+        const textSecondary = styles.getPropertyValue('--text-secondary').trim();
+        const borderColor = styles.getPropertyValue('--border-primary').trim();
+        const bgSecondary = styles.getPropertyValue('--bg-secondary').trim();
+
+        const positions = sortedResults.map(r => parseInt(r.position));
+        const labels = sortedResults.map(r => {
+            const date = new Date(r.event_date);
+            return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+        });
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Finish Position',
+                    data: positions,
+                    borderColor: textColor,
+                    backgroundColor: bgSecondary,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: textColor,
+                    pointBorderColor: textColor,
+                    pointBorderWidth: 0,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: { top: 8, bottom: 8 }
+                },
+                scales: {
+                    y: {
+                        reverse: true,
+                        min: 1,
+                        ticks: {
+                            color: textSecondary,
+                            font: { size: 11, family: 'Inter' },
+                            padding: 8,
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: borderColor,
+                            lineWidth: 1,
+                            drawTicks: false
+                        },
+                        border: { display: false }
+                    },
+                    x: {
+                        ticks: {
+                            color: textSecondary,
+                            font: { size: 11, family: 'Inter' },
+                            padding: 8
+                        },
+                        grid: { display: false },
+                        border: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: textColor,
+                        titleColor: bgSecondary,
+                        bodyColor: bgSecondary,
+                        titleFont: { size: 12, weight: 500, family: 'Inter' },
+                        bodyFont: { size: 13, weight: 600, family: 'Inter' },
+                        padding: 12,
+                        cornerRadius: 0,
+                        displayColors: false,
+                        callbacks: {
+                            title: (items) => sortedResults[items[0].dataIndex]?.event_title || '',
+                            label: (item) => `#${item.raw}`
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    }
+
+    // --- Comparison functions ---
+    window.startComparison = async function(athleteId) {
+        const athlete = await getAthleteDetails(athleteId);
+        if (!athlete) return;
+
+        comparisonState.athlete1 = athlete;
+        comparisonState.mode = 'selecting';
+
+        // Create modal
+        const hasImage = athlete.athlete_profile_image?.startsWith('http');
+        const overlay = document.createElement('div');
+        overlay.className = 'comparison-modal-overlay';
+        overlay.id = 'comparison-modal-overlay';
+        overlay.innerHTML = `
+            <div class="comparison-modal">
+                <div class="comparison-modal-header">
+                    <span class="comparison-modal-title">Compare Athletes</span>
+                    <button class="comparison-modal-close" onclick="cancelComparison()">&times;</button>
+                </div>
+                <div class="comparison-modal-body">
+                    <div class="comparison-modal-athlete">
+                        ${hasImage ?
+                            `<img class="comparison-modal-athlete-photo" src="${athlete.athlete_profile_image}" alt="">` :
+                            `<div class="comparison-modal-athlete-placeholder">${getInitials(athlete.athlete_full_name)}</div>`
+                        }
+                        <div class="comparison-modal-athlete-info">
+                            <div class="comparison-modal-athlete-name">${athlete.athlete_full_name}</div>
+                            <div class="comparison-modal-athlete-country">${athlete.athlete_country_name || ''}</div>
+                        </div>
+                    </div>
+                    <div class="comparison-modal-search">
+                        <input type="text" id="comparison-search-input" placeholder="Search for second athlete..." autocomplete="off">
+                        <div id="comparison-search-results" class="comparison-modal-results" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Close on overlay click
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) cancelComparison();
+        });
+
+        // Setup search
+        const searchInput = document.getElementById('comparison-search-input');
+        searchInput.focus();
+        searchInput.addEventListener('input', debounce(handleComparisonSearch, 300));
+    };
+
+    async function handleComparisonSearch() {
+        const query = document.getElementById('comparison-search-input').value;
+        const resultsDiv = document.getElementById('comparison-search-results');
+
+        if (query.length < 2) {
+            resultsDiv.style.display = 'none';
+            return;
+        }
+
+        resultsDiv.innerHTML = '<div class="comparison-modal-loading">Searching...</div>';
+        resultsDiv.style.display = 'block';
+
+        const response = await fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=6`);
+        if (!response.ok) {
+            resultsDiv.style.display = 'none';
+            return;
+        }
+
+        const data = await response.json();
+        const athletes = data.data || [];
+
+        if (athletes.length === 0) {
+            resultsDiv.innerHTML = '<div class="comparison-modal-loading">No athletes found</div>';
+            return;
+        }
+
+        // Fetch details for photos
+        const details = await Promise.all(athletes.map(a => getAthleteDetails(a.athlete_id)));
+
+        resultsDiv.innerHTML = details.filter(a => a).map(athlete => {
+            const hasImage = athlete.athlete_profile_image?.startsWith('http');
+            return `
+                <div class="comparison-modal-item" onclick="selectComparisonAthlete(${athlete.athlete_id})">
+                    ${hasImage ?
+                        `<img class="comparison-modal-item-photo" src="${athlete.athlete_profile_image}" alt="">` :
+                        `<div class="comparison-modal-item-placeholder">${getInitials(athlete.athlete_full_name)}</div>`
+                    }
+                    <div class="comparison-modal-item-info">
+                        <div class="comparison-modal-item-name">${athlete.athlete_full_name}</div>
+                        <div class="comparison-modal-item-country">${athlete.athlete_country_name || ''}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    window.selectComparisonAthlete = async function(athleteId) {
+        const athlete = await getAthleteDetails(athleteId);
+        if (!athlete) return;
+
+        comparisonState.athlete2 = athlete;
+        comparisonState.mode = 'comparing';
+        document.getElementById('comparison-modal-overlay')?.remove();
+        showComparison();
+    };
+
+    window.cancelComparison = function() {
+        comparisonState = { athlete1: null, athlete2: null, mode: 'idle' };
+        document.getElementById('comparison-modal-overlay')?.remove();
+    };
+
+    window.showComparison = function() {
+        const { athlete1, athlete2 } = comparisonState;
+        if (!athlete1 || !athlete2) return;
+
+        document.getElementById('comparison-banner')?.remove();
+        document.getElementById('athleteName').placeholder = 'Search athlete name...';
+
+        const resultsDiv = document.getElementById('results');
+
+        const createComparisonCard = (athlete) => {
+            const hasImage = athlete.athlete_profile_image?.startsWith('http');
+            const currentYear = new Date().getFullYear();
+            const age = athlete.athlete_yob ? currentYear - parseInt(athlete.athlete_yob) : null;
+
+            return `
+                <div class="comparison-card">
+                    ${hasImage ?
+                        `<img class="comparison-card-photo" src="${athlete.athlete_profile_image}" alt="" onerror="this.style.display='none'">` :
+                        `<div class="comparison-card-photo" style="display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text-tertiary)">${getInitials(athlete.athlete_full_name)}</div>`
+                    }
+                    <div class="comparison-card-name">${athlete.athlete_full_name}</div>
+                    <div class="comparison-card-country">${athlete.athlete_country_name || ''}</div>
+                    <div class="comparison-stats">
+                        ${age ? `<div><div class="comparison-stat-label">Age</div><div class="comparison-stat-value">${age}</div></div>` : ''}
+                        ${athlete.athlete_yob ? `<div><div class="comparison-stat-label">Born</div><div class="comparison-stat-value">${athlete.athlete_yob}</div></div>` : ''}
+                        ${athlete.athlete_categories ? `<div><div class="comparison-stat-label">Category</div><div class="comparison-stat-value">${athlete.athlete_categories[0] || ''}</div></div>` : ''}
+                    </div>
+                </div>
+            `;
+        };
+
+        resultsDiv.innerHTML = `
+            <section class="results-section">
+                <button class="back-btn" onclick="cancelComparison(); showHomePage();">← Back</button>
+                <div class="section-header">
+                    <h2 class="section-title">Head to Head</h2>
+                </div>
+                <div class="comparison-grid">
+                    ${createComparisonCard(athlete1)}
+                    <div class="comparison-vs">VS</div>
+                    ${createComparisonCard(athlete2)}
+                </div>
+                <div class="athlete-section">
+                    <div class="athlete-section-title">Recent Race Finishes</div>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="comparison-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+        `;
+
+        // Render comparison chart
+        setTimeout(() => renderComparisonChart(athlete1, athlete2), 0);
+    };
+
+    function renderComparisonChart(athlete1, athlete2) {
+        const ctx = document.getElementById('comparison-chart');
+        if (!ctx) return;
+
+        const prepareData = (results) => {
+            if (!results) return { labels: [], data: [], titles: [] };
+            const sorted = [...results]
+                .filter(r => r.event_date && r.position)
+                .sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+            return {
+                labels: sorted.map(r => new Date(r.event_date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })),
+                data: sorted.map(r => parseInt(r.position)),
+                titles: sorted.map(r => r.event_title)
+            };
+        };
+
+        const data1 = prepareData(athlete1.latest_results);
+        const data2 = prepareData(athlete2.latest_results);
+
+        // Merge labels
+        const allLabels = [...new Set([...data1.labels, ...data2.labels])].sort((a, b) => {
+            const parseDate = (str) => new Date(str.replace(/(\w+) '(\d+)/, '$1 20$2'));
+            return parseDate(a) - parseDate(b);
+        });
+
+        const styles = getComputedStyle(document.documentElement);
+        const textSecondary = styles.getPropertyValue('--text-secondary').trim();
+        const borderColor = styles.getPropertyValue('--border-primary').trim();
+        const bgSecondary = styles.getPropertyValue('--bg-secondary').trim();
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: allLabels,
+                datasets: [
+                    {
+                        label: athlete1.athlete_full_name,
+                        data: allLabels.map(l => {
+                            const idx = data1.labels.indexOf(l);
+                            return idx >= 0 ? data1.data[idx] : null;
+                        }),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.08)',
+                        fill: true,
+                        spanGaps: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderWidth: 0,
+                        borderWidth: 2
+                    },
+                    {
+                        label: athlete2.athlete_full_name,
+                        data: allLabels.map(l => {
+                            const idx = data2.labels.indexOf(l);
+                            return idx >= 0 ? data2.data[idx] : null;
+                        }),
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                        fill: true,
+                        spanGaps: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#ef4444',
+                        pointBorderWidth: 0,
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: { top: 8, bottom: 8 }
+                },
+                scales: {
+                    y: {
+                        reverse: true,
+                        min: 1,
+                        ticks: {
+                            color: textSecondary,
+                            font: { size: 11, family: 'Inter' },
+                            padding: 8,
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: borderColor,
+                            lineWidth: 1,
+                            drawTicks: false
+                        },
+                        border: { display: false }
+                    },
+                    x: {
+                        ticks: {
+                            color: textSecondary,
+                            font: { size: 11, family: 'Inter' },
+                            padding: 8
+                        },
+                        grid: { display: false },
+                        border: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            color: textSecondary,
+                            font: { size: 12, family: 'Inter' },
+                            boxWidth: 12,
+                            boxHeight: 12,
+                            padding: 16,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#171717',
+                        titleColor: '#fafafa',
+                        bodyColor: '#fafafa',
+                        titleFont: { size: 12, weight: 500, family: 'Inter' },
+                        bodyFont: { size: 13, weight: 600, family: 'Inter' },
+                        padding: 12,
+                        cornerRadius: 0,
+                        displayColors: true,
+                        boxWidth: 8,
+                        boxHeight: 8,
+                        boxPadding: 4
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    }
+
+    // --- URL Routing ---
+    function handleRouting() {
+        const params = new URLSearchParams(window.location.search);
+
+        const athleteId = params.get('athlete');
+        if (athleteId) {
+            loadAthleteFromUrl(athleteId);
+            return;
+        }
+
+        const view = params.get('view');
+        if (view === 'favorites') {
+            showFavorites();
+            return;
+        }
+        if (view === 'rankings') {
+            fetchTopRankings();
+            return;
+        }
+
+        showHomePage();
+    }
+
+    async function loadAthleteFromUrl(athleteId) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading athlete...</div>';
+
+        const details = await getAthleteDetails(parseInt(athleteId));
+        if (details) {
+            showAthleteDetail(details);
+        } else {
+            resultsDiv.innerHTML = '<div class="error-message">Athlete not found.</div>';
+        }
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', handleRouting);
+
+    // --- Load page based on URL ---
+    handleRouting();
 
   </script>
 </body>
