@@ -110,7 +110,7 @@
       font-size: var(--text-base);
       line-height: 1.6;
       color: var(--text-primary);
-      background: var(--bg-primary);
+      background: var(--bg-secondary);
       min-height: 100vh;
       transition: background-color 0.2s ease, color 0.2s ease;
     }
@@ -661,8 +661,10 @@
     .back-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: var(--space-2);
-      padding: var(--space-2) var(--space-3);
+      height: 36px;
+      padding: 0 var(--space-4);
       font-family: inherit;
       font-size: 13px;
       font-weight: 500;
@@ -677,12 +679,15 @@
     .back-btn:hover {
       color: var(--text-primary);
       border-color: var(--text-primary);
+      background: var(--bg-tertiary);
     }
 
     /* Athlete Cards - Profile Style */
     .athlete-card {
       background: var(--bg-primary);
       border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
       overflow: hidden;
       margin-bottom: var(--space-6);
     }
@@ -694,6 +699,7 @@
       padding: var(--space-6);
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 
     .athlete-photo {
@@ -705,6 +711,7 @@
       height: 240px;
       object-fit: cover;
       background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
     }
 
     .athlete-placeholder {
@@ -717,6 +724,7 @@
       color: var(--text-tertiary);
       font-size: 48px;
       font-weight: 600;
+      border-radius: var(--radius-md);
     }
 
     .athlete-rank {
@@ -821,18 +829,21 @@
     .athlete-link {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      padding: var(--space-2) var(--space-4);
+      height: 36px;
+      padding: 0 var(--space-4);
       font-size: 13px;
       font-weight: 500;
       color: var(--bg-primary);
       background: var(--text-primary);
+      border: 1px solid var(--text-primary);
       text-decoration: none;
-      transition: opacity 0.15s ease;
+      transition: all 0.15s ease;
     }
 
     .athlete-link:hover {
-      opacity: 0.8;
+      opacity: 0.85;
     }
 
     .athlete-link-secondary {
@@ -843,6 +854,7 @@
 
     .athlete-link-secondary:hover {
       border-color: var(--text-primary);
+      background: var(--bg-tertiary);
       opacity: 1;
     }
 
@@ -882,13 +894,17 @@
       align-items: center;
       padding: var(--space-4);
       background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
       text-decoration: none;
       color: var(--text-primary);
-      transition: background 0.15s ease;
+      transition: all 0.15s ease;
     }
 
     .result-item:hover {
       background: var(--bg-tertiary);
+      border-color: var(--text-tertiary);
+      transform: translateY(-1px);
     }
 
     .result-event {
@@ -906,6 +922,20 @@
       font-size: 18px;
       font-weight: 700;
       color: var(--text-secondary);
+      min-width: 48px;
+      text-align: right;
+    }
+
+    .result-position.gold {
+      color: #f59e0b;
+    }
+
+    .result-position.silver {
+      color: #6b7280;
+    }
+
+    .result-position.bronze {
+      color: #ea580c;
     }
 
     .result-position.top3 {
@@ -1124,12 +1154,107 @@
     .chart-container {
       background: var(--bg-primary);
       border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
       padding: var(--space-6);
       margin-top: var(--space-4);
+      position: relative;
+      overflow: visible;
     }
 
     .chart-container canvas {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      cursor: pointer;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border-primary);
+      justify-content: center;
+    }
+
+    .chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+    }
+
+    .chart-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Chart tooltip for race details */
+    .chart-race-tooltip {
+      position: absolute;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: var(--space-4);
+      min-width: 220px;
+      z-index: 100;
+      pointer-events: auto;
+      animation: fadeIn 0.15s ease;
+    }
+
+    .chart-race-tooltip-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+      line-height: 1.3;
+    }
+
+    .chart-race-tooltip-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+
+    .chart-race-tooltip-position {
+      font-size: var(--text-xl);
+      font-weight: 700;
+    }
+
+    .chart-race-tooltip-position.gold { color: #f59e0b; }
+    .chart-race-tooltip-position.silver { color: #6b7280; }
+    .chart-race-tooltip-position.bronze { color: #ea580c; }
+
+    .chart-race-tooltip-date {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+
+    .chart-race-tooltip-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: var(--space-2) var(--space-3);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      transition: all 0.15s ease;
+    }
+
+    .chart-race-tooltip-link:hover {
+      color: var(--text-primary);
+      background: var(--border-primary);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Trend Summary */
@@ -1530,6 +1655,10 @@
     let rankingIds = { men: [], women: [] };
     let rankingsLoaded = 0;
     const RANKINGS_PER_PAGE = 10;
+
+    // Cache for chart results toggle
+    let extendedResultsCache = {};
+    let recentResultsCache = {};
     const RANKINGS_MAX = 30;
 
     // Cache for athlete details to avoid redundant API calls
@@ -1961,6 +2090,13 @@
         const shareBtn = `<button class="athlete-link athlete-link-secondary" onclick="shareAthlete(${athlete.athlete_id}, '${athlete.athlete_full_name.replace(/'/g, "\\'")}')">Share</button>`;
 
         // Build results HTML
+        const getPositionClass = (pos) => {
+            if (pos === 1) return 'result-position gold';
+            if (pos === 2) return 'result-position silver';
+            if (pos === 3) return 'result-position bronze';
+            return 'result-position';
+        };
+
         const resultsHtml = (athlete.latest_results && athlete.latest_results.length > 0) ?
             `<div class="athlete-section">
                 <div class="athlete-section-title">Recent Results</div>
@@ -1968,7 +2104,7 @@
                     const year = result.event_date ? new Date(result.event_date).getFullYear() : '';
                     const eventTitle = result.event_title || 'Race';
                     const position = parseInt(result.position) || 0;
-                    const positionClass = position <= 3 ? 'result-position top3' : 'result-position';
+                    const positionClass = getPositionClass(position);
                     const resultUrl = result.result_listing || '#';
                     return `<a href="${resultUrl}" target="_blank" class="result-item">
                         <div>
@@ -1983,9 +2119,26 @@
         // Chart HTML - shows recent race finishes (no trend analysis)
         const chartHtml = (athlete.latest_results && athlete.latest_results.length >= 2) ?
             `<div class="athlete-section">
-                <div class="athlete-section-title">Recent Race Finishes</div>
-                <div class="chart-container" style="height: 250px;">
-                    <canvas id="results-chart"></canvas>
+                <div class="athlete-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>Race Finishes</span>
+                    <span style="font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-tertiary);">Click points for details</span>
+                </div>
+                <div class="chart-container">
+                    <div style="height: 280px;">
+                        <canvas id="results-chart"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #f59e0b;"></span> 1st</div>
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #6b7280;"></span> 2nd</div>
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #ea580c;"></span> 3rd</div>
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #10b981;"></span> Top 5</div>
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #3b82f6;"></span> Top 10</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: var(--space-3);">
+                    <button id="load-more-results-btn" class="athlete-link athlete-link-secondary" onclick="toggleResultsView(${athlete.athlete_id})" style="font-size: 12px; height: 32px;" data-view="recent">
+                        Load Full Race History
+                    </button>
                 </div>
             </div>` : '';
 
@@ -2043,6 +2196,8 @@
 
         // Render chart after DOM update
         if (athlete.latest_results && athlete.latest_results.length >= 2) {
+            // Cache recent results for toggle functionality
+            recentResultsCache[athlete.athlete_id] = athlete.latest_results;
             setTimeout(() => renderResultsChart(athlete.latest_results), 0);
         }
     }
@@ -2538,10 +2693,18 @@
         };
     }
 
-    // --- Render results chart (ultra-clean styling) ---
+    // --- Render results chart with colors and click interactivity ---
+    let currentChart = null;
+    let chartResults = [];
+
     function renderResultsChart(results) {
         const ctx = document.getElementById('results-chart');
         if (!ctx || results.length < 2) return;
+
+        // Destroy previous chart if exists
+        if (currentChart) {
+            currentChart.destroy();
+        }
 
         // Sort by date ascending
         const sortedResults = [...results]
@@ -2550,12 +2713,25 @@
 
         if (sortedResults.length < 2) return;
 
+        // Store for click handler
+        chartResults = sortedResults;
+
         // Get theme colors
         const styles = getComputedStyle(document.documentElement);
         const textColor = styles.getPropertyValue('--text-primary').trim();
         const textSecondary = styles.getPropertyValue('--text-secondary').trim();
         const borderColor = styles.getPropertyValue('--border-primary').trim();
-        const bgSecondary = styles.getPropertyValue('--bg-secondary').trim();
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+        // Position-based colors
+        const getPositionColor = (pos) => {
+            if (pos === 1) return '#f59e0b'; // Gold
+            if (pos === 2) return '#6b7280'; // Silver
+            if (pos === 3) return '#ea580c'; // Bronze
+            if (pos <= 5) return '#10b981'; // Green for top 5
+            if (pos <= 10) return '#3b82f6'; // Blue for top 10
+            return isDark ? '#a3a3a3' : '#525252'; // Default
+        };
 
         const positions = sortedResults.map(r => parseInt(r.position));
         const labels = sortedResults.map(r => {
@@ -2563,40 +2739,52 @@
             return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
         });
 
-        new Chart(ctx, {
+        // Generate point colors based on position
+        const pointColors = positions.map(pos => getPositionColor(pos));
+
+        currentChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels,
                 datasets: [{
                     label: 'Finish Position',
                     data: positions,
-                    borderColor: textColor,
-                    backgroundColor: bgSecondary,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    pointBackgroundColor: textColor,
-                    pointBorderColor: textColor,
-                    pointBorderWidth: 0,
-                    borderWidth: 2
+                    borderColor: '#10b981',
+                    backgroundColor: 'transparent',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 8,
+                    pointHoverRadius: 11,
+                    pointBackgroundColor: pointColors,
+                    pointBorderColor: isDark ? '#171717' : '#ffffff',
+                    pointBorderWidth: 2,
+                    borderWidth: 2.5
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 layout: {
-                    padding: { top: 8, bottom: 8 }
+                    padding: { top: 20, bottom: 16, left: 8, right: 24 }
                 },
                 scales: {
                     y: {
                         reverse: true,
-                        min: 1,
+                        min: 0,
+                        grace: '5%',
+                        title: {
+                            display: true,
+                            text: 'Finish Position',
+                            color: textSecondary,
+                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            padding: { bottom: 8 }
+                        },
                         ticks: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Inter' },
-                            padding: 8,
-                            stepSize: 1
+                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            padding: 12,
+                            stepSize: 1,
+                            callback: (value) => value >= 1 ? '#' + value : ''
                         },
                         grid: {
                             color: borderColor,
@@ -2606,10 +2794,19 @@
                         border: { display: false }
                     },
                     x: {
+                        title: {
+                            display: true,
+                            text: 'Race Date',
+                            color: textSecondary,
+                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            padding: { top: 8 }
+                        },
                         ticks: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Inter' },
-                            padding: 8
+                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            padding: 8,
+                            maxRotation: 45,
+                            minRotation: 0
                         },
                         grid: { display: false },
                         border: { display: false }
@@ -2618,26 +2815,149 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: textColor,
-                        titleColor: bgSecondary,
-                        bodyColor: bgSecondary,
-                        titleFont: { size: 12, weight: 500, family: 'Inter' },
-                        bodyFont: { size: 13, weight: 600, family: 'Inter' },
-                        padding: 12,
-                        cornerRadius: 0,
-                        displayColors: false,
-                        callbacks: {
-                            title: (items) => sortedResults[items[0].dataIndex]?.event_title || '',
-                            label: (item) => `#${item.raw}`
-                        }
+                        enabled: false // We'll use custom click tooltip
                     }
                 },
                 interaction: {
-                    intersect: false,
-                    mode: 'index'
+                    intersect: true,
+                    mode: 'nearest'
+                },
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        showRaceTooltip(event, sortedResults[index], ctx);
+                    }
+                },
+                onHover: (event, elements) => {
+                    ctx.style.cursor = elements.length > 0 ? 'pointer' : 'default';
                 }
             }
         });
+    }
+
+    // Show custom tooltip on chart click
+    function showRaceTooltip(event, result, canvas) {
+        // Remove existing tooltip
+        const existing = document.querySelector('.chart-race-tooltip');
+        if (existing) existing.remove();
+
+        const container = canvas.closest('.chart-container');
+        if (!container) return;
+
+        const containerRect = container.getBoundingClientRect();
+
+        const position = parseInt(result.position);
+        const positionClass = position === 1 ? 'gold' : position === 2 ? 'silver' : position === 3 ? 'bronze' : '';
+        const eventDate = new Date(result.event_date);
+        const formattedDate = eventDate.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'chart-race-tooltip';
+        tooltip.innerHTML = `
+            <div class="chart-race-tooltip-title">${result.event_title || 'Race'}</div>
+            <div class="chart-race-tooltip-meta">
+                <span class="chart-race-tooltip-position ${positionClass}">#${position}</span>
+                <span class="chart-race-tooltip-date">${formattedDate}</span>
+            </div>
+            ${result.result_listing ? `<a href="${result.result_listing}" target="_blank" class="chart-race-tooltip-link">View Full Results →</a>` : ''}
+        `;
+
+        // Position tooltip relative to container
+        const x = event.native.clientX - containerRect.left;
+        const y = event.native.clientY - containerRect.top;
+
+        // Adjust position to stay within container, prefer showing to the right
+        const tooltipWidth = 240;
+        let left = x + 10;
+        if (left + tooltipWidth > containerRect.width) {
+            left = x - tooltipWidth - 10;
+        }
+        if (left < 0) left = 10;
+
+        tooltip.style.left = left + 'px';
+        tooltip.style.top = Math.max(10, y - 60) + 'px';
+
+        container.appendChild(tooltip);
+
+        // Close tooltip on outside click
+        const closeTooltip = (e) => {
+            if (!tooltip.contains(e.target) && e.target !== canvas) {
+                tooltip.remove();
+                document.removeEventListener('click', closeTooltip);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', closeTooltip), 10);
+    }
+
+    // --- Toggle between recent and full race history ---
+    async function toggleResultsView(athleteId) {
+        const btn = document.getElementById('load-more-results-btn');
+        if (!btn) return;
+
+        const currentView = btn.getAttribute('data-view');
+
+        if (currentView === 'recent') {
+            // Switch to full history
+            await loadFullHistory(athleteId, btn);
+        } else {
+            // Switch back to recent
+            if (recentResultsCache[athleteId]) {
+                renderResultsChart(recentResultsCache[athleteId]);
+                btn.textContent = 'Load Full Race History';
+                btn.setAttribute('data-view', 'recent');
+            }
+        }
+    }
+
+    async function loadFullHistory(athleteId, btn) {
+        // Check cache first
+        if (extendedResultsCache[athleteId]) {
+            renderResultsChart(extendedResultsCache[athleteId]);
+            btn.textContent = `Show Recent (${recentResultsCache[athleteId]?.length || 0} races)`;
+            btn.setAttribute('data-view', 'full');
+            return;
+        }
+
+        // Show loading state
+        btn.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><span class="loading-spinner" style="width: 14px; height: 14px; border-width: 2px;"></span> Loading...</span>';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch(`/api/triathlon?endpoint=/athletes/${athleteId}/results`);
+            const data = await response.json();
+
+            if (data.data && Array.isArray(data.data)) {
+                // Transform API results to match the format we need
+                const results = data.data.map(r => ({
+                    event_title: r.event_title || r.prog_name || 'Race',
+                    event_date: r.event_date || r.prog_date,
+                    position: r.position || r.result_position,
+                    result_listing: r.result_listing || r.event_listing
+                })).filter(r => r.event_date && r.position);
+
+                if (results.length > 0) {
+                    extendedResultsCache[athleteId] = results;
+                    renderResultsChart(results);
+                    btn.textContent = `Show Recent (${recentResultsCache[athleteId]?.length || 0} races)`;
+                    btn.setAttribute('data-view', 'full');
+                    btn.disabled = false;
+                } else {
+                    btn.textContent = 'No additional results found';
+                    btn.disabled = false;
+                }
+            } else {
+                btn.textContent = 'Could not load more results';
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error('Failed to load more results:', error);
+            btn.textContent = 'Failed to load results';
+            btn.disabled = false;
+        }
     }
 
     // --- Comparison functions ---
