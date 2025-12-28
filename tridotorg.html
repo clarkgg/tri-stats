@@ -263,11 +263,17 @@
       background: var(--text-primary);
       border: none;
       cursor: pointer;
-      transition: opacity 0.15s ease;
+      transition: all 0.2s ease;
     }
 
     .search-btn:hover {
-      opacity: 0.8;
+      opacity: 0.85;
+      padding: 0 calc(var(--space-4) + 2px);
+    }
+
+    .search-btn:active {
+      opacity: 1;
+      transform: scale(0.98);
     }
 
     /* Quick Actions */
@@ -288,13 +294,19 @@
       background: transparent;
       border: 1px solid var(--border-primary);
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
       text-decoration: none;
     }
 
     .quick-btn:hover {
       color: var(--text-primary);
       border-color: var(--text-primary);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quick-btn:active {
+      transform: translateY(0);
     }
 
     /* Autocomplete */
@@ -370,17 +382,23 @@
       cursor: pointer;
       background: var(--bg-secondary);
       text-decoration: none;
+      transition: box-shadow 0.3s ease;
     }
 
     .photo-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s ease, filter 0.3s ease;
+    }
+
+    .photo-card:hover {
+      box-shadow: var(--shadow-lg);
     }
 
     .photo-card:hover img {
-      transform: scale(1.05);
+      transform: scale(1.08);
+      filter: brightness(1.05);
     }
 
     .photo-card-overlay {
@@ -632,6 +650,11 @@
       border: 1px solid var(--border-primary);
       overflow: hidden;
       margin-bottom: var(--space-6);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .athlete-card:hover {
+      box-shadow: var(--shadow-md);
     }
 
     .athlete-hero {
@@ -830,11 +853,14 @@
       background: var(--bg-secondary);
       text-decoration: none;
       color: var(--text-primary);
-      transition: background 0.15s ease;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
     }
 
     .result-item:hover {
       background: var(--bg-tertiary);
+      border-left-color: var(--text-primary);
+      transform: translateX(4px);
     }
 
     .result-event {
@@ -1414,6 +1440,370 @@
         text-align: center;
       }
     }
+
+    /* ============================================
+       VISUAL POLISH - Hero, Animations, YouTube
+       ============================================ */
+
+    /* Hero Banner */
+    .hero-banner {
+      position: relative;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+      padding: var(--space-10) var(--space-6);
+      margin: calc(-1 * var(--space-6));
+      margin-bottom: var(--space-8);
+      overflow: hidden;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    [data-theme="light"] .hero-banner {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+    }
+
+    [data-theme="light"] .hero-banner::before {
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+    }
+
+    .hero-title {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      margin-bottom: var(--space-3);
+      line-height: 1.1;
+    }
+
+    [data-theme="light"] .hero-title {
+      color: #0a0a0a;
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: var(--space-4);
+    }
+
+    [data-theme="light"] .hero-subtitle {
+      color: #525252;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: var(--space-8);
+    }
+
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    [data-theme="light"] .hero-stat-value {
+      color: #0a0a0a;
+    }
+
+    .hero-stat-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: var(--space-1);
+    }
+
+    [data-theme="light"] .hero-stat-label {
+      color: #737373;
+    }
+
+    /* Medal Icons */
+    .medal-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 12px;
+      margin-right: var(--space-2);
+    }
+
+    .medal-gold {
+      background: linear-gradient(145deg, #ffd700, #ffb347);
+      color: #7c5800;
+      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+    }
+
+    .medal-silver {
+      background: linear-gradient(145deg, #e8e8e8, #b8b8b8);
+      color: #555;
+      box-shadow: 0 2px 8px rgba(192, 192, 192, 0.4);
+    }
+
+    .medal-bronze {
+      background: linear-gradient(145deg, #cd7f32, #a0522d);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(205, 127, 50, 0.4);
+    }
+
+    /* Enhanced Ranking Items with Animations */
+    .ranking-item {
+      transform: translateX(0);
+      transition: all 0.2s ease;
+    }
+
+    .ranking-item:hover {
+      transform: translateX(4px);
+      background: var(--bg-secondary);
+    }
+
+    .ranking-item-rank.top3 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Staggered Animation */
+    @keyframes slideInFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .ranking-item.animate {
+      animation: slideInFromLeft 0.3s ease forwards;
+    }
+
+    /* YouTube Section */
+    .youtube-section {
+      margin-top: var(--space-8);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-primary);
+    }
+
+    .youtube-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+
+    .youtube-title {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+    }
+
+    .youtube-icon {
+      width: 20px;
+      height: 20px;
+      fill: #ff0000;
+    }
+
+    .youtube-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .youtube-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      overflow: hidden;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .youtube-card:hover {
+      border-color: var(--border-secondary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .youtube-thumbnail {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: var(--bg-tertiary);
+      overflow: hidden;
+    }
+
+    .youtube-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .youtube-card:hover .youtube-thumbnail img {
+      transform: scale(1.05);
+    }
+
+    .youtube-play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .youtube-card:hover .youtube-play-overlay {
+      opacity: 1;
+    }
+
+    .youtube-play-btn {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 0, 0, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .youtube-play-btn::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 20px solid white;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      margin-left: 4px;
+    }
+
+    .youtube-info {
+      padding: var(--space-4);
+    }
+
+    .youtube-video-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .youtube-channel {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .youtube-channel-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      background: var(--bg-tertiary);
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .youtube-loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-8);
+      color: var(--text-tertiary);
+    }
+
+    /* Quick Stats Bar */
+    .quick-stats {
+      display: flex;
+      gap: var(--space-4);
+      padding: var(--space-4) 0;
+      margin-bottom: var(--space-4);
+      border-bottom: 1px solid var(--border-primary);
+      overflow-x: auto;
+    }
+
+    .quick-stat-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .quick-stat-icon {
+      font-size: 14px;
+    }
+
+    /* Pulse animation for live indicator */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @media (max-width: 640px) {
+      .hero-banner {
+        padding: var(--space-6) var(--space-4);
+        margin: calc(-1 * var(--space-4));
+        margin-bottom: var(--space-6);
+      }
+
+      .hero-title {
+        font-size: 24px;
+      }
+
+      .hero-stats {
+        gap: var(--space-6);
+      }
+
+      .hero-stat-value {
+        font-size: 22px;
+      }
+
+      .youtube-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1449,8 +1839,8 @@
         </div>
       </div>
       <div class="quick-actions">
-        <button class="quick-btn" onclick="showHomePage()">Featured</button>
-        <button class="quick-btn" onclick="fetchTopRankings()">Rankings</button>
+        <button class="quick-btn" onclick="history.pushState({}, '', '?'); fetchTopRankings();">Rankings</button>
+        <button class="quick-btn" onclick="history.pushState({}, '', '?view=featured'); showHomePage();">Featured</button>
         <a class="quick-btn" href="https://triathlon.org/news" target="_blank" rel="noopener">News ↗</a>
       </div>
       <div class="toolbar-hint">
@@ -2000,8 +2390,16 @@
 
         const count = men.filter(a => a).length + women.filter(a => a).length;
 
+        // Medal icons for top 3
+        const getMedalHtml = (rank) => {
+            if (rank === 1) return '<span class="medal-icon medal-gold">1</span>';
+            if (rank === 2) return '<span class="medal-icon medal-silver">2</span>';
+            if (rank === 3) return '<span class="medal-icon medal-bronze">3</span>';
+            return `<span>${rank}</span>`;
+        };
+
         // Function to generate compact ranking item
-        const createRankingItem = (athlete, rank) => {
+        const createRankingItem = (athlete, rank, gender, animDelay) => {
             const hasValidImage = athlete.athlete_profile_image && athlete.athlete_profile_image.startsWith('http');
             const photoHtml = hasValidImage ?
                 `<img class="ranking-item-photo" src="${athlete.athlete_profile_image}" alt="" onerror="this.onerror=null; this.outerHTML='<div class=\\'ranking-item-placeholder\\'>${getInitials(athlete.athlete_full_name)}</div>'">` :
@@ -2009,11 +2407,10 @@
 
             const rankClass = rank <= 3 ? 'ranking-item-rank top3' : 'ranking-item-rank';
             const athleteIndex = rank - 1;
-            const gender = men.includes(athlete) ? 'men' : 'women';
 
             return `
-                <div class="ranking-item" onclick="showAthleteFromRankings('${gender}', ${athleteIndex}, ${rank})">
-                    <span class="${rankClass}">${rank}</span>
+                <div class="ranking-item animate" style="animation-delay: ${animDelay}ms" onclick="showAthleteFromRankings('${gender}', ${athleteIndex}, ${rank})">
+                    <span class="${rankClass}">${getMedalHtml(rank)}</span>
                     ${photoHtml}
                     <div class="ranking-item-info">
                         <span class="ranking-item-name">${athlete.athlete_full_name}</span>
@@ -2026,8 +2423,8 @@
                 </div>`;
         };
 
-        const menHtml = men.filter(a => a).map((a, i) => createRankingItem(a, i + 1)).join('');
-        const womenHtml = women.filter(a => a).map((a, i) => createRankingItem(a, i + 1)).join('');
+        const menHtml = men.filter(a => a).map((a, i) => createRankingItem(a, i + 1, 'men', i * 30)).join('');
+        const womenHtml = women.filter(a => a).map((a, i) => createRankingItem(a, i + 1, 'women', i * 30)).join('');
 
         // Show "Load more" button if there are more rankings to load
         const hasMore = rankingsLoaded < RANKINGS_MAX;
@@ -2039,8 +2436,49 @@
             </div>
         ` : '';
 
+        // Hero banner HTML
+        const heroHtml = `
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <h1 class="hero-title">World Triathlon Championship Series</h1>
+                    <p class="hero-subtitle">Official rankings for the world's elite triathletes</p>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">${count}</span>
+                            <span class="hero-stat-label">Athletes</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">2025</span>
+                            <span class="hero-stat-label">Season</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">WTCS</span>
+                            <span class="hero-stat-label">Series</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // YouTube section placeholder
+        const youtubeHtml = `
+            <div class="youtube-section">
+                <div class="youtube-header">
+                    <div class="youtube-title">
+                        <svg class="youtube-icon" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        Recent Videos
+                    </div>
+                    <a href="https://www.youtube.com/@worldtriathlontv" target="_blank" rel="noopener" class="home-section-link">More on YouTube ↗</a>
+                </div>
+                <div class="youtube-grid" id="youtube-videos">
+                    <div class="youtube-loading">Loading recent videos...</div>
+                </div>
+            </div>
+        `;
+
         resultsDiv.innerHTML = `
-            <section class="results-section">
+            ${heroHtml}
+            <section class="results-section" style="padding-top: 0;">
                 <div class="section-header">
                     <h2 class="section-title">${title}</h2>
                     <span class="section-meta">Showing ${count} of ${RANKINGS_MAX * 2} athletes</span>
@@ -2056,9 +2494,13 @@
                     </div>
                 </div>
                 ${loadMoreHtml}
+                ${youtubeHtml}
             </section>`;
 
         resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Load YouTube videos
+        loadYouTubeVideos();
     }
 
     // --- Show athlete from rankings data ---
@@ -2849,6 +3291,85 @@
         });
     }
 
+    // --- YouTube Video Loading ---
+    // Fallback curated list if dynamic fetch fails
+    const FALLBACK_VIDEOS = [
+        { id: 'gYvMJLJQJxE', title: 'T100 Singapore 2024 | Full Race Highlights', channel: 'T100 Triathlon' },
+        { id: 'QXKzDBjR_UA', title: 'T100 Las Vegas 2024 | Race Highlights', channel: 'T100 Triathlon' },
+        { id: 'WNCftFnNGBc', title: 'WTCS Abu Dhabi 2024 | Elite Men Highlights', channel: 'World Triathlon' },
+        { id: 'Nt_5FkqWTBc', title: 'WTCS Abu Dhabi 2024 | Elite Women Highlights', channel: 'World Triathlon' },
+        { id: 'YYvZCd_aF1A', title: 'Paris 2024 Olympics | Men Race Highlights', channel: 'World Triathlon' },
+        { id: '8zLvhzqJv5I', title: 'Paris 2024 Olympics | Women Race Highlights', channel: 'World Triathlon' },
+    ];
+
+    async function loadYouTubeVideos() {
+        const container = document.getElementById('youtube-videos');
+        if (!container) return;
+
+        let videos = [];
+
+        try {
+            // Try to fetch fresh videos from our API
+            const response = await fetch('/api/youtube');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.videos && data.videos.length > 0) {
+                    videos = data.videos.slice(0, 4);
+                }
+            }
+        } catch (error) {
+            console.log('Using fallback videos');
+        }
+
+        // Fall back to curated list if dynamic fetch failed
+        if (videos.length === 0) {
+            const shuffled = [...FALLBACK_VIDEOS].sort(() => 0.5 - Math.random());
+            videos = shuffled.slice(0, 4);
+        }
+
+        const videoCards = videos.map(video => {
+            const timeAgo = video.published ? getTimeAgo(new Date(video.published)) : '';
+            return `
+                <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" rel="noopener" class="youtube-card">
+                    <div class="youtube-thumbnail">
+                        <img src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" alt="${video.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/320x180?text=Video'">
+                        <div class="youtube-play-overlay">
+                            <div class="youtube-play-btn"></div>
+                        </div>
+                    </div>
+                    <div class="youtube-info">
+                        <div class="youtube-video-title">${video.title}</div>
+                        <div class="youtube-channel">
+                            <span class="youtube-channel-badge">${video.channel}</span>
+                            ${timeAgo ? `<span>${timeAgo}</span>` : ''}
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join('');
+
+        container.innerHTML = videoCards;
+    }
+
+    // Format relative time
+    function getTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        const intervals = [
+            { label: 'year', seconds: 31536000 },
+            { label: 'month', seconds: 2592000 },
+            { label: 'week', seconds: 604800 },
+            { label: 'day', seconds: 86400 },
+            { label: 'hour', seconds: 3600 },
+        ];
+        for (const interval of intervals) {
+            const count = Math.floor(seconds / interval.seconds);
+            if (count >= 1) {
+                return `${count} ${interval.label}${count > 1 ? 's' : ''} ago`;
+            }
+        }
+        return 'Just now';
+    }
+
     // --- URL Routing ---
     function handleRouting() {
         const params = new URLSearchParams(window.location.search);
@@ -2864,12 +3385,13 @@
             showFavorites();
             return;
         }
-        if (view === 'rankings') {
-            fetchTopRankings();
+        if (view === 'featured') {
+            showHomePage();
             return;
         }
 
-        showHomePage();
+        // Default to rankings view
+        fetchTopRankings();
     }
 
     async function loadAthleteFromUrl(athleteId) {
