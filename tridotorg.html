@@ -127,11 +127,10 @@
       left: 0;
       right: 0;
       z-index: 100;
-      background: var(--bg-primary);
+      background: var(--bg-secondary);
       border-bottom: 1px solid var(--border-primary);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: var(--shadow-sm);
     }
 
     .nav-inner {
@@ -435,14 +434,14 @@
 
     /* Video List */
     .video-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-2);
     }
 
     .video-item {
       display: block;
-      padding: var(--space-4);
+      padding: var(--space-3);
       background: var(--bg-secondary);
       border: 1px solid var(--border-primary);
       text-decoration: none;
@@ -455,22 +454,19 @@
     }
 
     .video-item-title {
-      font-size: var(--text-base);
+      font-size: var(--text-sm);
       font-weight: 600;
       color: var(--text-primary);
-      line-height: 1.4;
-      margin-bottom: var(--space-2);
-    }
-
-    .video-item-description {
-      font-size: var(--text-sm);
-      color: var(--text-secondary);
-      line-height: 1.5;
+      line-height: 1.3;
+      margin-bottom: var(--space-1);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      margin-bottom: var(--space-2);
+    }
+
+    .video-item-description {
+      display: none;
     }
 
     .video-item-meta {
@@ -1504,6 +1500,7 @@
         </div>
       </div>
       <div class="quick-actions">
+        <button class="quick-btn" onclick="fetchTopRankings()">Rankings</button>
         <button class="quick-btn" onclick="showHomePage()">Featured Content</button>
         <a class="quick-btn" href="https://triathlon.org/news" target="_blank" rel="noopener">News ↗</a>
       </div>
@@ -2113,8 +2110,6 @@
                 </div>
                 ${loadMoreHtml}
             </section>`;
-
-        resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     // --- Show athlete from rankings data ---
