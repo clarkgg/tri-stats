@@ -71,14 +71,14 @@
       --radius-full: 9999px;
 
       /* Typography Scale */
-      --text-xs: 11px;
-      --text-sm: 13px;
-      --text-base: 15px;
-      --text-lg: 17px;
-      --text-xl: 20px;
-      --text-2xl: 24px;
-      --text-3xl: 32px;
-      --text-4xl: 40px;
+      --text-xs: 14px;
+      --text-sm: 16px;
+      --text-base: 18px;
+      --text-lg: 22px;
+      --text-xl: 28px;
+      --text-2xl: 36px;
+      --text-3xl: 48px;
+      --text-4xl: 64px;
 
       /* Transitions */
       --transition-fast: 0.1s ease;
@@ -165,10 +165,10 @@
     }
 
     .nav-brand {
-      font-size: var(--text-lg);
+      font-size: var(--text-xl);
       font-weight: 600;
       color: var(--text-primary);
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
       text-decoration: none;
       cursor: pointer;
       transition: opacity var(--transition-fast);
@@ -227,9 +227,132 @@
       display: block;
     }
 
-    /* Search Toolbar */
-    .search-toolbar {
+    /* Nav Search - Expandable */
+    .nav-search {
+      position: relative;
       display: flex;
+      align-items: center;
+    }
+
+    .nav-search-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .nav-search-btn:hover {
+      background: var(--accent-subtle);
+    }
+
+    .nav-search-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-secondary);
+      fill: none;
+      stroke-width: 2;
+      transition: stroke var(--transition-fast);
+    }
+
+    .nav-search-btn:hover svg {
+      stroke: var(--text-primary);
+    }
+
+    .nav-search-expanded {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: width var(--transition-base), opacity var(--transition-base);
+      z-index: 200;
+    }
+
+    .nav-search.is-open .nav-search-expanded {
+      width: 320px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav-search.is-open .nav-search-btn {
+      display: none;
+    }
+
+    .nav-search-input-wrapper {
+      display: flex;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-secondary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    .nav-search-input {
+      flex: 1;
+      padding: var(--space-3) var(--space-4);
+      font-family: inherit;
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      outline: none;
+      min-width: 0;
+    }
+
+    .nav-search-input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .nav-search-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin-right: 4px;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .nav-search-close:hover {
+      background: var(--accent-subtle);
+    }
+
+    .nav-search-close svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--text-tertiary);
+      stroke-width: 2;
+    }
+
+    .nav-search-autocomplete {
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      width: 320px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-elevated);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    /* Search Toolbar - Hidden, replaced by nav search */
+    .search-toolbar {
+      display: none;
       align-items: center;
       gap: var(--space-4);
       padding: var(--space-6) 0;
@@ -505,43 +628,77 @@
       background: var(--bg-tertiary);
     }
 
-    /* Video List */
-    .video-list {
+    /* Channel Cards */
+    .channel-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: var(--space-3);
     }
 
-    .video-item {
-      display: block;
+    @media (max-width: 600px) {
+      .channel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .channel-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
       padding: var(--space-4);
       background: var(--bg-secondary);
-      border-radius: var(--radius-xl);
+      border-radius: var(--radius-lg);
       text-decoration: none;
       transition: background var(--transition-fast);
     }
 
-    .video-item:hover {
+    .channel-card:hover {
       background: var(--bg-tertiary);
     }
 
-    .video-item-title {
-      font-size: var(--text-sm);
-      font-weight: 500;
-      color: var(--text-primary);
-      line-height: 1.4;
-      margin-bottom: var(--space-2);
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
+    .channel-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
       overflow: hidden;
+      flex-shrink: 0;
     }
 
-    .video-item-description {
-      display: none;
+    .channel-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .video-item-meta {
+    .channel-logo-text {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .channel-logo-text.wt { background: #0033a0; }
+    .channel-logo-text.pto { background: #000; }
+    .channel-logo-text.im { background: #e31837; }
+    .channel-logo-text.slt { background: #00d4ff; color: #000; }
+
+    .channel-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .channel-name {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .channel-desc {
       font-size: var(--text-xs);
       color: var(--text-tertiary);
     }
@@ -2132,6 +2289,26 @@
     <div class="nav-inner">
       <a href="#" class="nav-brand" onclick="fetchTopRankings(); return false;">Tri Stats</a>
       <div class="nav-actions">
+        <div class="nav-search" id="nav-search">
+          <button class="nav-search-btn" onclick="openNavSearch()" aria-label="Search">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <div class="nav-search-expanded">
+            <div class="nav-search-input-wrapper">
+              <input
+                type="text"
+                id="navSearchInput"
+                class="nav-search-input"
+                placeholder="Search athletes or events..."
+                autocomplete="off"
+              />
+              <button class="nav-search-close" onclick="closeNavSearch()" aria-label="Close search">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div id="nav-autocomplete-results" class="nav-search-autocomplete" style="display: none;"></div>
+          </div>
+        </div>
         <button class="quick-btn" onclick="showFavorites()" aria-label="View favorites">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </button>
@@ -2305,11 +2482,32 @@
       };
     }
 
+    // --- NAV SEARCH FUNCTIONS ---
+    function openNavSearch() {
+      const navSearch = document.getElementById('nav-search');
+      navSearch.classList.add('is-open');
+      setTimeout(() => {
+        document.getElementById('navSearchInput').focus();
+      }, 150);
+    }
+
+    function closeNavSearch() {
+      const navSearch = document.getElementById('nav-search');
+      navSearch.classList.remove('is-open');
+      document.getElementById('navSearchInput').value = '';
+      document.getElementById('nav-autocomplete-results').style.display = 'none';
+      navSelectedIndex = -1;
+    }
+
     // --- SETUP EVENT LISTENERS ---
     const searchInput = document.getElementById('athleteName');
+    const navSearchInput = document.getElementById('navSearchInput');
     let selectedIndex = -1;
-    
-    searchInput.addEventListener('keydown', function(event) {
+    let navSelectedIndex = -1;
+
+    // Old search input (hidden) - keep for backward compatibility
+    if (searchInput) {
+      searchInput.addEventListener('keydown', function(event) {
         const autocompleteResults = document.getElementById('autocomplete-results');
         const items = autocompleteResults.querySelectorAll('.autocomplete-item');
         
@@ -2346,14 +2544,130 @@
         });
     }
 
-    searchInput.addEventListener('input', debounce(handleAutocomplete, 300));
+      searchInput.addEventListener('input', debounce(handleAutocomplete, 300));
+    }
+
+    // Nav search keyboard navigation
+    navSearchInput.addEventListener('keydown', function(event) {
+      const autocompleteResults = document.getElementById('nav-autocomplete-results');
+      const items = autocompleteResults.querySelectorAll('.autocomplete-item');
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        navSelectedIndex = Math.min(navSelectedIndex + 1, items.length - 1);
+        updateNavSelection(items);
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        navSelectedIndex = Math.max(navSelectedIndex - 1, -1);
+        updateNavSelection(items);
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        if (navSelectedIndex >= 0 && items[navSelectedIndex]) {
+          items[navSelectedIndex].click();
+        }
+      } else if (event.key === 'Escape') {
+        closeNavSearch();
+      }
+    });
+
+    function updateNavSelection(items) {
+      items.forEach((item, index) => {
+        const isActive = index === navSelectedIndex;
+        item.classList.toggle('is-active', isActive);
+        if (isActive) {
+          item.scrollIntoView({ block: 'nearest' });
+        }
+      });
+    }
+
+    navSearchInput.addEventListener('input', debounce(handleNavAutocomplete, 300));
 
     document.addEventListener('click', function(event) {
       const searchBox = document.querySelector('.search-box');
-      if (!searchBox.contains(event.target)) {
-        document.getElementById('autocomplete-results').style.display = 'none';
+      const navSearch = document.getElementById('nav-search');
+      const autocompleteResults = document.getElementById('autocomplete-results');
+      if (searchBox && autocompleteResults && !searchBox.contains(event.target)) {
+        autocompleteResults.style.display = 'none';
+      }
+      if (navSearch && !navSearch.contains(event.target)) {
+        closeNavSearch();
       }
     });
+
+    // --- Nav autocomplete handler ---
+    async function handleNavAutocomplete() {
+      const query = navSearchInput.value;
+      const autocompleteResults = document.getElementById('nav-autocomplete-results');
+
+      if (query.length < 2) {
+        autocompleteResults.style.display = 'none';
+        return;
+      }
+
+      autocompleteResults.innerHTML = '<div class="autocomplete-loading">Searching...</div>';
+      autocompleteResults.style.display = 'block';
+
+      const twoYearsAgo = new Date();
+      twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+      const startDateStr = twoYearsAgo.toISOString().split('T')[0];
+
+      const [athleteResponse, eventResponse] = await Promise.all([
+        fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=4`),
+        fetch(`${API_BASE}?endpoint=/search/events&query=${encodeURIComponent(query)}&start_date=${startDateStr}&per_page=10`)
+      ]);
+
+      const athleteData = athleteResponse.ok ? await athleteResponse.json() : { data: [] };
+      const eventData = eventResponse.ok ? await eventResponse.json() : { data: [] };
+
+      const athletes = athleteData.data || [];
+      const events = eventData.data || [];
+
+      if (athletes.length === 0 && events.length === 0) {
+        autocompleteResults.innerHTML = '<div class="autocomplete-empty">No results found</div>';
+        return;
+      }
+
+      autocompleteResults.innerHTML = '';
+      navSelectedIndex = -1;
+
+      athletes.forEach(athlete => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.innerHTML = `<span class="autocomplete-type athlete">Athlete</span>${athlete.athlete_title}`;
+        item.onclick = async () => {
+          closeNavSearch();
+          currentRankingsData = null;
+          const resultsDiv = document.getElementById('results');
+          resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading athlete...</div>';
+          const details = await getAthleteDetails(athlete.athlete_id);
+          if (details) {
+            showAthleteDetail(details);
+          } else {
+            resultsDiv.innerHTML = '<div class="error-message">Unable to load athlete details.</div>';
+          }
+        };
+        autocompleteResults.appendChild(item);
+      });
+
+      const recentEvents = [...events]
+        .sort((a, b) => new Date(b.event_date || 0) - new Date(a.event_date || 0))
+        .slice(0, 3);
+
+      recentEvents.forEach(event => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        const eventDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        item.innerHTML = `<span class="autocomplete-type event">Event</span><span class="autocomplete-event-title">${event.event_title}</span>${eventDate ? `<span class="autocomplete-event-date">${eventDate}</span>` : ''}`;
+        item.onclick = async () => {
+          closeNavSearch();
+          currentRankingsData = null;
+          showEventDetail(event.event_id);
+        };
+        autocompleteResults.appendChild(item);
+      });
+
+      autocompleteResults.style.display = 'block';
+    }
 
     // --- Autocomplete handler (searches athletes and events) ---
     async function handleAutocomplete() {
@@ -3185,11 +3499,10 @@
         resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading featured content...</div>';
 
         try {
-            // Fetch photos and videos in parallel
-            const [menResponse, womenResponse, videosResponse] = await Promise.all([
+            // Fetch athlete data for photos
+            const [menResponse, womenResponse] = await Promise.all([
               fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
-              fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`),
-              fetch('/api/youtube?action=channelVideos&maxResults=2').catch(() => null)
+              fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
             ]);
 
             if (!menResponse.ok || !womenResponse.ok) {
@@ -3198,28 +3511,6 @@
 
             const menData = await menResponse.json();
             const womenData = await womenResponse.json();
-
-            // Process videos
-            let videoGridHtml = '';
-            if (videosResponse && videosResponse.ok) {
-                const videosData = await videosResponse.json();
-                if (videosData.items && videosData.items.length > 0) {
-                    videoGridHtml = videosData.items.map(video => {
-                        const videoId = video.id?.videoId;
-                        const title = video.snippet?.title || 'Untitled';
-                        const description = video.snippet?.description || '';
-                        const channelName = video.channelName || video.snippet?.channelTitle || '';
-
-                        return `
-                            <a class="video-item" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">
-                                <div class="video-item-title">${title}</div>
-                                ${description ? `<div class="video-item-description">${description}</div>` : ''}
-                                <div class="video-item-meta">${channelName} · YouTube</div>
-                            </a>
-                        `;
-                    }).join('');
-                }
-            }
 
             const menRankings = menData.data?.rankings || [];
             const womenRankings = womenData.data?.rankings || [];
@@ -3268,26 +3559,46 @@
                 `).join('')
                 : '<p style="color: var(--text-secondary); padding: var(--space-4);">No recent race images available</p>';
 
-            // Build the watch section - show videos if available, otherwise show channel links
-            const watchSectionContent = videoGridHtml
-                ? `<div class="video-list">${videoGridHtml}</div>
-                   <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4);">
-                       <a href="https://www.youtube.com/@worldtriathlon" target="_blank" rel="noopener" class="quick-btn">World Triathlon ↗</a>
-                       <a href="https://www.youtube.com/@ironmantriathlon" target="_blank" rel="noopener" class="quick-btn">Ironman ↗</a>
-                       <a href="https://www.youtube.com/@T100Triathlon" target="_blank" rel="noopener" class="quick-btn">T100 / PTO ↗</a>
-                   </div>`
-                : `<div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
-                       <a href="https://www.youtube.com/@worldtriathlon" target="_blank" rel="noopener" class="quick-btn">World Triathlon ↗</a>
-                       <a href="https://www.youtube.com/@ironmantriathlon" target="_blank" rel="noopener" class="quick-btn">Ironman ↗</a>
-                       <a href="https://www.youtube.com/@T100Triathlon" target="_blank" rel="noopener" class="quick-btn">T100 / PTO ↗</a>
-                   </div>`;
+            // Channel cards for Watch section
+            const channelCardsHtml = `
+                <div class="channel-grid">
+                    <a class="channel-card" href="https://www.youtube.com/@worldtriathlon" target="_blank" rel="noopener">
+                        <div class="channel-logo"><div class="channel-logo-text wt">WT</div></div>
+                        <div class="channel-info">
+                            <div class="channel-name">World Triathlon</div>
+                            <div class="channel-desc">Official Olympic triathlon coverage</div>
+                        </div>
+                    </a>
+                    <a class="channel-card" href="https://www.youtube.com/@T100Triathlon" target="_blank" rel="noopener">
+                        <div class="channel-logo"><div class="channel-logo-text pto">T100</div></div>
+                        <div class="channel-info">
+                            <div class="channel-name">T100 / PTO</div>
+                            <div class="channel-desc">Professional Triathletes Organisation</div>
+                        </div>
+                    </a>
+                    <a class="channel-card" href="https://www.youtube.com/@ironmantriathlon" target="_blank" rel="noopener">
+                        <div class="channel-logo"><div class="channel-logo-text im">M</div></div>
+                        <div class="channel-info">
+                            <div class="channel-name">Ironman</div>
+                            <div class="channel-desc">Long-distance triathlon racing</div>
+                        </div>
+                    </a>
+                    <a class="channel-card" href="https://www.youtube.com/@supertri" target="_blank" rel="noopener">
+                        <div class="channel-logo"><div class="channel-logo-text slt">SLT</div></div>
+                        <div class="channel-info">
+                            <div class="channel-name">Super League Triathlon</div>
+                            <div class="channel-desc">Fast-paced short course racing</div>
+                        </div>
+                    </a>
+                </div>
+            `;
 
             resultsDiv.innerHTML = `
                 <section class="home-section">
                     <div class="home-section-header">
                         <span class="home-section-title">Watch</span>
                     </div>
-                    ${watchSectionContent}
+                    ${channelCardsHtml}
                 </section>
                 <section class="home-section">
                     <div class="home-section-header">
