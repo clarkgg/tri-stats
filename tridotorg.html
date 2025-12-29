@@ -71,14 +71,14 @@
       --radius-full: 9999px;
 
       /* Typography Scale */
-      --text-xs: 14px;
-      --text-sm: 16px;
-      --text-base: 18px;
-      --text-lg: 22px;
-      --text-xl: 28px;
-      --text-2xl: 36px;
-      --text-3xl: 48px;
-      --text-4xl: 64px;
+      --text-xs: 13px;
+      --text-sm: 15px;
+      --text-base: 17px;
+      --text-lg: 20px;
+      --text-xl: 26px;
+      --text-2xl: 34px;
+      --text-3xl: 44px;
+      --text-4xl: 58px;
 
       /* Transitions */
       --transition-fast: 0.1s ease;
@@ -350,22 +350,22 @@
       z-index: 1000;
     }
 
-    /* Search Toolbar - Hidden, replaced by nav search */
+    /* Navigation Toolbar */
     .search-toolbar {
-      display: none;
+      display: flex;
       align-items: center;
+      justify-content: flex-start;
       gap: var(--space-4);
-      padding: var(--space-6) 0;
-      margin-bottom: var(--space-8);
+      padding: var(--space-4) 0;
+      margin-bottom: var(--space-6);
+    }
+
+    .search-toolbar .search-wrapper {
+      display: none;
     }
 
     .toolbar-hint {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      font-size: var(--text-xs);
-      color: var(--text-tertiary);
-      white-space: nowrap;
+      display: none;
     }
 
     .toolbar-hint kbd {
@@ -1120,6 +1120,10 @@
 
     .result-item:hover {
       background: var(--accent-subtle);
+    }
+
+    .result-item.clickable {
+      cursor: pointer;
     }
 
     .result-event {
@@ -1945,6 +1949,96 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Keyboard Shortcuts Modal */
+    .shortcuts-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      animation: fadeIn 0.15s ease;
+    }
+
+    .shortcuts-content {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-elevated);
+      width: 100%;
+      max-width: 400px;
+      overflow: hidden;
+      animation: modalSlideIn 0.2s ease;
+    }
+
+    .shortcuts-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .shortcuts-header h3 {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .shortcuts-close {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .shortcuts-close:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .shortcuts-grid {
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .shortcut-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .shortcut-item kbd {
+      font-family: 'SF Mono', ui-monospace, monospace;
+      font-size: 12px;
+      padding: 4px 8px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      min-width: 28px;
+      text-align: center;
+    }
+
+    .shortcut-item span {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+
     /* Trend Summary */
     .trend-summary {
       display: flex;
@@ -2214,8 +2308,11 @@
     }
 
     .comparison-card {
+      position: relative;
+      overflow: hidden;
       background: var(--bg-secondary);
       border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
       padding: var(--space-4);
       text-align: center;
     }
@@ -2229,9 +2326,17 @@
     }
 
     .comparison-card-name {
+      display: block;
       font-size: 18px;
       font-weight: 600;
       margin-bottom: var(--space-1);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: color var(--transition-fast);
+    }
+
+    .comparison-card-name:hover {
+      color: var(--accent-green);
     }
 
     .comparison-card-country {
@@ -2258,6 +2363,123 @@
       font-weight: 500;
     }
 
+    .comparison-card-color {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .comparison-flag {
+      width: 16px;
+      height: 12px;
+      object-fit: cover;
+      border-radius: 2px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .comparison-rank {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--accent-green);
+      margin-bottom: var(--space-3);
+    }
+
+    .comparison-profile-link {
+      display: inline-block;
+      margin-top: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    .comparison-profile-link:hover {
+      color: var(--text-primary);
+    }
+
+    .comparison-results-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+    }
+
+    .comparison-results-column {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .comparison-results-header {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 3px solid;
+      background: var(--bg-tertiary);
+    }
+
+    .comparison-result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .comparison-result-row:last-child {
+      border-bottom: none;
+    }
+
+    .comparison-result-row.clickable {
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .comparison-result-row.clickable:hover {
+      background: var(--accent-subtle);
+    }
+
+    .comparison-result-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .comparison-result-event {
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .comparison-result-date {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+
+    .comparison-result-position {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      margin-left: var(--space-3);
+    }
+
+    .comparison-result-position.gold { color: #ca8a04; }
+    .comparison-result-position.silver { color: #71717a; }
+    .comparison-result-position.bronze { color: #c2410c; }
+
+    .comparison-no-results {
+      padding: var(--space-4);
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: var(--text-sm);
+    }
+
     /* Mobile: hide comparison features */
     @media (max-width: 768px) {
       .compare-btn-wrapper {
@@ -2270,6 +2492,10 @@
 
       .comparison-vs {
         padding: var(--space-4);
+      }
+
+      .comparison-results-grid {
+        grid-template-columns: 1fr;
       }
 
       .trend-stats {
@@ -2311,6 +2537,9 @@
         </div>
         <button class="quick-btn" onclick="showFavorites()" aria-label="View favorites">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </button>
+        <button class="quick-btn shortcuts-btn" onclick="toggleShortcutsHelp()" aria-label="Keyboard shortcuts">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
         </button>
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
           <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -2457,20 +2686,142 @@
 
     themeToggle.addEventListener('click', switchTheme);
 
-    // --- KEYBOARD SHORTCUT ---
-    // Detect OS and show appropriate hint
+    // --- KEYBOARD SHORTCUTS ---
+    // Detect OS for shortcut display
     const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-    document.getElementById('keyboard-hint').textContent = isMac ? '⌘K' : 'Ctrl+K';
+    const modKey = isMac ? '⌘' : 'Ctrl';
+    const keyboardHint = document.getElementById('keyboard-hint');
+    if (keyboardHint) {
+      keyboardHint.textContent = isMac ? '⌘K' : 'Ctrl+K';
+    }
 
-    // Global keyboard shortcut to focus search
+    // Check if user is typing in an input field
+    function isTyping() {
+      const active = document.activeElement;
+      return active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable);
+    }
+
+    // Global keyboard shortcuts
     document.addEventListener('keydown', function(e) {
+      // ⌘K / Ctrl+K - Search
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        const searchInput = document.getElementById('athleteName');
-        searchInput.focus();
-        searchInput.select();
+        openNavSearch();
+        return;
+      }
+
+      // Skip single-key shortcuts if typing
+      if (isTyping()) return;
+
+      // / or ? - Handle slash key
+      if (e.key === '/' || e.key === '?') {
+        e.preventDefault();
+        if (e.shiftKey || e.key === '?') {
+          // ? (Shift+/) - Show keyboard shortcuts help
+          toggleShortcutsHelp();
+        } else {
+          // / - Focus search
+          openNavSearch();
+        }
+        return;
+      }
+
+      // D - Toggle dark/light mode
+      if (e.key === 'd' || e.key === 'D') {
+        e.preventDefault();
+        switchTheme();
+        return;
+      }
+
+      // F - Favorites
+      if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        showFavorites();
+        return;
+      }
+
+      // H - Home/Rankings
+      if (e.key === 'h' || e.key === 'H') {
+        e.preventDefault();
+        fetchTopRankings();
+        return;
+      }
+
+      // C - Featured Content
+      if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        showHomePage();
+        return;
+      }
+
+      // Escape - Close any open modal/search
+      if (e.key === 'Escape') {
+        closeShortcutsHelp();
       }
     });
+
+    // Shortcuts help modal
+    function toggleShortcutsHelp() {
+      const existing = document.getElementById('shortcuts-modal');
+      if (existing) {
+        existing.remove();
+        return;
+      }
+      showShortcutsHelp();
+    }
+
+    function showShortcutsHelp() {
+      const modal = document.createElement('div');
+      modal.id = 'shortcuts-modal';
+      modal.className = 'shortcuts-modal';
+      modal.innerHTML = `
+        <div class="shortcuts-content">
+          <div class="shortcuts-header">
+            <h3>Keyboard Shortcuts</h3>
+            <button class="shortcuts-close" onclick="closeShortcutsHelp()">×</button>
+          </div>
+          <div class="shortcuts-grid">
+            <div class="shortcut-item">
+              <kbd>${modKey}K</kbd> or <kbd>/</kbd>
+              <span>Search</span>
+            </div>
+            <div class="shortcut-item">
+              <kbd>H</kbd>
+              <span>Home / Rankings</span>
+            </div>
+            <div class="shortcut-item">
+              <kbd>F</kbd>
+              <span>Favorites</span>
+            </div>
+            <div class="shortcut-item">
+              <kbd>C</kbd>
+              <span>Featured Content</span>
+            </div>
+            <div class="shortcut-item">
+              <kbd>D</kbd>
+              <span>Toggle Dark Mode</span>
+            </div>
+            <div class="shortcut-item">
+              <kbd>?</kbd>
+              <span>Show Shortcuts</span>
+            </div>
+            <div class="shortcut-item">
+              <kbd>Esc</kbd>
+              <span>Close / Cancel</span>
+            </div>
+          </div>
+        </div>
+      `;
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeShortcutsHelp();
+      });
+      document.body.appendChild(modal);
+    }
+
+    function closeShortcutsHelp() {
+      const modal = document.getElementById('shortcuts-modal');
+      if (modal) modal.remove();
+    }
 
 
     // --- UTILITY: Debounce function to limit API calls while typing ---
@@ -3093,22 +3444,26 @@
             return 'result-position';
         };
 
+        // Store results for click handling
+        window.currentAthleteResults = athlete.latest_results || [];
+
         const resultsHtml = (athlete.latest_results && athlete.latest_results.length > 0) ?
             `<div class="athlete-section">
                 <div class="athlete-section-title">Recent Results</div>
-                <div class="results-grid">${athlete.latest_results.slice(0, 6).map(result => {
+                <div class="results-grid">${athlete.latest_results.slice(0, 6).map((result, idx) => {
                     const year = result.event_date ? new Date(result.event_date).getFullYear() : '';
                     const eventTitle = result.event_title || 'Race';
                     const position = parseInt(result.position) || 0;
                     const positionClass = getPositionClass(position);
-                    const resultUrl = result.result_listing || '#';
-                    return `<a href="${resultUrl}" target="_blank" class="result-item">
+                    const isTeamRelay = result.prog_name && (result.prog_name.toLowerCase().includes('relay') || result.prog_name.toLowerCase().includes('team') || result.prog_name.toLowerCase().includes('mixed'));
+                    const clickHandler = isTeamRelay ? '' : `onclick="showAthleteResultDetails(${idx})"`;
+                    return `<div class="result-item ${isTeamRelay ? '' : 'clickable'}" ${clickHandler}>
                         <div>
                             <div class="result-event">${eventTitle}</div>
                             <div class="result-year">${year}</div>
                         </div>
                         <div class="${positionClass}">${position > 0 ? '#' + position : '—'}</div>
-                    </a>`;
+                    </div>`;
                 }).join('')}</div>
             </div>` : '';
 
@@ -4360,6 +4715,13 @@
     window.cancelComparison = function() {
         comparisonState = { athlete1: null, athlete2: null, mode: 'idle' };
         document.getElementById('comparison-modal-overlay')?.remove();
+        // Clean up chart instance
+        if (comparisonChartInstance) {
+            comparisonChartInstance.destroy();
+            comparisonChartInstance = null;
+        }
+        comparisonResultsCache = null;
+        comparisonFullHistory = false;
     };
 
     window.showComparison = function() {
@@ -4370,26 +4732,31 @@
         document.getElementById('athleteName').placeholder = 'Search athletes or events...';
 
         const resultsDiv = document.getElementById('results');
+        const currentYear = new Date().getFullYear();
 
-        const createComparisonCard = (athlete) => {
+        const createComparisonCard = (athlete, color) => {
             const hasImage = athlete.athlete_profile_image?.startsWith('http');
-            const currentYear = new Date().getFullYear();
             const age = athlete.athlete_yob ? currentYear - parseInt(athlete.athlete_yob) : null;
 
             return `
                 <div class="comparison-card">
+                    <div class="comparison-card-color" style="background: ${color};"></div>
                     ${hasImage ?
                         `<img class="comparison-card-photo" src="${athlete.athlete_profile_image}" alt="" onerror="this.style.display='none'">` :
                         `<div class="comparison-card-photo" style="display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text-tertiary)">${getInitials(athlete.athlete_full_name)}</div>`
                     }
-                    <div class="comparison-card-name">${athlete.athlete_full_name}</div>
-                    <div class="comparison-card-country">${athlete.athlete_country_name || ''}</div>
+                    <span class="comparison-card-name" onclick="viewAthleteFromComparison(${athlete.athlete_id})" style="cursor: pointer;">${athlete.athlete_full_name}</span>
+                    <div class="comparison-card-country">
+                        <img class="comparison-flag" src="${athlete.athlete_flag || ''}" alt="" onerror="this.style.display='none'">
+                        ${athlete.athlete_country_name || ''}
+                    </div>
+                    ${athlete.world_rank ? `<div class="comparison-rank">World #${athlete.world_rank}</div>` : ''}
                     <div class="comparison-stats">
                         ${age ? `<div><div class="comparison-stat-label">Age</div><div class="comparison-stat-value">${age}</div></div>` : ''}
-                        ${athlete.athlete_yob ? `<div><div class="comparison-stat-label">Born</div><div class="comparison-stat-value">${athlete.athlete_yob}</div></div>` : ''}
                         ${athlete.race_wins ? `<div><div class="comparison-stat-label">Wins</div><div class="comparison-stat-value">${athlete.race_wins}</div></div>` : ''}
                         ${athlete.race_podiums ? `<div><div class="comparison-stat-label">Podiums</div><div class="comparison-stat-value">${athlete.race_podiums}</div></div>` : ''}
                     </div>
+                    <span class="comparison-profile-link" onclick="viewAthleteFromComparison(${athlete.athlete_id})" style="cursor: pointer;">View Full Profile →</span>
                 </div>
             `;
         };
@@ -4401,26 +4768,200 @@
                     <h2 class="section-title">Head to Head</h2>
                 </div>
                 <div class="comparison-grid">
-                    ${createComparisonCard(athlete1)}
+                    ${createComparisonCard(athlete1, '#3b82f6')}
                     <div class="comparison-vs">VS</div>
-                    ${createComparisonCard(athlete2)}
+                    ${createComparisonCard(athlete2, '#ef4444')}
                 </div>
                 <div class="athlete-section">
-                    <div class="athlete-section-title">Recent Race Finishes</div>
+                    <div class="athlete-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Race Finishes</span>
+                        <span style="font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-tertiary);">Click points for details</span>
+                    </div>
                     <div class="chart-container" style="height: 300px;">
                         <canvas id="comparison-chart"></canvas>
+                    </div>
+                    <div class="chart-legend" style="justify-content: center;">
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #3b82f6;"></span> ${athlete1.athlete_full_name.split(' ').pop()}</div>
+                        <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #ef4444;"></span> ${athlete2.athlete_full_name.split(' ').pop()}</div>
+                    </div>
+                    <div style="text-align: center; margin-top: var(--space-3);">
+                        <button id="comparison-history-btn" class="athlete-link athlete-link-secondary" onclick="toggleComparisonHistory()" style="font-size: 12px; height: 32px;" data-view="recent">
+                            Load Full Race History
+                        </button>
+                    </div>
+                </div>
+                <div class="athlete-section">
+                    <div class="athlete-section-title">Recent Results</div>
+                    <div id="comparison-results-container" class="comparison-results-grid">
                     </div>
                 </div>
             </section>
         `;
 
+        // Cache results for toggle functionality
+        comparisonResultsCache = {
+            athlete1: { id: athlete1.athlete_id, data: athlete1, results: athlete1.latest_results || [] },
+            athlete2: { id: athlete2.athlete_id, data: athlete2, results: athlete2.latest_results || [] }
+        };
+        comparisonFullHistory = false;
+
+        // Render initial results table
+        updateComparisonResultsTable();
+
         // Render comparison chart
         setTimeout(() => renderComparisonChart(athlete1, athlete2), 0);
+    };
+
+    // Navigate to athlete detail from comparison
+    window.viewAthleteFromComparison = async function(athleteId) {
+        cancelComparison();
+        currentRankingsData = null;
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading athlete...</div>';
+        const details = await getAthleteDetails(athleteId);
+        if (details) {
+            showAthleteDetail(details);
+        } else {
+            resultsDiv.innerHTML = '<div class="error-message">Unable to load athlete details.</div>';
+        }
+    };
+
+    // Cache for comparison results
+    let comparisonResultsCache = null;
+    let comparisonFullHistory = false;
+    let comparisonChartInstance = null;
+
+    // Helper to get position class
+    function getComparisonPositionClass(pos) {
+        if (pos === 1) return 'gold';
+        if (pos === 2) return 'silver';
+        if (pos === 3) return 'bronze';
+        return '';
+    }
+
+    // Update the results table
+    function updateComparisonResultsTable() {
+        const container = document.getElementById('comparison-results-container');
+        if (!container || !comparisonResultsCache) return;
+
+        const { athlete1, athlete2 } = comparisonState;
+        const results1 = comparisonFullHistory ? (comparisonResultsCache.athlete1.fullResults || []) : (comparisonResultsCache.athlete1.results || []);
+        const results2 = comparisonFullHistory ? (comparisonResultsCache.athlete2.fullResults || []) : (comparisonResultsCache.athlete2.results || []);
+
+        const createResultsColumn = (athlete, results, color) => {
+            const displayResults = results.slice(0, comparisonFullHistory ? 15 : 5);
+            if (displayResults.length === 0) return '<div class="comparison-no-results">No results</div>';
+
+            return displayResults.map((r, idx) => {
+                const pos = parseInt(r.position) || 0;
+                const posClass = getComparisonPositionClass(pos);
+                const eventDate = r.event_date ? new Date(r.event_date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' }) : '';
+                const isTeamRelay = r.prog_name && (r.prog_name.toLowerCase().includes('relay') || r.prog_name.toLowerCase().includes('team') || r.prog_name.toLowerCase().includes('mixed'));
+                const clickHandler = isTeamRelay ? '' : `onclick="showComparisonRaceDetails(${athlete.athlete_id}, ${idx}, ${comparisonFullHistory})"`;
+                return `
+                    <div class="comparison-result-row ${isTeamRelay ? '' : 'clickable'}" ${clickHandler} ${isTeamRelay ? 'title="Team/Relay event"' : ''}>
+                        <div class="comparison-result-info">
+                            <div class="comparison-result-event">${r.event_title || 'Race'}</div>
+                            <div class="comparison-result-date">${eventDate}</div>
+                        </div>
+                        <div class="comparison-result-position ${posClass}">${pos > 0 ? '#' + pos : '—'}</div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        container.innerHTML = `
+            <div class="comparison-results-column">
+                <div class="comparison-results-header" style="border-color: #3b82f6;">${athlete1.athlete_full_name.split(' ').pop()}</div>
+                ${createResultsColumn(athlete1, results1, '#3b82f6')}
+            </div>
+            <div class="comparison-results-column">
+                <div class="comparison-results-header" style="border-color: #ef4444;">${athlete2.athlete_full_name.split(' ').pop()}</div>
+                ${createResultsColumn(athlete2, results2, '#ef4444')}
+            </div>
+        `;
+    }
+
+    // Show race details from comparison results table
+    window.showComparisonRaceDetails = async function(athleteId, resultIndex, isFullHistory) {
+        const cacheEntry = comparisonResultsCache.athlete1.id === athleteId ? comparisonResultsCache.athlete1 : comparisonResultsCache.athlete2;
+        const results = isFullHistory ? (cacheEntry.fullResults || []) : (cacheEntry.results || []);
+        const result = results[resultIndex];
+        if (!result) return;
+
+        // Reuse the existing showRaceTooltip function which shows the race details modal
+        if (typeof showRaceTooltip === 'function') {
+            showRaceTooltip(null, result, null);
+        }
+    };
+
+    // Show race details from athlete details page results table
+    window.showAthleteResultDetails = function(resultIndex) {
+        if (!window.currentAthleteResults || !window.currentAthleteResults[resultIndex]) return;
+        const result = window.currentAthleteResults[resultIndex];
+
+        // Reuse the existing showRaceTooltip function which shows the race details modal
+        if (typeof showRaceTooltip === 'function') {
+            showRaceTooltip(null, result, null);
+        }
+    };
+
+    // Toggle between recent and full history for comparison
+    window.toggleComparisonHistory = async function() {
+        const btn = document.getElementById('comparison-history-btn');
+        if (!btn || !comparisonResultsCache) return;
+
+        const { athlete1, athlete2 } = comparisonState;
+        if (!athlete1 || !athlete2) return;
+
+        if (!comparisonFullHistory) {
+            // Load full history
+            btn.textContent = 'Loading...';
+            btn.disabled = true;
+
+            try {
+                const [fullResults1, fullResults2] = await Promise.all([
+                    fetch(`${API_BASE}?endpoint=/athletes/${athlete1.athlete_id}/results`).then(r => r.json()),
+                    fetch(`${API_BASE}?endpoint=/athletes/${athlete2.athlete_id}/results`).then(r => r.json())
+                ]);
+
+                comparisonResultsCache.athlete1.fullResults = fullResults1.data || [];
+                comparisonResultsCache.athlete2.fullResults = fullResults2.data || [];
+                comparisonFullHistory = true;
+
+                // Re-render chart with full history
+                renderComparisonChart(
+                    { ...athlete1, latest_results: comparisonResultsCache.athlete1.fullResults },
+                    { ...athlete2, latest_results: comparisonResultsCache.athlete2.fullResults }
+                );
+
+                // Update the results table
+                updateComparisonResultsTable();
+
+                btn.textContent = 'Show Recent Only';
+                btn.disabled = false;
+            } catch (e) {
+                btn.textContent = 'Load Full Race History';
+                btn.disabled = false;
+            }
+        } else {
+            // Switch back to recent
+            comparisonFullHistory = false;
+            renderComparisonChart(athlete1, athlete2);
+            updateComparisonResultsTable();
+            btn.textContent = 'Load Full Race History';
+        }
     };
 
     function renderComparisonChart(athlete1, athlete2) {
         const ctx = document.getElementById('comparison-chart');
         if (!ctx) return;
+
+        // Destroy existing chart before creating a new one
+        if (comparisonChartInstance) {
+            comparisonChartInstance.destroy();
+            comparisonChartInstance = null;
+        }
 
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
@@ -4439,17 +4980,24 @@
         const data1 = prepareData(athlete1.latest_results);
         const data2 = prepareData(athlete2.latest_results);
 
-        // Merge labels
-        const allLabels = [...new Set([...data1.labels, ...data2.labels])].sort((a, b) => {
-            const parseDate = (str) => new Date(str.replace(/(\w+) '(\d+)/, '$1 20$2'));
-            return parseDate(a) - parseDate(b);
+        // Merge labels - use actual dates for proper sorting
+        const allDates = new Map();
+        [...data1.results, ...data2.results].forEach(r => {
+            const label = new Date(r.event_date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+            const date = new Date(r.event_date);
+            if (!allDates.has(label) || date > allDates.get(label)) {
+                allDates.set(label, date);
+            }
         });
+        const allLabels = [...allDates.entries()]
+            .sort((a, b) => a[1] - b[1])
+            .map(entry => entry[0]);
 
         const styles = getComputedStyle(document.documentElement);
         const textSecondary = styles.getPropertyValue('--text-secondary').trim();
         const borderColor = styles.getPropertyValue('--border-primary').trim();
 
-        new Chart(ctx, {
+        comparisonChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: allLabels,
@@ -4574,8 +5122,31 @@
                     }
                 },
                 interaction: {
-                    intersect: false,
-                    mode: 'index'
+                    intersect: true,
+                    mode: 'nearest'
+                },
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const element = elements[0];
+                        const datasetIndex = element.datasetIndex;
+                        const labelIndex = element.index;
+                        const label = allLabels[labelIndex];
+
+                        // Find which result this corresponds to
+                        const targetData = datasetIndex === 0 ? data1 : data2;
+                        const resultIndex = targetData.labels.indexOf(label);
+                        if (resultIndex >= 0 && targetData.results[resultIndex]) {
+                            const result = targetData.results[resultIndex];
+                            // Check if it's a team/relay event
+                            const isTeamRelay = result.prog_name && (result.prog_name.toLowerCase().includes('relay') || result.prog_name.toLowerCase().includes('team') || result.prog_name.toLowerCase().includes('mixed'));
+                            if (!isTeamRelay && typeof showRaceTooltip === 'function') {
+                                showRaceTooltip(event, result, ctx);
+                            }
+                        }
+                    }
+                },
+                onHover: (event, elements) => {
+                    ctx.style.cursor = elements.length > 0 ? 'pointer' : 'default';
                 }
             }
         });
