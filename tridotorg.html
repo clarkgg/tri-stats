@@ -3818,15 +3818,17 @@
         const ctx = document.getElementById('comparison-chart');
         if (!ctx) return;
 
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
         const prepareData = (results) => {
-            if (!results) return { labels: [], data: [], titles: [] };
+            if (!results) return { labels: [], data: [], results: [] };
             const sorted = [...results]
-                .filter(r => r.event_date && r.position)
+                .filter(r => r.event_date && r.position && !isNaN(parseInt(r.position)))
                 .sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
             return {
                 labels: sorted.map(r => new Date(r.event_date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })),
                 data: sorted.map(r => parseInt(r.position)),
-                titles: sorted.map(r => r.event_title)
+                results: sorted
             };
         };
 
@@ -3842,7 +3844,6 @@
         const styles = getComputedStyle(document.documentElement);
         const textSecondary = styles.getPropertyValue('--text-secondary').trim();
         const borderColor = styles.getPropertyValue('--border-primary').trim();
-        const bgSecondary = styles.getPropertyValue('--bg-secondary').trim();
 
         new Chart(ctx, {
             type: 'line',
@@ -3856,15 +3857,16 @@
                             return idx >= 0 ? data1.data[idx] : null;
                         }),
                         borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.08)',
-                        fill: true,
+                        backgroundColor: 'transparent',
+                        fill: false,
                         spanGaps: true,
-                        tension: 0.4,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
+                        tension: 0.3,
+                        pointRadius: 8,
+                        pointHoverRadius: 11,
                         pointBackgroundColor: '#3b82f6',
-                        pointBorderWidth: 0,
-                        borderWidth: 2
+                        pointBorderColor: isDark ? '#171717' : '#ffffff',
+                        pointBorderWidth: 2,
+                        borderWidth: 2.5
                     },
                     {
                         label: athlete2.athlete_full_name,
@@ -3873,15 +3875,16 @@
                             return idx >= 0 ? data2.data[idx] : null;
                         }),
                         borderColor: '#ef4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.08)',
-                        fill: true,
+                        backgroundColor: 'transparent',
+                        fill: false,
                         spanGaps: true,
-                        tension: 0.4,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
+                        tension: 0.3,
+                        pointRadius: 8,
+                        pointHoverRadius: 11,
                         pointBackgroundColor: '#ef4444',
-                        pointBorderWidth: 0,
-                        borderWidth: 2
+                        pointBorderColor: isDark ? '#171717' : '#ffffff',
+                        pointBorderWidth: 2,
+                        borderWidth: 2.5
                     }
                 ]
             },
@@ -3889,17 +3892,26 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 layout: {
-                    padding: { top: 8, bottom: 8 }
+                    padding: { top: 20, bottom: 16, left: 8, right: 24 }
                 },
                 scales: {
                     y: {
                         reverse: true,
-                        min: 1,
+                        min: 0,
+                        grace: '5%',
+                        title: {
+                            display: true,
+                            text: 'Finish Position',
+                            color: textSecondary,
+                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            padding: { bottom: 8 }
+                        },
                         ticks: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Inter' },
-                            padding: 8,
-                            stepSize: 1
+                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            padding: 12,
+                            stepSize: 1,
+                            callback: (value) => value >= 1 ? '#' + value : ''
                         },
                         grid: {
                             color: borderColor,
@@ -3909,10 +3921,19 @@
                         border: { display: false }
                     },
                     x: {
+                        title: {
+                            display: true,
+                            text: 'Race Date',
+                            color: textSecondary,
+                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            padding: { top: 8 }
+                        },
                         ticks: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Inter' },
-                            padding: 8
+                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            padding: 8,
+                            maxRotation: 45,
+                            minRotation: 0
                         },
                         grid: { display: false },
                         border: { display: false }
@@ -3925,7 +3946,7 @@
                         align: 'end',
                         labels: {
                             color: textSecondary,
-                            font: { size: 12, family: 'Inter' },
+                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 500 },
                             boxWidth: 12,
                             boxHeight: 12,
                             padding: 16,
@@ -3934,13 +3955,14 @@
                         }
                     },
                     tooltip: {
-                        backgroundColor: '#171717',
+                        enabled: true,
+                        backgroundColor: isDark ? '#262626' : '#171717',
                         titleColor: '#fafafa',
                         bodyColor: '#fafafa',
-                        titleFont: { size: 12, weight: 500, family: 'Inter' },
-                        bodyFont: { size: 13, weight: 600, family: 'Inter' },
+                        titleFont: { size: 12, weight: 500, family: 'Plus Jakarta Sans' },
+                        bodyFont: { size: 13, weight: 600, family: 'Plus Jakarta Sans' },
                         padding: 12,
-                        cornerRadius: 0,
+                        cornerRadius: 8,
                         displayColors: true,
                         boxWidth: 8,
                         boxHeight: 8,
