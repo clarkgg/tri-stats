@@ -369,6 +369,9 @@
       cursor: pointer;
       transition: background var(--transition-fast);
       outline: none;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
     }
 
     .autocomplete-item:hover {
@@ -378,6 +381,38 @@
     .autocomplete-item.is-active,
     .autocomplete-item:focus {
       background: var(--accent-subtle);
+    }
+
+    .autocomplete-type {
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    .autocomplete-type.athlete {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    .autocomplete-type.event {
+      background: rgba(16, 163, 127, 0.1);
+      color: #10a37f;
+    }
+
+    .autocomplete-event-title {
+      flex: 1;
+      white-space: normal;
+      line-height: 1.3;
+    }
+
+    .autocomplete-event-date {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      flex-shrink: 0;
     }
 
     .autocomplete-loading, .autocomplete-empty {
@@ -1326,6 +1361,118 @@
       to { opacity: 0; }
     }
 
+    /* Event Card */
+    .event-card {
+      background: var(--bg-primary);
+      margin-bottom: var(--space-8);
+    }
+
+    .event-header {
+      padding: var(--space-8) 0;
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .event-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+
+    .event-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+    }
+
+    .event-meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .event-programs {
+      padding: var(--space-6) 0;
+    }
+
+    .event-programs-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-4);
+    }
+
+    .event-program-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .event-program-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-4);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+
+    .event-program-item:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .event-program-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .event-program-name {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .event-program-badge {
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      background: rgba(16, 163, 127, 0.1);
+      color: #10a37f;
+    }
+
+    .event-program-date {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+
+    .event-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: var(--space-2) var(--space-4);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+      margin-top: var(--space-4);
+    }
+
+    .event-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
     /* Chart Container */
     .chart-container {
       background: var(--bg-secondary);
@@ -2004,7 +2151,7 @@
             type="text"
             id="athleteName"
             class="search-input"
-            placeholder="Search athlete name..."
+            placeholder="Search athletes or events..."
             autocomplete="off"
           />
           <button class="search-btn" onclick="searchAthlete()">Search</button>
@@ -2208,7 +2355,7 @@
       }
     });
 
-    // --- Autocomplete handler (optimized - no detail fetches until click) ---
+    // --- Autocomplete handler (searches athletes and events) ---
     async function handleAutocomplete() {
       const query = searchInput.value;
       const autocompleteResults = document.getElementById('autocomplete-results');
@@ -2222,40 +2369,43 @@
       autocompleteResults.innerHTML = '<div class="autocomplete-loading">Searching...</div>';
       autocompleteResults.style.display = 'block';
 
-      const response = await fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=5`);
+      // Fetch athletes and events in parallel (filter events to last 2 years via API)
+      const twoYearsAgo = new Date();
+      twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+      const startDateStr = twoYearsAgo.toISOString().split('T')[0];
 
-      if (!response.ok) {
-        autocompleteResults.style.display = 'none';
+      const [athleteResponse, eventResponse] = await Promise.all([
+        fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=4`),
+        fetch(`${API_BASE}?endpoint=/search/events&query=${encodeURIComponent(query)}&start_date=${startDateStr}&per_page=10`)
+      ]);
+
+      const athleteData = athleteResponse.ok ? await athleteResponse.json() : { data: [] };
+      const eventData = eventResponse.ok ? await eventResponse.json() : { data: [] };
+
+      const athletes = athleteData.data || [];
+      const events = eventData.data || [];
+
+      if (athletes.length === 0 && events.length === 0) {
+        autocompleteResults.innerHTML = '<div class="autocomplete-empty">No results found</div>';
         return;
       }
 
-      const searchData = await response.json();
-      const athletes = searchData.data || [];
-
-      if (athletes.length === 0) {
-        autocompleteResults.innerHTML = '<div class="autocomplete-empty">No athletes found</div>';
-        return;
-      }
-
-      // Display results immediately using search data (no detail fetch needed)
       autocompleteResults.innerHTML = '';
       selectedIndex = -1;
 
+      // Add athletes
       athletes.forEach(athlete => {
         const item = document.createElement('div');
         item.className = 'autocomplete-item';
-        item.textContent = athlete.athlete_title;
+        item.innerHTML = `<span class="autocomplete-type athlete">Athlete</span>${athlete.athlete_title}`;
         item.setAttribute('role', 'option');
-        item.setAttribute('aria-selected', 'false');
         item.setAttribute('data-athlete-id', athlete.athlete_id);
         item.tabIndex = -1;
         item.onclick = async () => {
           searchInput.value = athlete.athlete_title;
           autocompleteResults.style.display = 'none';
           selectedIndex = -1;
-          // Clear rankings context
           currentRankingsData = null;
-          // Fetch full details
           const resultsDiv = document.getElementById('results');
           resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading athlete...</div>';
           const details = await getAthleteDetails(athlete.athlete_id);
@@ -2267,6 +2417,31 @@
         };
         autocompleteResults.appendChild(item);
       });
+
+      // Sort events by recency and take top 3
+      const recentEvents = [...events]
+        .sort((a, b) => new Date(b.event_date || 0) - new Date(a.event_date || 0))
+        .slice(0, 3);
+
+      // Add events
+      recentEvents.forEach(event => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        const eventDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        item.innerHTML = `<span class="autocomplete-type event">Event</span><span class="autocomplete-event-title">${event.event_title}</span>${eventDate ? `<span class="autocomplete-event-date">${eventDate}</span>` : ''}`;
+        item.setAttribute('role', 'option');
+        item.setAttribute('data-event-id', event.event_id);
+        item.tabIndex = -1;
+        item.onclick = async () => {
+          searchInput.value = event.event_title;
+          autocompleteResults.style.display = 'none';
+          selectedIndex = -1;
+          currentRankingsData = null;
+          showEventDetail(event.event_id);
+        };
+        autocompleteResults.appendChild(item);
+      });
+
       autocompleteResults.style.display = 'block';
     }
 
@@ -2377,13 +2552,12 @@
                     <div class="athlete-country">${athlete.athlete_country_name || ''}</div>
                     <div class="athlete-stats">
                       ${age ? `<div class="athlete-stat"><span class="athlete-stat-label">Age</span><span class="athlete-stat-value">${age}</span></div>` : ''}
-                      ${athlete.athlete_yob ? `<div class="athlete-stat"><span class="athlete-stat-label">Born</span><span class="athlete-stat-value">${athlete.athlete_yob}</span></div>` : ''}
-                      ${athlete.athlete_categories ? `<div class="athlete-stat"><span class="athlete-stat-label">Category</span><span class="athlete-stat-value">${athlete.athlete_categories[0] || 'Athlete'}</span></div>` : ''}
+                      ${athlete.race_wins ? `<div class="athlete-stat"><span class="athlete-stat-label">Wins</span><span class="athlete-stat-value">${athlete.race_wins}</span></div>` : ''}
+                      ${athlete.race_podiums ? `<div class="athlete-stat"><span class="athlete-stat-label">Podiums</span><span class="athlete-stat-value">${athlete.race_podiums}</span></div>` : ''}
                     </div>
                     <div class="athlete-actions">
                       <a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a>
                       <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(athlete.athlete_full_name + ' triathlon')}" class="athlete-link athlete-link-secondary" target="_blank" rel="noopener">Videos ↗</a>
-                      ${athlete.athlete_media_listing ? `<a href="${athlete.athlete_media_listing}" class="athlete-link athlete-link-secondary" target="_blank">Media Gallery</a>` : ''}
                     </div>
                   </div>
                 </div>
@@ -2436,6 +2610,123 @@
         // Smooth scroll to results
         resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+
+    // --- Show event detail view ---
+    async function showEventDetail(eventId) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading event...</div>';
+
+        try {
+            // Fetch event details and programs in parallel
+            const [eventResponse, programsResponse] = await Promise.all([
+                fetch(`${API_BASE}?endpoint=/events/${eventId}`),
+                fetch(`${API_BASE}?endpoint=/events/${eventId}/programs`)
+            ]);
+
+            if (!eventResponse.ok) {
+                resultsDiv.innerHTML = '<div class="error-message">Unable to load event details.</div>';
+                return;
+            }
+
+            const eventData = await eventResponse.json();
+            const programsData = programsResponse.ok ? await programsResponse.json() : { data: [] };
+
+            const event = eventData.data;
+            const programs = (programsData.data || []).filter(p => p.results && p.is_race);
+
+            // Format date
+            const startDate = event.event_date ? new Date(event.event_date) : null;
+            const endDate = event.event_finish_date ? new Date(event.event_finish_date) : null;
+            let dateStr = '';
+            if (startDate) {
+                dateStr = startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                if (endDate && endDate.getTime() !== startDate.getTime()) {
+                    dateStr += ' - ' + endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                }
+            }
+
+            // Build programs HTML
+            const programsHtml = programs.length > 0 ? `
+                <div class="event-programs">
+                    <div class="event-programs-title">Race Results</div>
+                    <div class="event-program-list">
+                        ${programs.map(p => {
+                            const progDate = p.prog_date ? new Date(p.prog_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+                            return `
+                                <div class="event-program-item" onclick="showProgramResults(${event.event_id}, ${p.prog_id}, '${(p.prog_name || '').replace(/'/g, "\\'")}')">
+                                    <div class="event-program-info">
+                                        <span class="event-program-name">${p.prog_name || 'Race'}</span>
+                                        <span class="event-program-badge">Results</span>
+                                    </div>
+                                    <span class="event-program-date">${progDate}</span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            ` : '<div class="event-programs"><p style="color: var(--text-tertiary); font-size: var(--text-sm);">No race results available for this event.</p></div>';
+
+            resultsDiv.innerHTML = `
+                <section class="results-section">
+                    <article class="event-card">
+                        <div class="event-header">
+                            <h1 class="event-title">${event.event_title}</h1>
+                            <div class="event-meta">
+                                ${dateStr ? `<span class="event-meta-item">${dateStr}</span>` : ''}
+                                ${event.event_venue ? `<span class="event-meta-item">${event.event_venue}, ${event.event_country || ''}</span>` : ''}
+                            </div>
+                            ${event.event_listing ? `<a href="${event.event_listing}" target="_blank" class="event-link">View on triathlon.org →</a>` : ''}
+                        </div>
+                        ${programsHtml}
+                    </article>
+                </section>
+            `;
+
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        } catch (error) {
+            console.error('Failed to load event:', error);
+            resultsDiv.innerHTML = '<div class="error-message">Unable to load event details.</div>';
+        }
+    }
+
+    // --- Show program results in modal ---
+    window.showProgramResults = async function(eventId, progId, progName) {
+        // Reuse the race details modal
+        const result = {
+            event_id: eventId,
+            prog_id: progId,
+            prog_name: progName,
+            event_title: progName,
+            event_date: new Date().toISOString(),
+            result_listing: `https://www.triathlon.org/results`
+        };
+
+        showRaceDetailsModal(result);
+
+        try {
+            const response = await fetch(`${API_BASE}?endpoint=/events/${eventId}/programs/${progId}/results`);
+            const data = await response.json();
+
+            if (data.data && data.data.results && Array.isArray(data.data.results)) {
+                const sortedResults = data.data.results
+                    .filter(r => r.position && !isNaN(parseInt(r.position)))
+                    .sort((a, b) => parseInt(a.position) - parseInt(b.position))
+                    .slice(0, 10);
+
+                if (sortedResults.length > 0) {
+                    updateRaceDetailsModal(result, sortedResults);
+                } else {
+                    updateRaceDetailsModal(result, data.data.results.slice(0, 10));
+                }
+            } else {
+                showRaceDetailsError(result);
+            }
+        } catch (error) {
+            console.error('Failed to fetch program results:', error);
+            showRaceDetailsError(result);
+        }
+    };
 
     // --- Show athlete detail view with back button ---
     function showAthleteDetail(athlete, rank = null) {
@@ -2575,8 +2866,9 @@
                             <div class="athlete-country">${athlete.athlete_country_name || ''}</div>
                             <div class="athlete-stats">
                                 ${age ? `<div class="athlete-stat"><span class="athlete-stat-label">Age</span><span class="athlete-stat-value">${age}</span></div>` : ''}
-                                ${athlete.athlete_yob ? `<div class="athlete-stat"><span class="athlete-stat-label">Born</span><span class="athlete-stat-value">${athlete.athlete_yob}</span></div>` : ''}
-                                ${athlete.athlete_categories ? `<div class="athlete-stat"><span class="athlete-stat-label">Category</span><span class="athlete-stat-value">${athlete.athlete_categories[0] || 'Athlete'}</span></div>` : ''}
+                                ${athlete.race_wins ? `<div class="athlete-stat"><span class="athlete-stat-label">Wins</span><span class="athlete-stat-value">${athlete.race_wins}</span></div>` : ''}
+                                ${athlete.race_podiums ? `<div class="athlete-stat"><span class="athlete-stat-label">Podiums</span><span class="athlete-stat-value">${athlete.race_podiums}</span></div>` : ''}
+                                ${athlete.world_rank ? `<div class="athlete-stat"><span class="athlete-stat-label">World Rank</span><span class="athlete-stat-value">#${athlete.world_rank}</span></div>` : ''}
                             </div>
                             <div class="athlete-actions">
                                 <a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a>
@@ -3764,7 +4056,7 @@
         if (!athlete1 || !athlete2) return;
 
         document.getElementById('comparison-banner')?.remove();
-        document.getElementById('athleteName').placeholder = 'Search athlete name...';
+        document.getElementById('athleteName').placeholder = 'Search athletes or events...';
 
         const resultsDiv = document.getElementById('results');
 
@@ -3784,7 +4076,8 @@
                     <div class="comparison-stats">
                         ${age ? `<div><div class="comparison-stat-label">Age</div><div class="comparison-stat-value">${age}</div></div>` : ''}
                         ${athlete.athlete_yob ? `<div><div class="comparison-stat-label">Born</div><div class="comparison-stat-value">${athlete.athlete_yob}</div></div>` : ''}
-                        ${athlete.athlete_categories ? `<div><div class="comparison-stat-label">Category</div><div class="comparison-stat-value">${athlete.athlete_categories[0] || ''}</div></div>` : ''}
+                        ${athlete.race_wins ? `<div><div class="comparison-stat-label">Wins</div><div class="comparison-stat-value">${athlete.race_wins}</div></div>` : ''}
+                        ${athlete.race_podiums ? `<div><div class="comparison-stat-label">Podiums</div><div class="comparison-stat-value">${athlete.race_podiums}</div></div>` : ''}
                     </div>
                 </div>
             `;
