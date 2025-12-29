@@ -282,6 +282,13 @@
       pointer-events: auto;
     }
 
+    @media (max-width: 480px) {
+      .nav-search.is-open .nav-search-expanded {
+        width: calc(100vw - 120px);
+        max-width: 280px;
+      }
+    }
+
     .nav-search.is-open .nav-search-btn {
       display: none;
     }
