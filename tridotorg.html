@@ -11,7 +11,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
   <style>
     /* ============================================
        DESIGN SYSTEM - Minimal, OpenAI-inspired
@@ -2778,6 +2777,28 @@
     // This keeps the API key secure on the server side
     const API_BASE = '/api/triathlon';
 
+    // Lazy load Chart.js only when needed
+    let chartJsLoaded = false;
+    let chartJsLoading = null;
+
+    async function loadChartJs() {
+      if (chartJsLoaded) return Promise.resolve();
+      if (chartJsLoading) return chartJsLoading;
+
+      chartJsLoading = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+        script.onload = () => {
+          chartJsLoaded = true;
+          resolve();
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+
+      return chartJsLoading;
+    }
+
     // World Triathlon Championship Series rankings (IDs 15/16 for current WTCS)
     const RANKING_IDS = { male: 15, female: 16 };
 
@@ -2796,6 +2817,50 @@
 
     // Cache for athlete details to avoid redundant API calls
     const athleteCache = new Map();
+
+    // General API cache with TTL
+    const apiCache = {
+      data: new Map(),
+      TTL: 5 * 60 * 1000, // 5 minutes default
+
+      get(key) {
+        const entry = this.data.get(key);
+        if (!entry) return null;
+        if (Date.now() > entry.expires) {
+          this.data.delete(key);
+          return null;
+        }
+        return entry.value;
+      },
+
+      set(key, value, ttl = this.TTL) {
+        this.data.set(key, {
+          value,
+          expires: Date.now() + ttl
+        });
+      },
+
+      clear() {
+        this.data.clear();
+      }
+    };
+
+    // Cached fetch wrapper
+    async function cachedFetch(url, options = {}) {
+      const cacheKey = url;
+      const cached = apiCache.get(cacheKey);
+      if (cached) {
+        return { ok: true, json: async () => cached, fromCache: true };
+      }
+
+      const response = await fetch(url, options);
+      if (response.ok) {
+        const data = await response.json();
+        apiCache.set(cacheKey, data);
+        return { ok: true, json: async () => data, fromCache: false };
+      }
+      return response;
+    }
 
     // Comparison state
     let comparisonState = {
@@ -4357,8 +4422,8 @@
 
       try {
         const [menResponse, womenResponse] = await Promise.all([
-          fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
-          fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
+          cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
+          cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
         ]);
 
         if (!menResponse.ok || !womenResponse.ok) {
@@ -4432,10 +4497,10 @@
       resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Finding a random athlete...</div>';
 
       try {
-        // Fetch rankings to get pool of athletes
+        // Fetch rankings to get pool of athletes (cached)
         const [menResponse, womenResponse] = await Promise.all([
-          fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
-          fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
+          cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
+          cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
         ]);
 
         if (!menResponse.ok || !womenResponse.ok) {
@@ -4478,10 +4543,10 @@
         resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading featured content...</div>';
 
         try {
-            // Fetch athlete data for photos
+            // Fetch athlete data for photos (cached)
             const [menResponse, womenResponse] = await Promise.all([
-              fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
-              fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
+              cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
+              cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
             ]);
 
             if (!menResponse.ok || !womenResponse.ok) {
@@ -4789,9 +4854,12 @@
     let currentChart = null;
     let chartResults = [];
 
-    function renderResultsChart(results) {
+    async function renderResultsChart(results) {
         const ctx = document.getElementById('results-chart');
         if (!ctx || results.length < 2) return;
+
+        // Load Chart.js if not already loaded
+        await loadChartJs();
 
         // Destroy previous chart if exists
         if (currentChart) {
@@ -5602,9 +5670,12 @@
         }
     };
 
-    function renderComparisonChart(athlete1, athlete2) {
+    async function renderComparisonChart(athlete1, athlete2) {
         const ctx = document.getElementById('comparison-chart');
         if (!ctx) return;
+
+        // Load Chart.js if not already loaded
+        await loadChartJs();
 
         // Destroy existing chart before creating a new one
         if (comparisonChartInstance) {
