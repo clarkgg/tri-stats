@@ -1244,6 +1244,25 @@
       opacity: 1;
     }
 
+    .athlete-link-icon {
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      padding: var(--space-2);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .athlete-link-icon:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+      opacity: 1;
+    }
+
+    .athlete-link-icon svg {
+      display: block;
+    }
+
     /* Athlete Body - Results & Gallery */
     .athlete-body {
       padding: var(--space-8) 0;
@@ -3450,18 +3469,37 @@
     navSearchInput.addEventListener('input', debounce(function() {
       if (!aiSearchEnabled) {
         handleNavAutocomplete();
+      } else {
+        // Hide recent searches when user starts typing in AI mode
+        hideRecentAISearches();
       }
     }, 300));
+
+    // Hide/show recent searches based on input in AI mode
+    navSearchInput.addEventListener('input', function() {
+      if (aiSearchEnabled) {
+        if (this.value.length > 0) {
+          hideRecentAISearches();
+        } else {
+          showRecentAISearches();
+        }
+      }
+    });
 
     document.addEventListener('click', function(event) {
       const searchBox = document.querySelector('.search-box');
       const navSearch = document.getElementById('nav-search');
       const autocompleteResults = document.getElementById('autocomplete-results');
+      const recentSearches = document.getElementById('recent-ai-searches');
       if (searchBox && autocompleteResults && !searchBox.contains(event.target)) {
         autocompleteResults.style.display = 'none';
       }
       if (navSearch && !navSearch.contains(event.target)) {
         closeNavSearch();
+        // Also hide recent AI searches when clicking outside
+        if (recentSearches) {
+          recentSearches.style.display = 'none';
+        }
       }
     });
 
@@ -3966,7 +4004,7 @@
 
         // Share and copy buttons
         const shareBtn = `<button class="athlete-link athlete-link-secondary" onclick="shareAthlete(${athlete.athlete_id}, '${athlete.athlete_full_name.replace(/'/g, "\\'")}')">Share</button>`;
-        const copyBtn = `<button class="athlete-link athlete-link-secondary" onclick="copyAthleteLink(${athlete.athlete_id})">Copy Link</button>`;
+        const copyBtn = `<button class="athlete-link athlete-link-icon" onclick="copyAthleteLink(${athlete.athlete_id})" title="Copy link to clipboard"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>`;
 
         // Build results HTML
         const getPositionClass = (pos) => {
@@ -5340,6 +5378,10 @@
         const resultsDiv = document.getElementById('results');
         const currentYear = new Date().getFullYear();
 
+        // Check for pending AI response to prepend
+        const aiResponseHtml = window.pendingAIResponse || '';
+        window.pendingAIResponse = null; // Clear after using
+
         const createComparisonCard = (athlete, color) => {
             const hasImage = athlete.athlete_profile_image?.startsWith('http');
             const age = athlete.athlete_yob ? currentYear - parseInt(athlete.athlete_yob) : null;
@@ -5369,6 +5411,7 @@
 
         resultsDiv.innerHTML = `
             <section class="results-section">
+                ${aiResponseHtml}
                 <button class="back-btn" onclick="cancelComparison(); fetchTopRankings();">← Back</button>
                 <div class="section-header">
                     <h2 class="section-title">Head to Head</h2>
