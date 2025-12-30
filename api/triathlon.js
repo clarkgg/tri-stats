@@ -23,26 +23,54 @@ export default async function handler(req, res) {
   const url = `${baseUrl}${endpoint}${queryString ? '?' + queryString : ''}`;
 
   try {
-    // Make the request to World Triathlon API with the secret API key
-    const response = await fetch(url, {
-      headers: {
-        'apikey': API_KEY,
-        'Accept': 'application/json'
-      }
-    });
+    // Create an AbortController for timeout handling
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-    // Get the response data
-    const data = await response.json();
+    try {
+      // Make the request to World Triathlon API with the secret API key
+      const response = await fetch(url, {
+        headers: {
+          'apikey': API_KEY,
+          'Accept': 'application/json'
+        },
+        signal: controller.signal
+      });
 
-    // Set CORS headers so your frontend can access this
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET');
+      clearTimeout(timeoutId);
 
-    // Return the data with the same status code
-    return res.status(response.status).json(data);
+      // Get the response data
+      const data = await response.json();
+
+      // Set CORS headers so your frontend can access this
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET');
+
+      // Return the data with the same status code
+      return res.status(response.status).json(data);
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+      throw fetchError;
+    }
 
   } catch (error) {
     console.error('API proxy error:', error);
-    return res.status(500).json({ error: 'Failed to fetch from triathlon API' });
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to fetch from triathlon API';
+    if (error.name === 'AbortError' || error.code === 'UND_ERR_CONNECT_TIMEOUT') {
+      errorMessage = 'Connection timeout - the API server is not responding. Please try again later.';
+    } else if (error.cause?.code === 'UND_ERR_CONNECT_TIMEOUT') {
+      errorMessage = 'Connection timeout - unable to reach the API server. Please check your internet connection.';
+    }
+    
+    // Set CORS headers even for errors
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
+    
+    return res.status(500).json({ 
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }

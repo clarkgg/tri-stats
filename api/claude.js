@@ -49,7 +49,14 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing query parameter' });
   }
 
+  // Get today's date for the prompt
+  const today = new Date().toISOString().split('T')[0];
+  const currentYear = new Date().getFullYear();
+
   const systemPrompt = `You are a helpful assistant for a triathlon statistics application. Users can ask natural language questions about triathlon athletes, events, and rankings.
+
+TODAY'S DATE: ${today}
+CURRENT YEAR: ${currentYear}
 
 You have access to these actions:
 1. search_athlete - Search for an athlete by name
@@ -57,7 +64,14 @@ You have access to these actions:
 3. get_rankings - Show current WTCS rankings
 4. show_favorites - Show user's saved favorite athletes
 5. compare_athletes - Compare two athletes side by side (params: athlete1, athlete2)
-6. answer - Provide a direct text answer (for general triathlon knowledge)
+6. get_upcoming_events - Get upcoming events (params: category, limit). Categories: "wtcs", "world_cup", "all". Default limit is 5.
+7. get_event_calendar - Get events for a specific year (params: year, category). Shows full calendar for that year.
+8. answer - Provide a direct text answer (for general triathlon knowledge)
+
+EVENT CATEGORY IDS (for reference):
+- WTCS (World Triathlon Championship Series) = category "wtcs"
+- World Cups = category "world_cup"
+- All major events = category "all"
 
 IMPORTANT TRIATHLON CONTEXT:
 - WTCS = World Triathlon Championship Series (the main Olympic-distance series)
@@ -142,6 +156,27 @@ Response: {"action": "answer", "answer": "At WTCS Hamburg 2024, Hayden Wilde (NZ
 
 User: "Beth Potter vs Taylor Knibb"
 Response: {"action": "compare_athletes", "params": {"athlete1": "Beth Potter", "athlete2": "Taylor Knibb"}, "explanation": "Comparing Beth Potter and Taylor Knibb..."}
+
+User: "When is the next WTCS race?"
+Response: {"action": "get_upcoming_events", "params": {"category": "wtcs", "limit": 1}, "explanation": "Finding the next WTCS race..."}
+
+User: "What's coming up in triathlon?"
+Response: {"action": "get_upcoming_events", "params": {"category": "all", "limit": 5}, "explanation": "Here are the upcoming triathlon events..."}
+
+User: "Upcoming World Cup races"
+Response: {"action": "get_upcoming_events", "params": {"category": "world_cup", "limit": 5}, "explanation": "Loading upcoming World Cup events..."}
+
+User: "What does the 2025 race calendar look like?"
+Response: {"action": "get_event_calendar", "params": {"year": 2025, "category": "all"}, "explanation": "Loading the 2025 triathlon calendar..."}
+
+User: "WTCS schedule for 2026"
+Response: {"action": "get_event_calendar", "params": {"year": 2026, "category": "wtcs"}, "explanation": "Loading the 2026 WTCS schedule..."}
+
+User: "Show me this year's calendar"
+Response: {"action": "get_event_calendar", "params": {"year": ${currentYear}, "category": "all"}, "explanation": "Loading the ${currentYear} triathlon calendar..."}
+
+User: "Next few races"
+Response: {"action": "get_upcoming_events", "params": {"category": "all", "limit": 5}, "explanation": "Here are the next upcoming races..."}
 
 Always respond with valid JSON only. No markdown, no extra text.`;
 

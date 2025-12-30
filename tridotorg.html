@@ -451,6 +451,126 @@
       border-top-color: #8b5cf6;
     }
 
+    /* Event Cards */
+    .events-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .event-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .event-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-secondary);
+      transform: translateX(4px);
+    }
+
+    .event-card.event-past {
+      opacity: 0.6;
+    }
+
+    .event-card-date {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 48px;
+      padding: var(--space-2) var(--space-3);
+      background: var(--accent);
+      border-radius: var(--radius-md);
+      color: white;
+    }
+
+    .event-card.event-past .event-card-date {
+      background: var(--text-tertiary);
+    }
+
+    .event-card-day {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .event-card-month {
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .event-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .event-card-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .event-card-location {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+
+    .event-card-country {
+      padding: 2px 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 500;
+    }
+
+    .event-card-arrow {
+      color: var(--text-tertiary);
+      font-size: var(--text-xl);
+      transition: transform 0.15s ease;
+    }
+
+    .event-card:hover .event-card-arrow {
+      transform: translateX(4px);
+      color: var(--accent);
+    }
+
+    /* Calendar View */
+    .calendar-view {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+    }
+
+    .calendar-month {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .calendar-month-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+      padding-bottom: var(--space-2);
+      border-bottom: 2px solid var(--accent);
+      margin: 0;
+    }
+
     .nav-search-autocomplete {
       position: absolute;
       top: calc(100% + 4px);
@@ -1226,6 +1346,8 @@
       border-radius: var(--radius-md);
       text-decoration: none;
       transition: opacity var(--transition-fast);
+      white-space: normal;
+      min-width: 0;
     }
 
     .athlete-link:hover {
@@ -1628,6 +1750,18 @@
 
       .athlete-actions {
         justify-content: center;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+      }
+
+      .athlete-link {
+        white-space: normal;
+        min-width: 0;
+        height: auto;
+        min-height: 36px;
+        padding: var(--space-2) var(--space-3);
+        line-height: 1.4;
+        text-align: center;
       }
     }
 
@@ -2666,12 +2800,8 @@
       font-size: var(--text-sm);
     }
 
-    /* Mobile: hide comparison features */
+    /* Mobile: comparison features */
     @media (max-width: 768px) {
-      .compare-btn-wrapper {
-        display: none;
-      }
-
       .comparison-grid {
         grid-template-columns: 1fr;
       }
@@ -3299,6 +3429,16 @@
             await compareAthletesByName(data.params?.athlete1, data.params?.athlete2);
             break;
 
+          case 'get_upcoming_events':
+            resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="loading-state"><div class="loading-spinner"></div></div></section>`;
+            await fetchUpcomingEvents(data.params?.category || 'all', data.params?.limit || 5, aiResponseHtml);
+            break;
+
+          case 'get_event_calendar':
+            resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="loading-state"><div class="loading-spinner"></div></div></section>`;
+            await fetchEventCalendar(data.params?.year || new Date().getFullYear(), data.params?.category || 'all', aiResponseHtml);
+            break;
+
           case 'answer':
           default:
             // Display the answer directly (no additional data to show)
@@ -3416,6 +3556,169 @@
       } catch (error) {
         resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="error-message">Failed to search for events. Please try again.</div></section>`;
       }
+    }
+
+    // Category ID mapping for World Triathlon API
+    const EVENT_CATEGORIES = {
+      wtcs: 351,        // World Triathlon Championship Series
+      world_cup: 352,   // World Triathlon Cup
+      all: null         // No filter - get all major events
+    };
+
+    // Helper to fetch upcoming events
+    async function fetchUpcomingEvents(category, limit, aiResponseHtml) {
+      const resultsDiv = document.getElementById('results');
+
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        const oneYearFromNow = new Date();
+        oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+        const endDate = oneYearFromNow.toISOString().split('T')[0];
+
+        let url = `${API_BASE}?endpoint=/events&start_date=${today}&end_date=${endDate}&per_page=${Math.min(limit * 3, 50)}`;
+
+        const categoryId = EVENT_CATEGORIES[category];
+        if (categoryId) {
+          url += `&category_id=${categoryId}`;
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch events');
+
+        const data = await response.json();
+        let events = data.data || [];
+
+        // Sort by date and take the requested limit
+        events = events
+          .filter(e => e.event_date)
+          .sort((a, b) => new Date(a.event_date) - new Date(b.event_date))
+          .slice(0, limit);
+
+        if (events.length === 0) {
+          resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="empty-state">No upcoming events found.</div></section>`;
+          return;
+        }
+
+        // Build the events display
+        const eventsHtml = events.map(event => createEventCard(event)).join('');
+        const categoryLabel = category === 'wtcs' ? 'WTCS' : category === 'world_cup' ? 'World Cup' : 'Triathlon';
+
+        resultsDiv.innerHTML = `
+          <section class="results-section">
+            ${aiResponseHtml}
+            <div class="section-header">
+              <h2 class="section-title">Upcoming ${categoryLabel} Events</h2>
+              <span class="section-meta">${events.length} event${events.length !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="events-list">
+              ${eventsHtml}
+            </div>
+          </section>`;
+
+      } catch (error) {
+        console.error('Fetch upcoming events error:', error);
+        resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="error-message">Failed to load upcoming events. Please try again.</div></section>`;
+      }
+    }
+
+    // Helper to fetch event calendar for a year
+    async function fetchEventCalendar(year, category, aiResponseHtml) {
+      const resultsDiv = document.getElementById('results');
+
+      try {
+        const startDate = `${year}-01-01`;
+        const endDate = `${year}-12-31`;
+
+        let url = `${API_BASE}?endpoint=/events&start_date=${startDate}&end_date=${endDate}&per_page=100`;
+
+        const categoryId = EVENT_CATEGORIES[category];
+        if (categoryId) {
+          url += `&category_id=${categoryId}`;
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch events');
+
+        const data = await response.json();
+        let events = data.data || [];
+
+        // Sort by date
+        events = events
+          .filter(e => e.event_date)
+          .sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+
+        if (events.length === 0) {
+          resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="empty-state">No events found for ${year}.</div></section>`;
+          return;
+        }
+
+        // Group events by month
+        const eventsByMonth = {};
+        events.forEach(event => {
+          const date = new Date(event.event_date);
+          const monthKey = date.toLocaleString('en-US', { month: 'long' });
+          if (!eventsByMonth[monthKey]) {
+            eventsByMonth[monthKey] = [];
+          }
+          eventsByMonth[monthKey].push(event);
+        });
+
+        // Build the calendar display
+        const monthsHtml = Object.entries(eventsByMonth).map(([month, monthEvents]) => `
+          <div class="calendar-month">
+            <h3 class="calendar-month-title">${month}</h3>
+            <div class="events-list">
+              ${monthEvents.map(event => createEventCard(event)).join('')}
+            </div>
+          </div>
+        `).join('');
+
+        const categoryLabel = category === 'wtcs' ? 'WTCS' : category === 'world_cup' ? 'World Cup' : 'Triathlon';
+
+        resultsDiv.innerHTML = `
+          <section class="results-section">
+            ${aiResponseHtml}
+            <div class="section-header">
+              <h2 class="section-title">${year} ${categoryLabel} Calendar</h2>
+              <span class="section-meta">${events.length} event${events.length !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="calendar-view">
+              ${monthsHtml}
+            </div>
+          </section>`;
+
+      } catch (error) {
+        console.error('Fetch event calendar error:', error);
+        resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="error-message">Failed to load calendar. Please try again.</div></section>`;
+      }
+    }
+
+    // Helper to create an event card
+    function createEventCard(event) {
+      const eventDate = new Date(event.event_date);
+      const dateStr = eventDate.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      const isPast = eventDate < new Date();
+
+      return `
+        <div class="event-card ${isPast ? 'event-past' : ''}" onclick="showEventDetail(${event.event_id})">
+          <div class="event-card-date">
+            <span class="event-card-day">${eventDate.getDate()}</span>
+            <span class="event-card-month">${eventDate.toLocaleString('en-US', { month: 'short' })}</span>
+          </div>
+          <div class="event-card-info">
+            <div class="event-card-title">${event.event_title}</div>
+            <div class="event-card-location">
+              ${event.event_venue ? `<span>${event.event_venue}</span>` : ''}
+              ${event.event_country_noc ? `<span class="event-card-country">${event.event_country_noc}</span>` : ''}
+            </div>
+          </div>
+          <span class="event-card-arrow">›</span>
+        </div>`;
     }
 
     // Helper to compare two athletes by name
@@ -4077,7 +4380,7 @@
                 <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </button>`;
 
-        // Compare button (hidden on mobile via CSS)
+        // Compare button
         const compareBtn = `
             <span class="compare-btn-wrapper">
                 <button class="athlete-link athlete-link-secondary" onclick="startComparison(${athlete.athlete_id})">Compare</button>
@@ -4196,7 +4499,6 @@
                                 ${athlete.world_rank ? `<div class="athlete-stat"><span class="athlete-stat-label">World Rank</span><span class="athlete-stat-value">#${athlete.world_rank}</span></div>` : ''}
                             </div>
                             <div class="athlete-actions">
-                                <a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a>
                                 <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(athlete.athlete_full_name + ' triathlon')}" class="athlete-link athlete-link-secondary" target="_blank" rel="noopener">Videos ↗</a>
                                 ${copyBtn}
                                 ${shareBtn}
@@ -4204,7 +4506,7 @@
                             </div>
                         </div>
                     </div>
-                    ${hasBodyContent ? `<div class="athlete-body">${chartHtml}${resultsHtml}${galleryHtml}</div>` : ''}
+                    ${hasBodyContent ? `<div class="athlete-body">${chartHtml}${resultsHtml}${galleryHtml}<div style="margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--border-primary); text-align: center;"><a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a></div></div>` : `<div class="athlete-body" style="padding: var(--space-8) 0; border-top: 1px solid var(--border-primary); text-align: center;"><a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a></div>`}
                 </article>
             </section>`;
 
