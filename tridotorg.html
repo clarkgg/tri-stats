@@ -348,6 +348,110 @@
       stroke-width: 2;
     }
 
+    /* AI Search Toggle */
+    .nav-ai-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      margin-left: 4px;
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .nav-ai-toggle svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-tertiary);
+      transition: all var(--transition-fast);
+    }
+
+    .nav-ai-toggle:hover {
+      background: var(--accent-subtle);
+    }
+
+    .nav-ai-toggle:hover svg {
+      stroke: var(--text-secondary);
+    }
+
+    .nav-ai-toggle.is-active {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    }
+
+    .nav-ai-toggle.is-active svg {
+      stroke: white;
+    }
+
+    .nav-ai-toggle.is-active:hover {
+      background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+    }
+
+    /* AI mode indicator in search */
+    .nav-search-input.ai-mode {
+      padding-left: var(--space-3);
+    }
+
+    .nav-search-input.ai-mode::placeholder {
+      color: #8b5cf6;
+    }
+
+    [data-theme="dark"] .nav-search-input.ai-mode::placeholder {
+      color: #a78bfa;
+    }
+
+    /* AI Response Card */
+    .ai-response-card {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+
+    .ai-response-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8b5cf6;
+    }
+
+    .ai-response-header svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .ai-response-text {
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .ai-response-thinking {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+    }
+
+    .ai-response-thinking .loading-spinner {
+      width: 16px;
+      height: 16px;
+      border-width: 2px;
+      border-top-color: #8b5cf6;
+    }
+
     .nav-search-autocomplete {
       position: absolute;
       top: calc(100% + 4px);
@@ -359,6 +463,59 @@
       box-shadow: var(--shadow-elevated);
       overflow: hidden;
       z-index: 1000;
+    }
+
+    /* Recent AI Searches */
+    .recent-ai-searches {
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      width: 320px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-elevated);
+      padding: var(--space-3);
+      z-index: 1000;
+    }
+
+    .recent-ai-searches-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-2);
+    }
+
+    .recent-ai-searches-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .recent-ai-chip {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      font-size: var(--text-xs);
+      color: #8b5cf6;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .recent-ai-chip:hover {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+
+    [data-theme="dark"] .recent-ai-chip {
+      color: #a78bfa;
     }
 
     /* Navigation Toolbar */
@@ -2532,6 +2689,13 @@
           </button>
           <div class="nav-search-expanded">
             <div class="nav-search-input-wrapper">
+              <button class="nav-ai-toggle" id="nav-ai-toggle" onclick="toggleAISearch()" aria-label="Toggle AI search" title="AI Search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z"/>
+                  <path d="M5 18L5.54 20.46L8 21L5.54 21.54L5 24L4.46 21.54L2 21L4.46 20.46L5 18Z"/>
+                  <path d="M19 16L19.36 17.64L21 18L19.36 18.36L19 20L18.64 18.36L17 18L18.64 17.64L19 16Z"/>
+                </svg>
+              </button>
               <input
                 type="text"
                 id="navSearchInput"
@@ -2544,6 +2708,7 @@
               </button>
             </div>
             <div id="nav-autocomplete-results" class="nav-search-autocomplete" style="display: none;"></div>
+            <div id="recent-ai-searches" class="recent-ai-searches" style="display: none;"></div>
           </div>
         </div>
         <button class="quick-btn" onclick="showFavorites()" aria-label="View favorites">
@@ -2577,6 +2742,7 @@
       </div>
       <div class="quick-actions">
         <button class="quick-btn" onclick="fetchTopRankings()">Rankings</button>
+        <button class="quick-btn" onclick="showRandomAthlete()">Random</button>
         <button class="quick-btn" onclick="showHomePage()">Featured Content</button>
         <a class="quick-btn" href="https://triathlon.org/news" target="_blank" rel="noopener">News ↗</a>
       </div>
@@ -2765,6 +2931,14 @@
         return;
       }
 
+      // A - Toggle AI Search
+      if (e.key === 'a' || e.key === 'A') {
+        e.preventDefault();
+        openNavSearch();
+        setTimeout(() => toggleAISearch(), 200);
+        return;
+      }
+
       // Escape - Close any open modal/search
       if (e.key === 'Escape') {
         closeShortcutsHelp();
@@ -2807,6 +2981,10 @@
             <div class="shortcut-item">
               <kbd>C</kbd>
               <span>Featured Content</span>
+            </div>
+            <div class="shortcut-item">
+              <kbd>A</kbd>
+              <span>AI Search</span>
             </div>
             <div class="shortcut-item">
               <kbd>D</kbd>
@@ -2859,6 +3037,329 @@
       document.getElementById('navSearchInput').value = '';
       document.getElementById('nav-autocomplete-results').style.display = 'none';
       navSelectedIndex = -1;
+    }
+
+    // --- AI SEARCH MODE ---
+    let aiSearchEnabled = false;
+    const RECENT_AI_SEARCHES_KEY = 'recentAISearches';
+    const MAX_RECENT_SEARCHES = 5;
+
+    function getRecentAISearches() {
+      try {
+        return JSON.parse(localStorage.getItem(RECENT_AI_SEARCHES_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveAISearch(query) {
+      const searches = getRecentAISearches();
+      // Remove if already exists
+      const filtered = searches.filter(s => s.toLowerCase() !== query.toLowerCase());
+      // Add to front
+      filtered.unshift(query);
+      // Keep only last N
+      const trimmed = filtered.slice(0, MAX_RECENT_SEARCHES);
+      localStorage.setItem(RECENT_AI_SEARCHES_KEY, JSON.stringify(trimmed));
+    }
+
+    function showRecentAISearches() {
+      const container = document.getElementById('recent-ai-searches');
+      const searches = getRecentAISearches();
+
+      if (searches.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="recent-ai-searches-title">Recent Searches</div>
+        <div class="recent-ai-searches-list">
+          ${searches.map(s => `<button class="recent-ai-chip" onclick="runRecentAISearch('${s.replace(/'/g, "\\'")}')">${s}</button>`).join('')}
+        </div>
+      `;
+      container.style.display = 'block';
+    }
+
+    function hideRecentAISearches() {
+      document.getElementById('recent-ai-searches').style.display = 'none';
+    }
+
+    window.runRecentAISearch = function(query) {
+      document.getElementById('navSearchInput').value = query;
+      hideRecentAISearches();
+      handleAISearch(query);
+    };
+
+    function toggleAISearch() {
+      aiSearchEnabled = !aiSearchEnabled;
+      const toggle = document.getElementById('nav-ai-toggle');
+      const input = document.getElementById('navSearchInput');
+      const autocomplete = document.getElementById('nav-autocomplete-results');
+
+      if (aiSearchEnabled) {
+        toggle.classList.add('is-active');
+        input.classList.add('ai-mode');
+        input.placeholder = 'Ask anything about triathlon...';
+        autocomplete.style.display = 'none';
+        showRecentAISearches();
+        showToast('AI search enabled');
+      } else {
+        toggle.classList.remove('is-active');
+        input.classList.remove('ai-mode');
+        input.placeholder = 'Search athletes or events...';
+        hideRecentAISearches();
+        showToast('AI search disabled');
+      }
+      input.focus();
+    }
+
+    async function handleAISearch(query) {
+      if (!query.trim()) return;
+
+      closeNavSearch();
+      currentRankingsData = null;
+      const resultsDiv = document.getElementById('results');
+
+      // Show loading state
+      resultsDiv.innerHTML = `
+        <section class="results-section">
+          <div class="ai-response-card">
+            <div class="ai-response-thinking">
+              <div class="loading-spinner"></div>
+              <span>Thinking...</span>
+            </div>
+          </div>
+        </section>`;
+
+      try {
+        const response = await fetch('/api/claude', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+          // API returned an error - show debug info if available
+          let errorMsg = data.details || data.error || 'Unknown error';
+          if (data.debug) {
+            console.log('Debug info:', data.debug);
+            errorMsg += ` | Debug: relevantEnvVars=[${data.debug.relevantEnvVars?.join(', ') || 'none'}]`;
+          }
+          throw new Error(errorMsg);
+        }
+
+        // Save successful search to recent searches
+        saveAISearch(query);
+
+        // Build AI response card HTML
+        const aiResponseHtml = `
+          <div class="ai-response-card">
+            <div class="ai-response-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z"/>
+                <path d="M5 18L5.54 20.46L8 21L5.54 21.54L5 24L4.46 21.54L2 21L4.46 20.46L5 18Z"/>
+              </svg>
+              AI Response
+            </div>
+            <div class="ai-response-text">${data.answer || data.explanation || ''}</div>
+          </div>`;
+
+        // Handle the different action types
+        switch (data.action) {
+          case 'search_athlete':
+            // Show AI response with loading, then append athlete results
+            resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="loading-state"><div class="loading-spinner"></div></div></section>`;
+            await searchAthleteByNameWithAI(data.params?.query || query, aiResponseHtml);
+            break;
+
+          case 'search_event':
+            resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="loading-state"><div class="loading-spinner"></div></div></section>`;
+            await searchEventByNameWithAI(data.params?.query || query, aiResponseHtml);
+            break;
+
+          case 'get_rankings':
+            resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="loading-state"><div class="loading-spinner"></div></div></section>`;
+            // Store AI response, fetch rankings, then prepend it
+            window.pendingAIResponse = aiResponseHtml;
+            await fetchTopRankings();
+            break;
+
+          case 'show_favorites':
+            resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="loading-state"><div class="loading-spinner"></div></div></section>`;
+            window.pendingAIResponse = aiResponseHtml;
+            await showFavorites();
+            break;
+
+          case 'compare_athletes':
+            resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="loading-state"><div class="loading-spinner"></div></div></section>`;
+            window.pendingAIResponse = aiResponseHtml;
+            await compareAthletesByName(data.params?.athlete1, data.params?.athlete2);
+            break;
+
+          case 'answer':
+          default:
+            // Display the answer directly (no additional data to show)
+            resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}</section>`;
+            break;
+        }
+
+      } catch (error) {
+        console.error('AI search error:', error);
+        let errorMsg = 'Sorry, I couldn\'t process that request.';
+
+        // Try to get more details from the error
+        if (error.message) {
+          errorMsg += ` (${error.message})`;
+        }
+
+        resultsDiv.innerHTML = `
+          <section class="results-section">
+            <div class="ai-response-card">
+              <div class="ai-response-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z"/>
+                  <path d="M5 18L5.54 20.46L8 21L5.54 21.54L5 24L4.46 21.54L2 21L4.46 20.46L5 18Z"/>
+                </svg>
+                AI Response
+              </div>
+              <div class="ai-response-text">${errorMsg}</div>
+              <div style="margin-top: var(--space-4); font-size: var(--text-xs); color: var(--text-tertiary);">
+                Make sure ANTHROPIC_API_KEY is set in Vercel environment variables, or run with <code>vercel dev</code> locally.
+              </div>
+            </div>
+          </section>`;
+      }
+    }
+
+    function showAIResponse(text) {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = `
+        <section class="results-section">
+          <div class="ai-response-card">
+            <div class="ai-response-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L13.09 8.26L19 9L13.09 9.74L12 16L10.91 9.74L5 9L10.91 8.26L12 2Z"/>
+                <path d="M5 18L5.54 20.46L8 21L5.54 21.54L5 24L4.46 21.54L2 21L4.46 20.46L5 18Z"/>
+              </svg>
+              AI Response
+            </div>
+            <div class="ai-response-text">${text}</div>
+          </div>
+          <div class="loading-state">
+            <div class="loading-spinner"></div>
+          </div>
+        </section>`;
+    }
+
+    // Helper to search athlete by name with AI response card preserved
+    async function searchAthleteByNameWithAI(name, aiResponseHtml) {
+      const resultsDiv = document.getElementById('results');
+
+      try {
+        const searchResponse = await fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(name)}&per_page=5`);
+        if (!searchResponse.ok) throw new Error('Search failed');
+
+        const searchData = await searchResponse.json();
+        const athletes = searchData.data || [];
+
+        if (athletes.length === 0) {
+          resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="empty-state">No athletes found matching "${name}".</div></section>`;
+          return;
+        }
+
+        // Get details for top results
+        const athleteDetails = await Promise.all(
+          athletes.slice(0, 3).map(a => getAthleteDetails(a.athlete_id))
+        );
+
+        const validAthletes = athleteDetails.filter(a => a);
+        if (validAthletes.length === 1) {
+          // Show AI response then athlete detail
+          window.pendingAIResponse = aiResponseHtml;
+          showAthleteDetail(validAthletes[0]);
+        } else if (validAthletes.length > 1) {
+          window.pendingAIResponse = aiResponseHtml;
+          displayAthletes(validAthletes, `Results for "${name}"`);
+        }
+      } catch (error) {
+        resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="error-message">Failed to search for athletes. Please try again.</div></section>`;
+      }
+    }
+
+    // Helper to search event by name with AI response card preserved
+    async function searchEventByNameWithAI(name, aiResponseHtml) {
+      const resultsDiv = document.getElementById('results');
+
+      try {
+        const twoYearsAgo = new Date();
+        twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+        const startDateStr = twoYearsAgo.toISOString().split('T')[0];
+
+        const searchResponse = await fetch(`${API_BASE}?endpoint=/search/events&query=${encodeURIComponent(name)}&start_date=${startDateStr}&per_page=5`);
+        if (!searchResponse.ok) throw new Error('Search failed');
+
+        const searchData = await searchResponse.json();
+        const events = searchData.data || [];
+
+        if (events.length === 0) {
+          resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="empty-state">No events found matching "${name}".</div></section>`;
+          return;
+        }
+
+        // Show the most recent matching event
+        window.pendingAIResponse = aiResponseHtml;
+        const sortedEvents = events.sort((a, b) => new Date(b.event_date || 0) - new Date(a.event_date || 0));
+        showEventDetail(sortedEvents[0].event_id);
+      } catch (error) {
+        resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="error-message">Failed to search for events. Please try again.</div></section>`;
+      }
+    }
+
+    // Helper to compare two athletes by name
+    async function compareAthletesByName(name1, name2) {
+      const resultsDiv = document.getElementById('results');
+
+      try {
+        // Search for both athletes in parallel
+        const [search1, search2] = await Promise.all([
+          fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(name1)}&per_page=1`),
+          fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(name2)}&per_page=1`)
+        ]);
+
+        if (!search1.ok || !search2.ok) throw new Error('Search failed');
+
+        const [data1, data2] = await Promise.all([search1.json(), search2.json()]);
+        const athletes1 = data1.data || [];
+        const athletes2 = data2.data || [];
+
+        if (athletes1.length === 0 || athletes2.length === 0) {
+          const aiResponseHtml = window.pendingAIResponse || '';
+          window.pendingAIResponse = null;
+          resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="empty-state">Could not find one or both athletes. Try different names.</div></section>`;
+          return;
+        }
+
+        // Get full details for both
+        const [athlete1, athlete2] = await Promise.all([
+          getAthleteDetails(athletes1[0].athlete_id),
+          getAthleteDetails(athletes2[0].athlete_id)
+        ]);
+
+        if (!athlete1 || !athlete2) throw new Error('Could not load athlete details');
+
+        // Set up comparison state and show
+        comparisonState.athlete1 = athlete1;
+        comparisonState.athlete2 = athlete2;
+        comparisonState.mode = 'comparing';
+        showComparison();
+      } catch (error) {
+        const aiResponseHtml = window.pendingAIResponse || '';
+        window.pendingAIResponse = null;
+        resultsDiv.innerHTML = `<section class="results-section">${aiResponseHtml}<div class="error-message">Failed to compare athletes. Please try again.</div></section>`;
+      }
     }
 
     // --- SETUP EVENT LISTENERS ---
@@ -2924,7 +3425,10 @@
         updateNavSelection(items);
       } else if (event.key === 'Enter') {
         event.preventDefault();
-        if (navSelectedIndex >= 0 && items[navSelectedIndex]) {
+        // Check if AI mode is enabled
+        if (aiSearchEnabled) {
+          handleAISearch(navSearchInput.value);
+        } else if (navSelectedIndex >= 0 && items[navSelectedIndex]) {
           items[navSelectedIndex].click();
         }
       } else if (event.key === 'Escape') {
@@ -2942,7 +3446,12 @@
       });
     }
 
-    navSearchInput.addEventListener('input', debounce(handleNavAutocomplete, 300));
+    // Only show autocomplete when not in AI mode
+    navSearchInput.addEventListener('input', debounce(function() {
+      if (!aiSearchEnabled) {
+        handleNavAutocomplete();
+      }
+    }, 300));
 
     document.addEventListener('click', function(event) {
       const searchBox = document.querySelector('.search-box');
@@ -3249,8 +3758,13 @@
             count = athleteData.men.filter(a => a).length + athleteData.women.filter(a => a).length;
         }
 
+        // Check for pending AI response to prepend
+        const aiResponseHtml = window.pendingAIResponse || '';
+        window.pendingAIResponse = null; // Clear after using
+
         let contentHtml = `
           <section class="results-section">
+            ${aiResponseHtml}
             <div class="section-header">
               <h2 class="section-title">${title}</h2>
               <span class="section-meta">${count} athlete${count !== 1 ? 's' : ''}</span>
@@ -3328,8 +3842,9 @@
                     <div class="event-program-list">
                         ${programs.map(p => {
                             const progDate = p.prog_date ? new Date(p.prog_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+                            const progDateISO = p.prog_date || event.event_date || '';
                             return `
-                                <div class="event-program-item" onclick="showProgramResults(${event.event_id}, ${p.prog_id}, '${(p.prog_name || '').replace(/'/g, "\\'")}')">
+                                <div class="event-program-item" onclick="showProgramResults(${event.event_id}, ${p.prog_id}, '${(p.prog_name || '').replace(/'/g, "\\'")}', '${progDateISO}')">
                                     <div class="event-program-info">
                                         <span class="event-program-name">${p.prog_name || 'Race'}</span>
                                         <span class="event-program-badge">Results</span>
@@ -3342,8 +3857,13 @@
                 </div>
             ` : '<div class="event-programs"><p style="color: var(--text-tertiary); font-size: var(--text-sm);">No race results available for this event.</p></div>';
 
+            // Check for pending AI response to prepend
+            const aiResponseHtml = window.pendingAIResponse || '';
+            window.pendingAIResponse = null; // Clear after using
+
             resultsDiv.innerHTML = `
                 <section class="results-section">
+                    ${aiResponseHtml}
                     <article class="event-card">
                         <div class="event-header">
                             <h1 class="event-title">${event.event_title}</h1>
@@ -3367,14 +3887,14 @@
     }
 
     // --- Show program results in modal ---
-    window.showProgramResults = async function(eventId, progId, progName) {
+    window.showProgramResults = async function(eventId, progId, progName, eventDate) {
         // Reuse the race details modal
         const result = {
             event_id: eventId,
             prog_id: progId,
             prog_name: progName,
             event_title: progName,
-            event_date: new Date().toISOString(),
+            event_date: eventDate || new Date().toISOString(),
             result_listing: `https://www.triathlon.org/results`
         };
 
@@ -3444,8 +3964,9 @@
                 <button class="athlete-link athlete-link-secondary" onclick="startComparison(${athlete.athlete_id})">Compare</button>
             </span>`;
 
-        // Share button
+        // Share and copy buttons
         const shareBtn = `<button class="athlete-link athlete-link-secondary" onclick="shareAthlete(${athlete.athlete_id}, '${athlete.athlete_full_name.replace(/'/g, "\\'")}')">Share</button>`;
+        const copyBtn = `<button class="athlete-link athlete-link-secondary" onclick="copyAthleteLink(${athlete.athlete_id})">Copy Link</button>`;
 
         // Build results HTML
         const getPositionClass = (pos) => {
@@ -3528,8 +4049,13 @@
         const backBtnHtml = currentRankingsData ?
             `<button class="back-btn" onclick="displayRankings()">← Back to Rankings</button>` : '';
 
+        // Check for pending AI response to prepend
+        const aiResponseHtml = window.pendingAIResponse || '';
+        window.pendingAIResponse = null; // Clear after using
+
         resultsDiv.innerHTML = `
             <section class="results-section">
+                ${aiResponseHtml}
                 ${backBtnHtml}
                 <article class="athlete-card">
                     <div class="athlete-hero">
@@ -3553,6 +4079,7 @@
                             <div class="athlete-actions">
                                 <a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a>
                                 <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(athlete.athlete_full_name + ' triathlon')}" class="athlete-link athlete-link-secondary" target="_blank" rel="noopener">Videos ↗</a>
+                                ${copyBtn}
                                 ${shareBtn}
                                 ${compareBtn}
                             </div>
@@ -3620,8 +4147,13 @@
             </div>
         ` : '';
 
+        // Check for pending AI response to prepend
+        const aiResponseHtml = window.pendingAIResponse || '';
+        window.pendingAIResponse = null; // Clear after using
+
         resultsDiv.innerHTML = `
             <section class="results-section">
+                ${aiResponseHtml}
                 <div class="section-header">
                     <h2 class="section-title">${title}</h2>
                     <span class="section-meta">Showing ${count} of ${RANKINGS_MAX * 2} athletes</span>
@@ -3856,6 +4388,49 @@
       }
     }
 
+    // --- Random Athlete ---
+    window.showRandomAthlete = async function() {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Finding a random athlete...</div>';
+
+      try {
+        // Fetch rankings to get pool of athletes
+        const [menResponse, womenResponse] = await Promise.all([
+          fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
+          fetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
+        ]);
+
+        if (!menResponse.ok || !womenResponse.ok) {
+          throw new Error('Unable to load rankings');
+        }
+
+        const menData = await menResponse.json();
+        const womenData = await womenResponse.json();
+
+        const menRankings = menData.data?.rankings || [];
+        const womenRankings = womenData.data?.rankings || [];
+        const allAthletes = [...menRankings, ...womenRankings];
+
+        if (allAthletes.length === 0) {
+          throw new Error('No athletes available');
+        }
+
+        // Pick a random athlete
+        const randomIndex = Math.floor(Math.random() * allAthletes.length);
+        const randomAthlete = allAthletes[randomIndex];
+
+        // Get full details and show
+        const athleteDetails = await getAthleteDetails(randomAthlete.athlete_id);
+        if (athleteDetails) {
+          showAthleteDetail(athleteDetails);
+        } else {
+          throw new Error('Could not load athlete details');
+        }
+      } catch (error) {
+        resultsDiv.innerHTML = `<div class="error-message">${error.message || 'Failed to find random athlete'}</div>`;
+      }
+    };
+
     // --- Home Page Function ---
     window.showHomePage = async function() {
         // Clear rankings context when going home
@@ -4033,8 +4608,13 @@
         history.pushState({}, '', '?view=favorites');
 
         if (favoriteIds.length === 0) {
+            // Check for pending AI response to prepend
+            const aiResponseHtml = window.pendingAIResponse || '';
+            window.pendingAIResponse = null; // Clear after using
+
             resultsDiv.innerHTML = `
                 <section class="results-section">
+                    ${aiResponseHtml}
                     <div class="section-header">
                         <h2 class="section-title">Favorites</h2>
                     </div>
@@ -4080,8 +4660,13 @@
 
         const favoritesHtml = validAthletes.map((a, i) => createFavoriteItem(a, i)).join('');
 
+        // Check for pending AI response to prepend
+        const aiResponseHtml = window.pendingAIResponse || '';
+        window.pendingAIResponse = null; // Clear after using
+
         resultsDiv.innerHTML = `
             <section class="results-section">
+                ${aiResponseHtml}
                 <div class="section-header">
                     <h2 class="section-title">Favorites</h2>
                     <span class="section-meta">${validAthletes.length} athlete${validAthletes.length !== 1 ? 's' : ''}</span>
@@ -4110,6 +4695,16 @@
                 showToast('Link copied to clipboard');
             });
         }
+    };
+
+    // --- Copy athlete link ---
+    window.copyAthleteLink = function(athleteId) {
+        const url = `${window.location.origin}${window.location.pathname}?athlete=${athleteId}`;
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('Link copied to clipboard');
+        }).catch(() => {
+            showToast('Failed to copy link');
+        });
     };
 
     // --- Analyze trend ---
