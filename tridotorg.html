@@ -2695,7 +2695,7 @@
     }
   </style>
 </head>
-<body>
+<body tabindex="-1">
   <!-- Navigation -->
   <nav class="nav">
     <div class="nav-inner">
@@ -2962,6 +2962,17 @@
       return active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable);
     }
 
+    // Helper to ensure input focus is cleared for keyboard shortcuts
+    function clearInputFocus() {
+      closeNavSearch();
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
+        active.blur();
+      }
+      // Move focus to body so keyboard shortcuts continue to work
+      document.body.focus();
+    }
+
     // Global keyboard shortcuts
     document.addEventListener('keydown', function(e) {
       // ⌘K / Ctrl+K - Search
@@ -2997,6 +3008,7 @@
       // F - Favorites
       if (e.key === 'f' || e.key === 'F') {
         e.preventDefault();
+        clearInputFocus();
         showFavorites();
         return;
       }
@@ -3004,6 +3016,7 @@
       // H - Home/Rankings
       if (e.key === 'h' || e.key === 'H') {
         e.preventDefault();
+        clearInputFocus();
         fetchTopRankings();
         return;
       }
@@ -3011,6 +3024,7 @@
       // C - Featured Content
       if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
+        clearInputFocus();
         showHomePage();
         return;
       }
@@ -3121,6 +3135,8 @@
       document.getElementById('navSearchInput').value = '';
       document.getElementById('nav-autocomplete-results').style.display = 'none';
       navSelectedIndex = -1;
+      // Restore focus to body so keyboard shortcuts work
+      document.body.focus();
     }
 
     // --- AI SEARCH MODE ---
@@ -4448,6 +4464,15 @@
         // Load first batch
         await loadMoreRankings();
 
+        // Clear any input focus after loading
+        setTimeout(() => {
+          const active = document.activeElement;
+          if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
+            active.blur();
+          }
+          document.body.focus();
+        }, 100);
+
       } catch (error) {
           resultsDiv.innerHTML = `<div class="error-message">${error.message}</div>`;
       }
@@ -4669,6 +4694,15 @@
                 </section>
             `;
 
+            // Clear any input focus after loading
+            setTimeout(() => {
+              const active = document.activeElement;
+              if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
+                active.blur();
+              }
+              document.body.focus();
+            }, 100);
+
         } catch (error) {
             resultsDiv.innerHTML = `<div class="error-message">${error.message}</div>`;
         }
@@ -4780,6 +4814,15 @@
             </section>`;
 
         resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Clear any input focus after scrolling
+        setTimeout(() => {
+          const active = document.activeElement;
+          if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
+            active.blur();
+          }
+          document.body.focus();
+        }, 100);
     };
 
     // --- Show athlete from favorites data ---
