@@ -3726,6 +3726,10 @@
     // Cache for athlete details to avoid redundant API calls
     const athleteCache = new Map();
 
+    // AbortControllers for cancelling in-flight autocomplete requests
+    let navAutocompleteController = null;
+    let mainAutocompleteController = null;
+
     // General API cache with TTL and LRU eviction
     const apiCache = {
       data: new Map(),
@@ -4068,6 +4072,16 @@
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), delay);
       };
+    }
+
+    // --- UTILITY: Fisher-Yates shuffle algorithm (O(n) - more efficient than sort) ---
+    function shuffle(array) {
+      const result = [...array];
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
     }
 
     // --- NAV SEARCH FUNCTIONS ---
@@ -4717,6 +4731,12 @@
         return;
       }
 
+      // Cancel previous request if still in flight
+      if (navAutocompleteController) {
+        navAutocompleteController.abort();
+      }
+      navAutocompleteController = new AbortController();
+
       autocompleteResults.innerHTML = '<div class="autocomplete-loading">Searching...</div>';
       autocompleteResults.style.display = 'block';
 
@@ -4724,10 +4744,11 @@
       twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
       const startDateStr = twoYearsAgo.toISOString().split('T')[0];
 
-      const [athleteResponse, eventResponse] = await Promise.all([
-        fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=4`),
-        fetch(`${API_BASE}?endpoint=/search/events&query=${encodeURIComponent(query)}&start_date=${startDateStr}&per_page=10`)
-      ]);
+      try {
+        const [athleteResponse, eventResponse] = await Promise.all([
+          fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=4`, { signal: navAutocompleteController.signal }),
+          fetch(`${API_BASE}?endpoint=/search/events&query=${encodeURIComponent(query)}&start_date=${startDateStr}&per_page=10`, { signal: navAutocompleteController.signal })
+        ]);
 
       const athleteData = athleteResponse.ok ? await athleteResponse.json() : { data: [] };
       const eventData = eventResponse.ok ? await eventResponse.json() : { data: [] };
@@ -4779,7 +4800,13 @@
         autocompleteResults.appendChild(item);
       });
 
-      autocompleteResults.style.display = 'block';
+        autocompleteResults.style.display = 'block';
+      } catch (error) {
+        // Ignore AbortError - this is expected when cancelling requests
+        if (error.name === 'AbortError') return;
+        console.error('Autocomplete error:', error);
+        autocompleteResults.innerHTML = '<div class="autocomplete-empty">Search failed</div>';
+      }
     }
 
     // --- Autocomplete handler (searches athletes and events) ---
@@ -4792,6 +4819,12 @@
         return;
       }
 
+      // Cancel previous request if still in flight
+      if (mainAutocompleteController) {
+        mainAutocompleteController.abort();
+      }
+      mainAutocompleteController = new AbortController();
+
       // Show loading state
       autocompleteResults.innerHTML = '<div class="autocomplete-loading">Searching...</div>';
       autocompleteResults.style.display = 'block';
@@ -4801,10 +4834,11 @@
       twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
       const startDateStr = twoYearsAgo.toISOString().split('T')[0];
 
-      const [athleteResponse, eventResponse] = await Promise.all([
-        fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=4`),
-        fetch(`${API_BASE}?endpoint=/search/events&query=${encodeURIComponent(query)}&start_date=${startDateStr}&per_page=10`)
-      ]);
+      try {
+        const [athleteResponse, eventResponse] = await Promise.all([
+          fetch(`${API_BASE}?endpoint=/search/athletes&query=${encodeURIComponent(query)}&per_page=4`, { signal: mainAutocompleteController.signal }),
+          fetch(`${API_BASE}?endpoint=/search/events&query=${encodeURIComponent(query)}&start_date=${startDateStr}&per_page=10`, { signal: mainAutocompleteController.signal })
+        ]);
 
       const athleteData = athleteResponse.ok ? await athleteResponse.json() : { data: [] };
       const eventData = eventResponse.ok ? await eventResponse.json() : { data: [] };
@@ -4869,7 +4903,13 @@
         autocompleteResults.appendChild(item);
       });
 
-      autocompleteResults.style.display = 'block';
+        autocompleteResults.style.display = 'block';
+      } catch (error) {
+        // Ignore AbortError - this is expected when cancelling requests
+        if (error.name === 'AbortError') return;
+        console.error('Autocomplete error:', error);
+        autocompleteResults.innerHTML = '<div class="autocomplete-empty">Search failed</div>';
+      }
     }
 
     // --- Function to create initials from name for placeholders ---
@@ -5442,7 +5482,10 @@
         const resultsDiv = document.getElementById('results');
         const { men, women, title } = currentRankingsData;
 
-        const count = men.filter(a => a).length + women.filter(a => a).length;
+        // Filter once and reuse (performance optimization)
+        const validMen = men.filter(a => a);
+        const validWomen = women.filter(a => a);
+        const count = validMen.length + validWomen.length;
 
         // Function to generate compact ranking item
         const createRankingItem = (athlete, rank) => {
@@ -5470,8 +5513,8 @@
                 </div>`;
         };
 
-        const menHtml = men.filter(a => a).map((a, i) => createRankingItem(a, i + 1)).join('');
-        const womenHtml = women.filter(a => a).map((a, i) => createRankingItem(a, i + 1)).join('');
+        const menHtml = validMen.map((a, i) => createRankingItem(a, i + 1)).join('');
+        const womenHtml = validWomen.map((a, i) => createRankingItem(a, i + 1)).join('');
 
         // Show "Load more" button if there are more rankings to load
         const hasMore = rankingsLoaded < RANKINGS_MAX;
@@ -5938,34 +5981,30 @@
 
             // Get a random selection of ranked athletes to pull action photos from
             const allRanked = [...menRankings, ...womenRankings];
-            const shuffledAthletes = allRanked.sort(() => 0.5 - Math.random()).slice(0, 12);
+            const shuffledAthletes = shuffle(allRanked).slice(0, 12);
 
             const athleteDetails = await Promise.all(
                 shuffledAthletes.map(a => getAthleteDetails(a.athlete_id))
             );
 
-            // Collect action photos from athletes' latest_images
-            const actionPhotos = [];
-            athleteDetails.forEach(athlete => {
-                if (athlete && athlete.latest_images && athlete.latest_images.length > 0) {
-                    // Take 1-2 images per athlete for variety
-                    const images = athlete.latest_images.slice(0, 2);
-                    images.forEach(img => {
-                        if (img.image_url || img.thumbnail) {
-                            actionPhotos.push({
-                                url: img.image_url || img.thumbnail,
-                                thumbnail: img.thumbnail || img.image_url,
-                                athleteName: athlete.athlete_full_name,
-                                athleteCountry: athlete.athlete_country_name || '',
-                                athleteId: athlete.athlete_id
-                            });
-                        }
-                    });
-                }
-            });
+            // Collect action photos from athletes' latest_images (optimized with flatMap)
+            const actionPhotos = athleteDetails
+                .filter(athlete => athlete?.latest_images?.length > 0)
+                .flatMap(athlete =>
+                    athlete.latest_images
+                        .slice(0, 2)  // Take 1-2 images per athlete for variety
+                        .filter(img => img.image_url || img.thumbnail)
+                        .map(img => ({
+                            url: img.image_url || img.thumbnail,
+                            thumbnail: img.thumbnail || img.image_url,
+                            athleteName: athlete.athlete_full_name,
+                            athleteCountry: athlete.athlete_country_name || '',
+                            athleteId: athlete.athlete_id
+                        }))
+                );
 
             // Shuffle action photos for a fresh look each time
-            const shuffledPhotos = actionPhotos.sort(() => 0.5 - Math.random()).slice(0, 12);
+            const shuffledPhotos = shuffle(actionPhotos).slice(0, 12);
 
             // Store photos for lightbox with athlete info
             window.currentPhotoGridImages = shuffledPhotos.map(photo => ({
