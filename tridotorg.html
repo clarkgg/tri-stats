@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#171717">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=BBH+Bartle&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <style>
     /* ============================================
@@ -120,7 +120,8 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: "Inter", sans-serif;
+      font-optical-sizing: auto;
       font-size: var(--text-base);
       line-height: 1.7;
       color: var(--text-primary);
@@ -164,10 +165,11 @@
     }
 
     .nav-brand {
+      font-family: "BBH Bartle", serif;
       font-size: var(--text-xl);
-      font-weight: 600;
+      font-weight: 400;
       color: var(--text-primary);
-      letter-spacing: -0.02em;
+      letter-spacing: 0;
       text-decoration: none;
       cursor: pointer;
       transition: opacity var(--transition-fast);
@@ -175,6 +177,18 @@
 
     .nav-brand:hover {
       opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      .nav-brand {
+        font-size: var(--text-lg);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-brand {
+        font-size: var(--text-base);
+      }
     }
 
     .nav-actions {
@@ -909,7 +923,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: var(--text-xl);
       font-weight: 600;
       color: var(--text-tertiary);
       background: var(--bg-tertiary);
@@ -963,7 +977,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: var(--text-xs);
       font-weight: 700;
       color: #fff;
     }
@@ -1382,7 +1396,7 @@
 
     .ranking-item-arrow {
       color: var(--text-tertiary);
-      font-size: 14px;
+      font-size: var(--text-sm);
       opacity: 0;
       transition: opacity var(--transition-fast);
     }
@@ -1451,7 +1465,7 @@
       justify-content: center;
       background: var(--bg-secondary);
       color: var(--text-tertiary);
-      font-size: 40px;
+      font-size: var(--text-3xl);
       font-weight: 600;
       border-radius: var(--radius-xl);
     }
@@ -1750,7 +1764,7 @@
       border: none;
       border-radius: 50%;
       color: white;
-      font-size: 24px;
+      font-size: var(--text-xl);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1773,7 +1787,7 @@
       border: none;
       border-radius: 50%;
       color: white;
-      font-size: 24px;
+      font-size: var(--text-xl);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1839,7 +1853,7 @@
       .lightbox-nav {
         width: 40px;
         height: 40px;
-        font-size: 20px;
+        font-size: var(--text-lg);
       }
 
       .lightbox-prev {
@@ -1873,7 +1887,7 @@
       }
 
       .athlete-name {
-        font-size: 24px;
+        font-size: var(--text-xl);
       }
 
       .athlete-actions {
@@ -1912,7 +1926,7 @@
       border: 1px solid #fecaca;
       border-radius: var(--radius-md);
       color: #dc2626;
-      font-size: 14px;
+      font-size: var(--text-sm);
     }
 
     [data-theme="dark"] .error-message {
@@ -2196,6 +2210,37 @@
     }
 
     /* Chart Container */
+    .chart-type-selector {
+      display: flex;
+      gap: var(--space-1);
+      align-items: center;
+    }
+
+    .chart-type-btn {
+      padding: var(--space-1) var(--space-2);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      font-family: inherit;
+    }
+
+    .chart-type-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--border-secondary);
+    }
+
+    .chart-type-btn.active {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-color: var(--accent);
+    }
+
     .chart-container {
       background: var(--bg-secondary);
       border-radius: var(--radius-xl);
@@ -2206,7 +2251,7 @@
     }
 
     .chart-container canvas {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      font-family: "Google Sans", sans-serif !important;
       cursor: pointer;
     }
 
@@ -2362,7 +2407,7 @@
       border: none;
       background: transparent;
       color: var(--text-secondary);
-      font-size: 20px;
+      font-size: var(--text-lg);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -2556,7 +2601,7 @@
       border: none;
       background: transparent;
       color: var(--text-secondary);
-      font-size: 18px;
+      font-size: var(--text-lg);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -2585,7 +2630,7 @@
 
     .shortcut-item kbd {
       font-family: 'SF Mono', ui-monospace, monospace;
-      font-size: 12px;
+      font-size: var(--text-xs);
       padding: 4px 8px;
       background: var(--bg-tertiary);
       border: 1px solid var(--border-primary);
@@ -2623,13 +2668,13 @@
     .trend-indicator.stable { color: var(--text-secondary); }
 
     .trend-icon {
-      font-size: 28px;
+      font-size: var(--text-xl);
       font-weight: bold;
       line-height: 1;
     }
 
     .trend-label {
-      font-size: 12px;
+      font-size: var(--text-xs);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -2649,7 +2694,7 @@
     }
 
     .trend-stat-label {
-      font-size: 11px;
+      font-size: var(--text-xs);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -2657,7 +2702,7 @@
     }
 
     .trend-stat-value {
-      font-size: 18px;
+      font-size: var(--text-lg);
       font-weight: 600;
       color: var(--text-primary);
     }
@@ -2702,14 +2747,14 @@
     }
 
     .comparison-modal-title {
-      font-size: 15px;
+      font-size: var(--text-sm);
       font-weight: 600;
     }
 
     .comparison-modal-close {
       background: transparent;
       border: none;
-      font-size: 24px;
+      font-size: var(--text-xl);
       color: var(--text-secondary);
       cursor: pointer;
       line-height: 1;
@@ -2748,7 +2793,7 @@
       justify-content: center;
       background: var(--bg-tertiary);
       color: var(--text-tertiary);
-      font-size: 14px;
+      font-size: var(--text-sm);
       font-weight: 600;
     }
 
@@ -2757,12 +2802,12 @@
     }
 
     .comparison-modal-athlete-name {
-      font-size: 15px;
+      font-size: var(--text-sm);
       font-weight: 500;
     }
 
     .comparison-modal-athlete-country {
-      font-size: 13px;
+      font-size: var(--text-xs);
       color: var(--text-secondary);
     }
 
@@ -2774,7 +2819,7 @@
       width: 100%;
       padding: var(--space-3) var(--space-4);
       font-family: inherit;
-      font-size: 14px;
+      font-size: var(--text-sm);
       color: var(--text-primary);
       background: var(--bg-primary);
       border: 1px solid var(--border-primary);
@@ -2825,7 +2870,7 @@
       justify-content: center;
       background: var(--bg-tertiary);
       color: var(--text-tertiary);
-      font-size: 12px;
+      font-size: var(--text-xs);
       font-weight: 600;
     }
 
@@ -2834,12 +2879,12 @@
     }
 
     .comparison-modal-item-name {
-      font-size: 14px;
+      font-size: var(--text-sm);
       font-weight: 500;
     }
 
     .comparison-modal-item-country {
-      font-size: 12px;
+      font-size: var(--text-xs);
       color: var(--text-secondary);
     }
 
@@ -2847,7 +2892,7 @@
       padding: var(--space-4);
       text-align: center;
       color: var(--text-tertiary);
-      font-size: 14px;
+      font-size: var(--text-sm);
     }
 
     .comparison-grid {
@@ -2862,7 +2907,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: var(--text-xl);
       font-weight: 700;
       color: var(--text-tertiary);
       padding: var(--space-8) var(--space-4);
@@ -2888,7 +2933,7 @@
 
     .comparison-card-name {
       display: block;
-      font-size: 18px;
+      font-size: var(--text-lg);
       font-weight: 600;
       margin-bottom: var(--space-1);
       text-decoration: none;
@@ -2901,7 +2946,7 @@
     }
 
     .comparison-card-country {
-      font-size: 14px;
+      font-size: var(--text-sm);
       color: var(--text-secondary);
       margin-bottom: var(--space-3);
     }
@@ -2914,13 +2959,13 @@
     }
 
     .comparison-stat-label {
-      font-size: 11px;
+      font-size: var(--text-xs);
       color: var(--text-tertiary);
       text-transform: uppercase;
     }
 
     .comparison-stat-value {
-      font-size: 14px;
+      font-size: var(--text-sm);
       font-weight: 500;
     }
 
@@ -3064,6 +3109,7 @@
         text-align: center;
       }
     }
+
   </style>
 </head>
 <body tabindex="-1">
@@ -3146,6 +3192,476 @@
     // API calls go through our serverless proxy (see /api/triathlon.js)
     // This keeps the API key secure on the server side
     const API_BASE = '/api/triathlon';
+
+    // ============================================
+    // Race Split Data Utilities
+    // ============================================
+
+    // Cache for split data per race
+    const splitDataCache = {};
+
+    /**
+     * Parse time string (HH:MM:SS or MM:SS) to seconds
+     */
+    function parseTimeToSeconds(timeStr) {
+        if (!timeStr || typeof timeStr !== 'string') return null;
+        const parts = timeStr.trim().split(':').map(Number);
+        if (parts.length === 3) {
+            return parts[0] * 3600 + parts[1] * 60 + parts[2];
+        } else if (parts.length === 2) {
+            return parts[0] * 60 + parts[1];
+        }
+        return null;
+    }
+
+    /**
+     * Format seconds to MM:SS or HH:MM:SS
+     */
+    function formatSecondsToTime(seconds) {
+        if (seconds === null || seconds === undefined) return '';
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = Math.floor(seconds % 60);
+        if (hrs > 0) {
+            return `${hrs}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        return `${mins}:${String(secs).padStart(2, '0')}`;
+    }
+
+    /**
+     * Extract split data from API result object
+     * Handles various field name variations
+     */
+    function extractSplitData(result) {
+        const splits = {
+            swim_time: null,
+            bike_time: null,
+            run_time: null,
+            t1_time: null,
+            t2_time: null,
+            swim_seconds: null,
+            bike_seconds: null,
+            run_seconds: null,
+            t1_seconds: null,
+            t2_seconds: null,
+            swim_position: null,
+            bike_position: null,
+            run_position: null,
+            total_time: result.total_time || null,
+            total_seconds: null
+        };
+
+        // Try various field name patterns
+        const fieldMappings = {
+            swim: ['swim_time', 'swim', 'swimTime', 'swim_time_formatted'],
+            bike: ['bike_time', 'bike', 'bikeTime', 'bike_time_formatted'],
+            run: ['run_time', 'run', 'runTime', 'run_time_formatted'],
+            t1: ['t1_time', 't1', 'transition1', 'transition_1'],
+            t2: ['t2_time', 't2', 'transition2', 'transition_2']
+        };
+
+        // Extract times
+        Object.keys(fieldMappings).forEach(discipline => {
+            const fields = fieldMappings[discipline];
+            for (const field of fields) {
+                if (result[field]) {
+                    const timeKey = `${discipline}_time`;
+                    splits[timeKey] = result[field];
+                    const seconds = parseTimeToSeconds(result[field]);
+                    if (seconds !== null) {
+                        splits[`${discipline}_seconds`] = seconds;
+                    }
+                    break;
+                }
+            }
+        });
+
+        // Extract positions
+        if (result.swim_position) splits.swim_position = parseInt(result.swim_position);
+        if (result.bike_position) splits.bike_position = parseInt(result.bike_position);
+        if (result.run_position) splits.run_position = parseInt(result.run_position);
+
+        // Calculate total seconds if we have total_time
+        if (result.total_time) {
+            splits.total_seconds = parseTimeToSeconds(result.total_time);
+        }
+
+        return splits;
+    }
+
+    /**
+     * Enhance result object with split data and calculated metrics
+     */
+    function enhanceResultWithSplits(result, allResults = []) {
+        const splits = extractSplitData(result);
+        const enhanced = { ...result, ...splits };
+
+        // Calculate relative performance (% of winner's time)
+        if (allResults.length > 0) {
+            const winner = allResults[0];
+            const winnerSplits = extractSplitData(winner);
+
+            if (winnerSplits.swim_seconds && splits.swim_seconds) {
+                enhanced.relative_swim = (splits.swim_seconds / winnerSplits.swim_seconds) * 100;
+            }
+            if (winnerSplits.bike_seconds && splits.bike_seconds) {
+                enhanced.relative_bike = (splits.bike_seconds / winnerSplits.bike_seconds) * 100;
+            }
+            if (winnerSplits.run_seconds && splits.run_seconds) {
+                enhanced.relative_run = (splits.run_seconds / winnerSplits.run_seconds) * 100;
+            }
+            if (winnerSplits.total_seconds && splits.total_seconds) {
+                enhanced.relative_total = (splits.total_seconds / winnerSplits.total_seconds) * 100;
+            }
+        }
+
+        // Calculate discipline ranks (position within race for each discipline)
+        if (allResults.length > 0) {
+            const disciplineRanks = { swim: null, bike: null, run: null };
+            
+            // Sort by swim time
+            const swimSorted = [...allResults]
+                .map(r => ({ ...r, splits: extractSplitData(r) }))
+                .filter(r => r.splits.swim_seconds !== null)
+                .sort((a, b) => a.splits.swim_seconds - b.splits.swim_seconds);
+            const swimRank = swimSorted.findIndex(r => r.athlete_id === result.athlete_id);
+            if (swimRank >= 0) disciplineRanks.swim = swimRank + 1;
+
+            // Sort by bike time
+            const bikeSorted = [...allResults]
+                .map(r => ({ ...r, splits: extractSplitData(r) }))
+                .filter(r => r.splits.bike_seconds !== null)
+                .sort((a, b) => a.splits.bike_seconds - b.splits.bike_seconds);
+            const bikeRank = bikeSorted.findIndex(r => r.athlete_id === result.athlete_id);
+            if (bikeRank >= 0) disciplineRanks.bike = bikeRank + 1;
+
+            // Sort by run time
+            const runSorted = [...allResults]
+                .map(r => ({ ...r, splits: extractSplitData(r) }))
+                .filter(r => r.splits.run_seconds !== null)
+                .sort((a, b) => a.splits.run_seconds - b.splits.run_seconds);
+            const runRank = runSorted.findIndex(r => r.athlete_id === result.athlete_id);
+            if (runRank >= 0) disciplineRanks.run = runRank + 1;
+
+            enhanced.discipline_ranks = disciplineRanks;
+        }
+
+        return enhanced;
+    }
+
+    /**
+     * Log API response structure for debugging
+     */
+    function logApiStructure(data, context = '') {
+        if (data && data.data && data.data.results && data.data.results.length > 0) {
+            const firstResult = data.data.results[0];
+            console.log(`API Structure ${context}:`, {
+                availableFields: Object.keys(firstResult),
+                sampleResult: firstResult,
+                hasSwim: !!firstResult.swim_time || !!firstResult.swim,
+                hasBike: !!firstResult.bike_time || !!firstResult.bike,
+                hasRun: !!firstResult.run_time || !!firstResult.run
+            });
+        }
+    }
+
+    /**
+     * Calculate discipline strength analysis from athlete results
+     */
+    function calculateDisciplineStrength(results) {
+        if (!results || results.length === 0) return null;
+
+        const disciplines = ['swim', 'bike', 'run'];
+        const stats = {
+            swim: { ranks: [], relative: [], count: 0 },
+            bike: { ranks: [], relative: [], count: 0 },
+            run: { ranks: [], relative: [], count: 0 }
+        };
+
+        // Collect discipline data
+        results.forEach(result => {
+            disciplines.forEach(discipline => {
+                if (result.discipline_ranks && result.discipline_ranks[discipline] !== null) {
+                    stats[discipline].ranks.push(result.discipline_ranks[discipline]);
+                    stats[discipline].count++;
+                }
+                if (result[`relative_${discipline}`] !== null && result[`relative_${discipline}`] !== undefined) {
+                    stats[discipline].relative.push(result[`relative_${discipline}`]);
+                }
+            });
+        });
+
+        // Calculate averages
+        const analysis = {};
+        disciplines.forEach(discipline => {
+            const data = stats[discipline];
+            if (data.count > 0) {
+                const avgRank = data.ranks.reduce((a, b) => a + b, 0) / data.ranks.length;
+                const avgRelative = data.relative.length > 0 
+                    ? data.relative.reduce((a, b) => a + b, 0) / data.relative.length 
+                    : null;
+                
+                analysis[discipline] = {
+                    avgRank: avgRank,
+                    avgRelative: avgRelative,
+                    count: data.count,
+                    bestRank: Math.min(...data.ranks),
+                    worstRank: Math.max(...data.ranks)
+                };
+            }
+        });
+
+        // Determine strongest and weakest disciplines
+        const disciplinesWithData = Object.keys(analysis);
+        if (disciplinesWithData.length === 0) return null;
+
+        // Sort by average rank (lower is better)
+        const sorted = disciplinesWithData.sort((a, b) => analysis[a].avgRank - analysis[b].avgRank);
+        
+        return {
+            strongest: sorted[0],
+            weakest: sorted[sorted.length - 1],
+            disciplines: analysis,
+            hasData: disciplinesWithData.length > 0
+        };
+    }
+
+    /**
+     * Get discipline strength badge HTML
+     */
+    function getDisciplineStrengthBadge(strength) {
+        if (!strength || !strength.hasData) return '';
+
+        const disciplineNames = { swim: 'Swim', bike: 'Bike', run: 'Run' };
+        const disciplineIcons = { swim: '🏊', bike: '🚴', run: '🏃' };
+        const disciplineColors = { swim: '#3b82f6', bike: '#10b981', run: '#ef4444' };
+
+        const strongest = strength.strongest;
+        const avgRank = strength.disciplines[strongest].avgRank.toFixed(1);
+
+        return `
+            <div class="discipline-strength-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--bg-secondary); border-radius: var(--radius-md); font-size: var(--text-xs); margin-top: var(--space-2);">
+                <span style="font-size: var(--text-sm);">${disciplineIcons[strongest]}</span>
+                <span style="color: var(--text-secondary);">Strongest:</span>
+                <span style="color: ${disciplineColors[strongest]}; font-weight: 600;">${disciplineNames[strongest]}</span>
+                <span style="color: var(--text-tertiary);">(Avg Rank: ${avgRank})</span>
+            </div>
+        `;
+    }
+
+    /**
+     * Enhance results with split data from cache or API
+     * This is async and non-blocking - will enhance when data becomes available
+     */
+    async function enhanceResultsWithSplitData(athleteId, results) {
+        if (!results || results.length === 0) return results;
+
+        const enhanced = await Promise.all(results.map(async (result) => {
+            // Check if we already have split data
+            if (result.swim_seconds !== null && result.swim_seconds !== undefined) {
+                return result; // Already enhanced
+            }
+
+            // Check cache first
+            if (result.event_id && result.prog_id) {
+                const cacheKey = `${result.event_id}_${result.prog_id}`;
+                if (splitDataCache[cacheKey]) {
+                    const cached = splitDataCache[cacheKey];
+                    const athleteResult = cached.allResults.find(r => 
+                        r.athlete_id == athleteId || 
+                        (r.athlete_title && result.athlete_title && r.athlete_title === result.athlete_title)
+                    );
+                    if (athleteResult) {
+                        return { ...result, ...extractSplitData(athleteResult) };
+                    }
+                }
+            }
+
+            return result; // Return original if no enhancement available
+        }));
+
+        return enhanced;
+    }
+
+    /**
+     * Calculate statistical insights from results
+     */
+    function calculateStatisticalInsights(results) {
+        if (!results || results.length === 0) return null;
+
+        const disciplines = ['swim', 'bike', 'run'];
+        const insights = {
+            disciplines: {},
+            trends: {},
+            consistency: {},
+            correlations: {}
+        };
+
+        disciplines.forEach(discipline => {
+            const times = results
+                .map(r => r[`${discipline}_seconds`])
+                .filter(t => t !== null && t !== undefined);
+            
+            if (times.length === 0) return;
+
+            const sorted = [...times].sort((a, b) => a - b);
+            const avg = sorted.reduce((a, b) => a + b, 0) / sorted.length;
+            const best = sorted[0];
+            const worst = sorted[sorted.length - 1];
+            
+            // Calculate standard deviation and coefficient of variation
+            const variance = sorted.reduce((sum, t) => sum + Math.pow(t - avg, 2), 0) / sorted.length;
+            const stdDev = Math.sqrt(variance);
+            const cv = (stdDev / avg) * 100; // Coefficient of variation (%)
+
+            // Calculate trend (slope) - simple linear regression
+            const dates = results
+                .map((r, idx) => ({ date: new Date(r.event_date).getTime(), time: r[`${discipline}_seconds`] }))
+                .filter(d => d.time !== null && d.time !== undefined)
+                .sort((a, b) => a.date - b.date);
+            
+            let trend = null;
+            if (dates.length >= 2) {
+                const n = dates.length;
+                const sumX = dates.reduce((s, d) => s + d.date, 0);
+                const sumY = dates.reduce((s, d) => s + d.time, 0);
+                const sumXY = dates.reduce((s, d) => s + d.date * d.time, 0);
+                const sumX2 = dates.reduce((s, d) => s + d.date * d.date, 0);
+                
+                const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                // Convert slope to seconds per year (approximate)
+                const slopePerYear = slope * (365.25 * 24 * 60 * 60 * 1000);
+                trend = {
+                    slope: slopePerYear,
+                    direction: slopePerYear < -10 ? 'improving' : slopePerYear > 10 ? 'declining' : 'stable',
+                    magnitude: Math.abs(slopePerYear)
+                };
+            }
+
+            insights.disciplines[discipline] = {
+                avg: avg,
+                best: best,
+                worst: worst,
+                count: times.length,
+                avgFormatted: formatSecondsToTime(avg),
+                bestFormatted: formatSecondsToTime(best),
+                worstFormatted: formatSecondsToTime(worst)
+            };
+
+            insights.consistency[discipline] = {
+                stdDev: stdDev,
+                cv: cv,
+                stdDevFormatted: formatSecondsToTime(stdDev)
+            };
+
+            if (trend) {
+                insights.trends[discipline] = trend;
+            }
+        });
+
+        // Calculate correlations between disciplines
+        const swimTimes = results.map(r => r.swim_seconds).filter(t => t !== null);
+        const bikeTimes = results.map(r => r.bike_seconds).filter(t => t !== null);
+        const runTimes = results.map(r => r.run_seconds).filter(t => t !== null);
+        const positions = results.map(r => parseInt(r.position)).filter(p => !isNaN(p));
+
+        const calculateCorrelation = (x, y) => {
+            if (x.length !== y.length || x.length < 2) return null;
+            const n = x.length;
+            const sumX = x.reduce((a, b) => a + b, 0);
+            const sumY = y.reduce((a, b) => a + b, 0);
+            const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+            const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+            const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
+            
+            const numerator = n * sumXY - sumX * sumY;
+            const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+            
+            return denominator === 0 ? null : numerator / denominator;
+        };
+
+        if (swimTimes.length === bikeTimes.length && swimTimes.length > 1) {
+            insights.correlations.swim_bike = calculateCorrelation(swimTimes, bikeTimes);
+        }
+        if (swimTimes.length === runTimes.length && swimTimes.length > 1) {
+            insights.correlations.swim_run = calculateCorrelation(swimTimes, runTimes);
+        }
+        if (bikeTimes.length === runTimes.length && bikeTimes.length > 1) {
+            insights.correlations.bike_run = calculateCorrelation(bikeTimes, runTimes);
+        }
+
+        return insights;
+    }
+
+    /**
+     * Generate statistical insights panel HTML
+     */
+    function generateStatisticalInsightsPanel(insights) {
+        if (!insights) return '';
+
+        const disciplineNames = { swim: 'Swim', bike: 'Bike', run: 'Run' };
+        const disciplineColors = { swim: '#3b82f6', bike: '#10b981', run: '#ef4444' };
+
+        let html = '<div class="statistical-insights-panel" style="margin-top: var(--space-6); padding: var(--space-6); background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-primary);">';
+        html += '<div class="athlete-section-title" style="margin-bottom: var(--space-4);">Statistical Insights</div>';
+
+        // Discipline averages and best/worst
+        html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6);">';
+        Object.keys(insights.disciplines).forEach(discipline => {
+            const data = insights.disciplines[discipline];
+            html += `
+                <div style="padding: var(--space-4); background: var(--bg-primary); border-radius: var(--radius-md); border-left: 3px solid ${disciplineColors[discipline]};">
+                    <div style="font-size: var(--text-sm); font-weight: 600; color: ${disciplineColors[discipline]}; margin-bottom: var(--space-3);">${disciplineNames[discipline]}</div>
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary); margin-bottom: var(--space-2);">
+                        <span>Avg:</span> <span style="color: var(--text-primary); font-weight: 500;">${data.avgFormatted}</span>
+                    </div>
+                    <div style="font-size: var(--text-xs); color: var(--text-secondary);">
+                        <span>Best:</span> <span style="color: var(--text-primary); font-weight: 500;">${data.bestFormatted}</span>
+                        <span style="margin-left: var(--space-3);">Worst:</span> <span style="color: var(--text-primary); font-weight: 500;">${data.worstFormatted}</span>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+
+        // Trends
+        if (Object.keys(insights.trends).length > 0) {
+            html += '<div style="margin-bottom: var(--space-4);"><div style="font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2);">Performance Trends</div>';
+            Object.keys(insights.trends).forEach(discipline => {
+                const trend = insights.trends[discipline];
+                const directionIcon = trend.direction === 'improving' ? '📈' : trend.direction === 'declining' ? '📉' : '➡️';
+                const directionColor = trend.direction === 'improving' ? '#10b981' : trend.direction === 'declining' ? '#ef4444' : '#6b7280';
+                html += `
+                    <div style="padding: var(--space-2); font-size: var(--text-xs); color: var(--text-secondary);">
+                        <span style="margin-right: var(--space-2);">${directionIcon}</span>
+                        <span style="color: ${disciplineColors[discipline]}; font-weight: 500;">${disciplineNames[discipline]}:</span>
+                        <span style="color: ${directionColor};">${trend.direction}</span>
+                        ${trend.magnitude > 10 ? `<span style="color: var(--text-tertiary);">(${Math.abs(trend.slope).toFixed(0)}s/year)</span>` : ''}
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+
+        // Consistency
+        if (Object.keys(insights.consistency).length > 0) {
+            html += '<div style="margin-bottom: var(--space-4);"><div style="font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2);">Consistency</div>';
+            Object.keys(insights.consistency).forEach(discipline => {
+                const consistency = insights.consistency[discipline];
+                html += `
+                    <div style="padding: var(--space-2); font-size: var(--text-xs); color: var(--text-secondary);">
+                        <span style="color: ${disciplineColors[discipline]}; font-weight: 500;">${disciplineNames[discipline]}:</span>
+                        <span>Std Dev: ${consistency.stdDevFormatted}</span>
+                        <span style="margin-left: var(--space-3);">CV: ${consistency.cv.toFixed(1)}%</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+
+        html += '</div>';
+        return html;
+    }
 
     // Lazy load Chart.js only when needed
     let chartJsLoaded = false;
@@ -4605,11 +5121,42 @@
         showRaceDetailsModal(result);
 
         try {
+            const cacheKey = `${eventId}_${progId}`;
+            
+            // Check cache first
+            if (splitDataCache[cacheKey]) {
+                const cached = splitDataCache[cacheKey];
+                const sortedResults = cached.allResults
+                    .filter(r => r.position && !isNaN(parseInt(r.position)))
+                    .sort((a, b) => parseInt(a.position) - parseInt(b.position))
+                    .slice(0, 10);
+                if (sortedResults.length > 0) {
+                    updateRaceDetailsModal(result, sortedResults);
+                } else {
+                    updateRaceDetailsModal(result, cached.allResults.slice(0, 10));
+                }
+                return;
+            }
+
             const response = await fetch(`${API_BASE}?endpoint=/events/${eventId}/programs/${progId}/results`);
             const data = await response.json();
 
+            // Log API structure for debugging
+            logApiStructure(data, `for program ${eventId}/${progId}`);
+
             if (data.data && data.data.results && Array.isArray(data.data.results)) {
-                const sortedResults = data.data.results
+                const allResults = data.data.results;
+                
+                // Enhance all results with split data
+                const enhancedResults = allResults.map(r => enhanceResultWithSplits(r, allResults));
+                
+                // Cache the enhanced results
+                splitDataCache[cacheKey] = {
+                    allResults: enhancedResults,
+                    timestamp: Date.now()
+                };
+
+                const sortedResults = enhancedResults
                     .filter(r => r.position && !isNaN(parseInt(r.position)))
                     .sort((a, b) => parseInt(a.position) - parseInt(b.position))
                     .slice(0, 10);
@@ -4617,7 +5164,7 @@
                 if (sortedResults.length > 0) {
                     updateRaceDetailsModal(result, sortedResults);
                 } else {
-                    updateRaceDetailsModal(result, data.data.results.slice(0, 10));
+                    updateRaceDetailsModal(result, enhancedResults.slice(0, 10));
                 }
             } else {
                 showRaceDetailsError(result);
@@ -4703,18 +5250,24 @@
                 }).join('')}</div>
             </div>` : '';
 
-        // Chart HTML - shows recent race finishes (no trend analysis)
+        // Chart HTML - shows recent race finishes with split analysis
         const chartHtml = (athlete.latest_results && athlete.latest_results.length >= 2) ?
             `<div class="athlete-section">
-                <div class="athlete-section-title" style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>Race Finishes</span>
-                    <span style="font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-tertiary);">Click points for details</span>
+                <div class="athlete-section-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-2);">
+                    <span>Performance Analysis</span>
+                    <div class="chart-type-selector" style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
+                        <button class="chart-type-btn active" data-chart-type="position" onclick="switchChartType('position')" style="font-size: var(--text-xs); padding: 4px 8px;">Position</button>
+                        <button class="chart-type-btn" data-chart-type="swim" onclick="switchChartType('swim')" style="font-size: var(--text-xs); padding: 4px 8px;">Swim</button>
+                        <button class="chart-type-btn" data-chart-type="bike" onclick="switchChartType('bike')" style="font-size: var(--text-xs); padding: 4px 8px;">Bike</button>
+                        <button class="chart-type-btn" data-chart-type="run" onclick="switchChartType('run')" style="font-size: var(--text-xs); padding: 4px 8px;">Run</button>
+                        <button class="chart-type-btn" data-chart-type="relative" onclick="switchChartType('relative')" style="font-size: var(--text-xs); padding: 4px 8px;">Relative</button>
+                    </div>
                 </div>
                 <div class="chart-container">
                     <div style="height: 280px;">
                         <canvas id="results-chart"></canvas>
                     </div>
-                    <div class="chart-legend">
+                    <div class="chart-legend" id="chart-legend">
                         <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #f59e0b;"></span> 1st</div>
                         <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #6b7280;"></span> 2nd</div>
                         <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #ea580c;"></span> 3rd</div>
@@ -4723,7 +5276,7 @@
                     </div>
                 </div>
                 <div style="text-align: center; margin-top: var(--space-3);">
-                    <button id="load-more-results-btn" class="athlete-link athlete-link-secondary" onclick="toggleResultsView(${athlete.athlete_id})" style="font-size: 12px; height: 32px;" data-view="recent">
+                    <button id="load-more-results-btn" class="athlete-link athlete-link-secondary" onclick="toggleResultsView(${athlete.athlete_id})" style="font-size: var(--text-xs); height: 32px;" data-view="recent">
                         Load Full Race History
                     </button>
                 </div>
@@ -4747,7 +5300,10 @@
         // Store gallery data globally for lightbox
         window.currentGalleryImages = galleryImages;
 
-        const hasBodyContent = resultsHtml || chartHtml || galleryHtml;
+        // Statistical insights panel (will be populated async when split data is available)
+        const insightsHtml = '<div id="statistical-insights-container"></div>';
+
+        const hasBodyContent = resultsHtml || chartHtml || galleryHtml || insightsHtml;
 
         // Show back button only if we came from rankings
         const backBtnHtml = currentRankingsData ?
@@ -4780,6 +5336,7 @@
                                 ${athlete.race_podiums ? `<div class="athlete-stat"><span class="athlete-stat-label">Podiums</span><span class="athlete-stat-value">${athlete.race_podiums}</span></div>` : ''}
                                 ${athlete.world_rank ? `<div class="athlete-stat"><span class="athlete-stat-label">World Rank</span><span class="athlete-stat-value">#${athlete.world_rank}</span></div>` : ''}
                             </div>
+                            <div id="discipline-strength-container"></div>
                             <div class="athlete-actions">
                                 <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(athlete.athlete_full_name + ' triathlon')}" class="athlete-link athlete-link-secondary" target="_blank" rel="noopener">Videos ↗</a>
                                 ${copyBtn}
@@ -4788,7 +5345,7 @@
                             </div>
                         </div>
                     </div>
-                    ${hasBodyContent ? `<div class="athlete-body">${chartHtml}${resultsHtml}${galleryHtml}<div style="margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--border-primary); text-align: center;"><a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a></div></div>` : `<div class="athlete-body" style="padding: var(--space-8) 0; border-top: 1px solid var(--border-primary); text-align: center;"><a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a></div>`}
+                    ${hasBodyContent ? `<div class="athlete-body">${chartHtml}${insightsHtml}${resultsHtml}${galleryHtml}<div style="margin-top: var(--space-8); padding-top: var(--space-6); border-top: 1px solid var(--border-primary); text-align: center;"><a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a></div></div>` : `<div class="athlete-body" style="padding: var(--space-8) 0; border-top: 1px solid var(--border-primary); text-align: center;"><a href="${athlete.athlete_listing}" class="athlete-link" target="_blank">View on triathlon.org</a></div>`}
                 </article>
             </section>`;
 
@@ -4799,6 +5356,51 @@
             // Cache recent results for toggle functionality
             recentResultsCache[athlete.athlete_id] = athlete.latest_results;
             setTimeout(() => renderResultsChart(athlete.latest_results), 0);
+            
+            // Calculate and display discipline strength (async - will update when split data is available)
+            setTimeout(() => {
+                const strength = calculateDisciplineStrength(athlete.latest_results);
+                const container = document.getElementById('discipline-strength-container');
+                if (container && strength && strength.hasData) {
+                    container.innerHTML = getDisciplineStrengthBadge(strength);
+                }
+            }, 100);
+        }
+        
+        // Try to enhance results with split data (async, non-blocking)
+        if (athlete.latest_results && athlete.latest_results.length > 0) {
+            enhanceResultsWithSplitData(athlete.athlete_id, athlete.latest_results).then(enhancedResults => {
+                if (enhancedResults && enhancedResults.length > 0) {
+                    // Recalculate discipline strength with enhanced data
+                    const strength = calculateDisciplineStrength(enhancedResults);
+                    const container = document.getElementById('discipline-strength-container');
+                    if (container && strength && strength.hasData) {
+                        container.innerHTML = getDisciplineStrengthBadge(strength);
+                    }
+                    
+                    // Calculate and display statistical insights
+                    const insights = calculateStatisticalInsights(enhancedResults);
+                    const insightsContainer = document.getElementById('statistical-insights-container');
+                    if (insightsContainer && insights) {
+                        insightsContainer.innerHTML = generateStatisticalInsightsPanel(insights);
+                    }
+                    
+                    // Update chart if split data is now available
+                    if (currentChartResults.length > 0) {
+                        // Merge enhanced data back into current results
+                        const updatedResults = currentChartResults.map(r => {
+                            const enhanced = enhancedResults.find(e => 
+                                e.event_id === r.event_id && e.prog_id === r.prog_id
+                            );
+                            return enhanced || r;
+                        });
+                        currentChartResults = updatedResults;
+                        renderResultsChart(updatedResults, currentChartType);
+                    }
+                }
+            }).catch(err => {
+                console.log('Could not enhance results with split data:', err);
+            });
         }
     }
 
@@ -5621,7 +6223,7 @@
                     }).join('')}
                 </div>
             ` : `
-                <p style="color: var(--text-secondary); font-size: 14px;">Visit World Triathlon for the latest race results, athlete stories, and event coverage.</p>
+                <p style="color: var(--text-secondary); font-size: var(--text-sm);">Visit World Triathlon for the latest race results, athlete stories, and event coverage.</p>
             `;
 
             resultsDiv.innerHTML = `
@@ -5865,7 +6467,7 @@
     window.shareAthlete = function(athleteId, athleteName) {
         const url = `${window.location.origin}${window.location.pathname}?athlete=${athleteId}`;
         if (navigator.share) {
-            navigator.share({ url, title: `${athleteName} - Triathlon Stats` });
+            navigator.share({ url, title: `${athleteName} - Tri Stats` });
         } else {
             navigator.clipboard.writeText(url).then(() => {
                 showToast('Link copied to clipboard');
@@ -5926,10 +6528,31 @@
     // --- Render results chart with colors and click interactivity ---
     let currentChart = null;
     let chartResults = [];
+    let currentChartType = 'position'; // 'position', 'swim', 'bike', 'run', 'relative'
+    let currentChartResults = []; // Store results for chart type switching
 
-    async function renderResultsChart(results) {
+    // Switch chart type
+    window.switchChartType = function(type) {
+        currentChartType = type;
+        
+        // Update button states
+        document.querySelectorAll('.chart-type-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-chart-type') === type);
+        });
+        
+        // Re-render chart with new type
+        if (currentChartResults.length > 0) {
+            renderResultsChart(currentChartResults, type);
+        }
+    };
+
+    async function renderResultsChart(results, chartType = null) {
         const ctx = document.getElementById('results-chart');
         if (!ctx || results.length < 2) return;
+
+        // Use provided chart type or current global type
+        const type = chartType || currentChartType;
+        currentChartType = type;
 
         // Load Chart.js if not already loaded
         await loadChartJs();
@@ -5946,8 +6569,9 @@
 
         if (sortedResults.length < 2) return;
 
-        // Store for click handler
+        // Store for click handler and type switching
         chartResults = sortedResults;
+        currentChartResults = sortedResults;
 
         // Get theme colors
         const styles = getComputedStyle(document.documentElement);
@@ -5966,22 +6590,43 @@
             return isDark ? '#a3a3a3' : '#525252'; // Default
         };
 
-        const positions = sortedResults.map(r => parseInt(r.position));
         const labels = sortedResults.map(r => {
             const date = new Date(r.event_date);
             return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
         });
 
-        // Generate point colors based on position
-        const pointColors = positions.map(pos => getPositionColor(pos));
+        // Prepare data based on chart type
+        let chartData, yAxisConfig, chartTitle, pointColors, datasets;
+        const positions = sortedResults.map(r => parseInt(r.position));
+        const pointColorsByPosition = positions.map(pos => getPositionColor(pos));
 
-        currentChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [{
+        if (type === 'position') {
+            // Position chart (existing)
+            chartData = positions;
+            chartTitle = 'Finish Position';
+            pointColors = pointColorsByPosition;
+            yAxisConfig = {
+                reverse: true,
+                min: 0,
+                grace: '5%',
+                title: {
+                    display: true,
+                    text: 'Finish Position',
+                    color: textSecondary,
+                    font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                    padding: { bottom: 8 }
+                },
+                ticks: {
+                    color: textSecondary,
+                    font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                    padding: 12,
+                    stepSize: 1,
+                    callback: (value) => value >= 1 ? '#' + value : ''
+                }
+            };
+            datasets = [{
                     label: 'Finish Position',
-                    data: positions,
+                data: chartData,
                     borderColor: '#10b981',
                     backgroundColor: 'transparent',
                     fill: false,
@@ -5992,7 +6637,174 @@
                     pointBorderColor: isDark ? '#171717' : '#ffffff',
                     pointBorderWidth: 2,
                     borderWidth: 2.5
-                }]
+            }];
+        } else if (type === 'swim' || type === 'bike' || type === 'run') {
+            // Discipline time charts
+            const discipline = type;
+            const disciplineNames = { swim: 'Swim', bike: 'Bike', run: 'Run' };
+            const disciplineColors = { swim: '#3b82f6', bike: '#10b981', run: '#ef4444' };
+            
+            chartData = sortedResults.map(r => {
+                const seconds = r[`${discipline}_seconds`];
+                return seconds !== null && seconds !== undefined ? seconds : null;
+            });
+            
+            // Filter out null values for valid data points
+            const validData = chartData.filter(v => v !== null);
+            if (validData.length === 0) {
+                // No split data available - show message
+                const legendEl = document.getElementById('chart-legend');
+                if (legendEl) {
+                    legendEl.innerHTML = '<div style="color: var(--text-tertiary); font-size: var(--text-sm); text-align: center; padding: var(--space-4);">Split data not available for this athlete</div>';
+                }
+                return;
+            }
+            
+            chartTitle = `${disciplineNames[discipline]} Time`;
+            pointColors = chartData.map((val, idx) => val !== null ? getPositionColor(positions[idx]) : 'transparent');
+            
+            yAxisConfig = {
+                reverse: false,
+                beginAtZero: false,
+                title: {
+                    display: true,
+                    text: 'Time (minutes)',
+                    color: textSecondary,
+                    font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                    padding: { bottom: 8 }
+                },
+                ticks: {
+                    color: textSecondary,
+                    font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                    padding: 12,
+                    callback: (value) => {
+                        const mins = Math.floor(value / 60);
+                        const secs = Math.floor(value % 60);
+                        return `${mins}:${String(secs).padStart(2, '0')}`;
+                    }
+                }
+            };
+            
+            datasets = [{
+                label: chartTitle,
+                data: chartData,
+                borderColor: disciplineColors[discipline],
+                backgroundColor: 'transparent',
+                fill: false,
+                tension: 0.3,
+                pointRadius: 8,
+                pointHoverRadius: 11,
+                pointBackgroundColor: pointColors,
+                pointBorderColor: isDark ? '#171717' : '#ffffff',
+                pointBorderWidth: 2,
+                borderWidth: 2.5,
+                spanGaps: true
+            }];
+        } else if (type === 'relative') {
+            // Relative performance chart (% of winner)
+            const swimData = sortedResults.map(r => r.relative_swim || null);
+            const bikeData = sortedResults.map(r => r.relative_bike || null);
+            const runData = sortedResults.map(r => r.relative_run || null);
+            
+            // Check if we have any relative data
+            const hasData = swimData.some(v => v !== null) || bikeData.some(v => v !== null) || runData.some(v => v !== null);
+            if (!hasData) {
+                const legendEl = document.getElementById('chart-legend');
+                if (legendEl) {
+                    legendEl.innerHTML = '<div style="color: var(--text-tertiary); font-size: var(--text-sm); text-align: center; padding: var(--space-4);">Relative performance data not available</div>';
+                }
+                return;
+            }
+            
+            chartTitle = 'Relative Performance';
+            yAxisConfig = {
+                reverse: false,
+                beginAtZero: false,
+                min: 95,
+                max: 110,
+                        title: {
+                            display: true,
+                    text: '% of Winner Time',
+                            color: textSecondary,
+                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            padding: { bottom: 8 }
+                        },
+                        ticks: {
+                            color: textSecondary,
+                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            padding: 12,
+                    callback: (value) => value.toFixed(0) + '%'
+                }
+            };
+            
+            datasets = [];
+            if (swimData.some(v => v !== null)) {
+                datasets.push({
+                    label: 'Swim',
+                    data: swimData,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 6,
+                    pointHoverRadius: 9,
+                    pointBackgroundColor: pointColorsByPosition,
+                    pointBorderColor: isDark ? '#171717' : '#ffffff',
+                    pointBorderWidth: 2,
+                    borderWidth: 2,
+                    spanGaps: true
+                });
+            }
+            if (bikeData.some(v => v !== null)) {
+                datasets.push({
+                    label: 'Bike',
+                    data: bikeData,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 6,
+                    pointHoverRadius: 9,
+                    pointBackgroundColor: pointColorsByPosition,
+                    pointBorderColor: isDark ? '#171717' : '#ffffff',
+                    pointBorderWidth: 2,
+                    borderWidth: 2,
+                    spanGaps: true
+                });
+            }
+            if (runData.some(v => v !== null)) {
+                datasets.push({
+                    label: 'Run',
+                    data: runData,
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 6,
+                    pointHoverRadius: 9,
+                    pointBackgroundColor: pointColorsByPosition,
+                    pointBorderColor: isDark ? '#171717' : '#ffffff',
+                    pointBorderWidth: 2,
+                    borderWidth: 2,
+                    spanGaps: true
+                });
+            }
+            
+            // Update legend for relative chart
+            const legendEl = document.getElementById('chart-legend');
+            if (legendEl) {
+                legendEl.innerHTML = datasets.map(d => 
+                    `<div class="chart-legend-item"><span class="chart-legend-dot" style="background: ${d.borderColor};"></span> ${d.label}</div>`
+                ).join('');
+            }
+        }
+
+        // Common chart configuration
+        currentChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets
             },
             options: {
                 responsive: true,
@@ -6002,23 +6814,7 @@
                 },
                 scales: {
                     y: {
-                        reverse: true,
-                        min: 0,
-                        grace: '5%',
-                        title: {
-                            display: true,
-                            text: 'Finish Position',
-                            color: textSecondary,
-                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
-                            padding: { bottom: 8 }
-                        },
-                        ticks: {
-                            color: textSecondary,
-                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
-                            padding: 12,
-                            stepSize: 1,
-                            callback: (value) => value >= 1 ? '#' + value : ''
-                        },
+                        ...yAxisConfig,
                         grid: {
                             color: borderColor,
                             lineWidth: 1,
@@ -6046,7 +6842,16 @@
                     }
                 },
                 plugins: {
-                    legend: { display: false },
+                    legend: { 
+                        display: type === 'relative',
+                        position: 'bottom',
+                        labels: {
+                            color: textSecondary,
+                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            usePointStyle: true,
+                            padding: 12
+                        }
+                    },
                     tooltip: {
                         enabled: false // We'll use custom click tooltip
                     }
@@ -6066,6 +6871,20 @@
                 }
             }
         });
+        
+        // Restore position legend if not relative chart
+        if (type !== 'relative') {
+            const legendEl = document.getElementById('chart-legend');
+            if (legendEl && !legendEl.querySelector('.chart-legend-item')) {
+                legendEl.innerHTML = `
+                    <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #f59e0b;"></span> 1st</div>
+                    <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #6b7280;"></span> 2nd</div>
+                    <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #ea580c;"></span> 3rd</div>
+                    <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #10b981;"></span> Top 5</div>
+                    <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #3b82f6;"></span> Top 10</div>
+                `;
+            }
+        }
     }
 
     // Show race details modal with top 10 finishers
@@ -6100,30 +6919,51 @@
 
         // Fetch race results (request more to ensure we get top 10 after filtering)
         try {
+            const cacheKey = `${result.event_id}_${result.prog_id}`;
+            
+            // Check cache first
+            if (splitDataCache[cacheKey]) {
+                const cached = splitDataCache[cacheKey];
+                const sortedResults = cached.allResults
+                    .filter(r => r.position && !isNaN(parseInt(r.position)))
+                    .sort((a, b) => parseInt(a.position) - parseInt(b.position))
+                    .slice(0, 10);
+                if (sortedResults.length > 0) {
+                    updateRaceDetailsModal(result, sortedResults);
+                }
+                return;
+            }
+
             const response = await fetch(`/api/triathlon?endpoint=/events/${result.event_id}/programs/${result.prog_id}/results`);
             const data = await response.json();
 
-            console.log('Race results API response:', data);
+            // Log API structure for debugging
+            logApiStructure(data, `for race ${result.event_id}/${result.prog_id}`);
 
             // Results are in data.data.results
             if (data.data && data.data.results && Array.isArray(data.data.results)) {
                 const allResults = data.data.results;
-                console.log('All positions:', allResults.map(r => r.position));
+                
+                // Enhance all results with split data
+                const enhancedResults = allResults.map(r => enhanceResultWithSplits(r, allResults));
+                
+                // Cache the enhanced results
+                splitDataCache[cacheKey] = {
+                    allResults: enhancedResults,
+                    timestamp: Date.now()
+                };
 
                 // Sort by position and take top 10 (filter out non-numeric positions like DNF, DNS, LAP)
-                const sortedResults = allResults
+                const sortedResults = enhancedResults
                     .filter(r => r.position && !isNaN(parseInt(r.position)))
                     .sort((a, b) => parseInt(a.position) - parseInt(b.position))
                     .slice(0, 10);
-
-                console.log('Sorted top 10:', sortedResults.map(r => ({ pos: r.position, name: r.athlete_title })));
 
                 if (sortedResults.length > 0) {
                     updateRaceDetailsModal(result, sortedResults);
                 } else {
                     // No numeric positions - show what we have
-                    console.log('No numeric positions found, showing first 10 results as-is');
-                    updateRaceDetailsModal(result, allResults.slice(0, 10));
+                    updateRaceDetailsModal(result, enhancedResults.slice(0, 10));
                 }
             } else {
                 console.log('No results array in response');
@@ -6359,16 +7199,23 @@
             const data = await response.json();
 
             if (data.data && Array.isArray(data.data)) {
-                // Transform API results to match the format we need
-                const results = data.data.map(r => ({
+                // Transform API results to match the format we need, preserving split data
+                const results = data.data.map(r => {
+                    const baseResult = {
                     event_title: r.event_title || r.prog_name || 'Race',
                     event_date: r.event_date || r.prog_date,
                     position: r.position || r.result_position,
                     result_listing: r.result_listing || r.event_listing,
                     event_id: r.event_id,
                     prog_id: r.prog_id,
-                    prog_name: r.prog_name
-                })).filter(r => r.event_date && r.position);
+                        prog_name: r.prog_name,
+                        total_time: r.total_time || null
+                    };
+                    
+                    // Extract and preserve split data
+                    const splits = extractSplitData(r);
+                    return { ...baseResult, ...splits };
+                }).filter(r => r.event_date && r.position);
 
                 if (results.length > 0) {
                     extendedResultsCache[athleteId] = results;
@@ -6532,7 +7379,7 @@
                     <div class="comparison-card-color" style="background: ${color};"></div>
                     ${hasImage ?
                         `<img class="comparison-card-photo" src="${athlete.athlete_profile_image}" alt="" onerror="this.style.display='none'">` :
-                        `<div class="comparison-card-photo" style="display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--text-tertiary)">${getInitials(athlete.athlete_full_name)}</div>`
+                        `<div class="comparison-card-photo" style="display:flex;align-items:center;justify-content:center;font-size:var(--text-xl);color:var(--text-tertiary)">${getInitials(athlete.athlete_full_name)}</div>`
                     }
                     <span class="comparison-card-name" onclick="viewAthleteFromComparison(${athlete.athlete_id})" style="cursor: pointer;">${athlete.athlete_full_name}</span>
                     <div class="comparison-card-country">
@@ -6565,7 +7412,7 @@
                 <div class="athlete-section">
                     <div class="athlete-section-title" style="display: flex; justify-content: space-between; align-items: center;">
                         <span>Race Finishes</span>
-                        <span style="font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-tertiary);">Click points for details</span>
+                        <span style="font-size: var(--text-xs); font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-tertiary);">Click points for details</span>
                     </div>
                     <div class="chart-container" style="height: 300px;">
                         <canvas id="comparison-chart"></canvas>
@@ -6575,7 +7422,7 @@
                         <div class="chart-legend-item"><span class="chart-legend-dot" style="background: #ef4444;"></span> ${athlete2.athlete_full_name.split(' ').pop()}</div>
                     </div>
                     <div style="text-align: center; margin-top: var(--space-3);">
-                        <button id="comparison-history-btn" class="athlete-link athlete-link-secondary" onclick="toggleComparisonHistory()" style="font-size: 12px; height: 32px;" data-view="recent">
+                        <button id="comparison-history-btn" class="athlete-link athlete-link-secondary" onclick="toggleComparisonHistory()" style="font-size: var(--text-xs); height: 32px;" data-view="recent">
                             Load Full Race History
                         </button>
                     </div>
