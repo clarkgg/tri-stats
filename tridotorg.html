@@ -772,6 +772,32 @@
       height: 14px;
     }
 
+    /* Floating dice button */
+    .dice-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 52px;
+      height: 52px;
+      font-size: 26px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-secondary);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all var(--transition-fast);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dice-fab:hover {
+      background: var(--bg-tertiary);
+      transform: scale(1.1);
+      box-shadow: var(--shadow-lg);
+    }
+
     /* Autocomplete - floating dropdown */
     .autocomplete-results {
       position: absolute;
@@ -2251,7 +2277,7 @@
     }
 
     .chart-container canvas {
-      font-family: "Google Sans", sans-serif !important;
+      font-family: "Inter", sans-serif !important;
       cursor: pointer;
     }
 
@@ -3116,7 +3142,7 @@
   <!-- Navigation -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="#" class="nav-brand" onclick="fetchTopRankings(); return false;">Tri Stats</a>
+      <a href="#" class="nav-brand" onclick="showHomePage(); return false;">Tri Stats</a>
       <div class="nav-actions">
         <div class="nav-search" id="nav-search">
           <button class="nav-search-btn" onclick="openNavSearch()" aria-label="Search">
@@ -3149,10 +3175,7 @@
         <button class="quick-btn" onclick="showFavorites()" aria-label="View favorites">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </button>
-        <button class="quick-btn shortcuts-btn" onclick="toggleShortcutsHelp()" aria-label="Keyboard shortcuts">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="10" x2="6" y2="10"/><line x1="10" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="14" y2="10"/><line x1="18" y1="10" x2="18" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
-        </button>
-        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
           <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
@@ -3176,17 +3199,16 @@
         </div>
       </div>
       <div class="quick-actions">
+        <button class="quick-btn" onclick="showHomePage()">Home</button>
         <button class="quick-btn" onclick="fetchTopRankings()">Rankings</button>
-        <button class="quick-btn" onclick="showRandomAthlete()">Random</button>
-        <button class="quick-btn" onclick="showHomePage()">Featured Content</button>
-      </div>
-      <div class="toolbar-hint">
-        <kbd id="keyboard-hint"></kbd>
       </div>
     </div>
 
     <main id="results"></main>
   </div>
+
+  <!-- Random athlete button - fixed bottom right -->
+  <button class="dice-fab" onclick="showRandomAthlete()" aria-label="Random athlete" title="Random athlete">🎲</button>
 
   <script>
     // API calls go through our serverless proxy (see /api/triathlon.js)
@@ -3949,7 +3971,7 @@
         return;
       }
 
-      // C - Featured Content
+      // C - Home
       if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
         clearInputFocus();
@@ -4006,7 +4028,7 @@
             </div>
             <div class="shortcut-item">
               <kbd>C</kbd>
-              <span>Featured Content</span>
+              <span>Home</span>
             </div>
             <div class="shortcut-item">
               <kbd>A</kbd>
@@ -5255,16 +5277,15 @@
             `<div class="athlete-section">
                 <div class="athlete-section-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-2);">
                     <span>Performance Analysis</span>
-                    <div class="chart-type-selector" style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
+                    <div class="chart-type-selector" id="chart-type-selector" style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
                         <button class="chart-type-btn active" data-chart-type="position" onclick="switchChartType('position')" style="font-size: var(--text-xs); padding: 4px 8px;">Position</button>
-                        <button class="chart-type-btn" data-chart-type="swim" onclick="switchChartType('swim')" style="font-size: var(--text-xs); padding: 4px 8px;">Swim</button>
-                        <button class="chart-type-btn" data-chart-type="bike" onclick="switchChartType('bike')" style="font-size: var(--text-xs); padding: 4px 8px;">Bike</button>
-                        <button class="chart-type-btn" data-chart-type="run" onclick="switchChartType('run')" style="font-size: var(--text-xs); padding: 4px 8px;">Run</button>
-                        <button class="chart-type-btn" data-chart-type="relative" onclick="switchChartType('relative')" style="font-size: var(--text-xs); padding: 4px 8px;">Relative</button>
+                        <button class="chart-type-btn split-btn" data-chart-type="swim" onclick="switchChartType('swim')" style="font-size: var(--text-xs); padding: 4px 8px; display: none;">Swim</button>
+                        <button class="chart-type-btn split-btn" data-chart-type="bike" onclick="switchChartType('bike')" style="font-size: var(--text-xs); padding: 4px 8px; display: none;">Bike</button>
+                        <button class="chart-type-btn split-btn" data-chart-type="run" onclick="switchChartType('run')" style="font-size: var(--text-xs); padding: 4px 8px; display: none;">Run</button>
                     </div>
                 </div>
                 <div class="chart-container">
-                    <div style="height: 280px;">
+                    <div style="height: 340px;">
                         <canvas id="results-chart"></canvas>
                     </div>
                     <div class="chart-legend" id="chart-legend">
@@ -5389,13 +5410,23 @@
                     if (currentChartResults.length > 0) {
                         // Merge enhanced data back into current results
                         const updatedResults = currentChartResults.map(r => {
-                            const enhanced = enhancedResults.find(e => 
+                            const enhanced = enhancedResults.find(e =>
                                 e.event_id === r.event_id && e.prog_id === r.prog_id
                             );
                             return enhanced || r;
                         });
                         currentChartResults = updatedResults;
                         renderResultsChart(updatedResults, currentChartType);
+
+                        // Show split buttons if we have split data
+                        const hasSplitData = updatedResults.some(r =>
+                            r.swim_seconds !== null && r.swim_seconds !== undefined
+                        );
+                        if (hasSplitData) {
+                            document.querySelectorAll('.split-btn').forEach(btn => {
+                                btn.style.display = '';
+                            });
+                        }
                     }
                 }
             }).catch(err => {
@@ -5885,7 +5916,7 @@
         currentRankingsData = null;
 
         const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading featured content...</div>';
+        resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading...</div>';
 
         try {
             // Fetch athlete data for photos and news in parallel (cached)
@@ -6613,12 +6644,12 @@
                     display: true,
                     text: 'Finish Position',
                     color: textSecondary,
-                    font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                    font: { size: 13, family: 'Inter', weight: 600 },
                     padding: { bottom: 8 }
                 },
                 ticks: {
                     color: textSecondary,
-                    font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                    font: { size: 12, family: 'Inter', weight: 500 },
                     padding: 12,
                     stepSize: 1,
                     callback: (value) => value >= 1 ? '#' + value : ''
@@ -6670,12 +6701,12 @@
                     display: true,
                     text: 'Time (minutes)',
                     color: textSecondary,
-                    font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                    font: { size: 13, family: 'Inter', weight: 600 },
                     padding: { bottom: 8 }
                 },
                 ticks: {
                     color: textSecondary,
-                    font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                    font: { size: 12, family: 'Inter', weight: 500 },
                     padding: 12,
                     callback: (value) => {
                         const mins = Math.floor(value / 60);
@@ -6726,12 +6757,12 @@
                             display: true,
                     text: '% of Winner Time',
                             color: textSecondary,
-                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            font: { size: 13, family: 'Inter', weight: 600 },
                             padding: { bottom: 8 }
                         },
                         ticks: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            font: { size: 12, family: 'Inter', weight: 500 },
                             padding: 12,
                     callback: (value) => value.toFixed(0) + '%'
                 }
@@ -6827,12 +6858,12 @@
                             display: true,
                             text: 'Race Date',
                             color: textSecondary,
-                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            font: { size: 13, family: 'Inter', weight: 600 },
                             padding: { top: 8 }
                         },
                         ticks: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            font: { size: 12, family: 'Inter', weight: 500 },
                             padding: 8,
                             maxRotation: 45,
                             minRotation: 0
@@ -6847,7 +6878,7 @@
                         position: 'bottom',
                         labels: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            font: { size: 12, family: 'Inter', weight: 500 },
                             usePointStyle: true,
                             padding: 12
                         }
@@ -7695,12 +7726,12 @@
                             display: true,
                             text: 'Finish Position',
                             color: textSecondary,
-                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            font: { size: 13, family: 'Inter', weight: 600 },
                             padding: { bottom: 8 }
                         },
                         ticks: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            font: { size: 12, family: 'Inter', weight: 500 },
                             padding: 12,
                             stepSize: 1,
                             callback: (value) => value >= 1 ? '#' + value : ''
@@ -7717,12 +7748,12 @@
                             display: true,
                             text: 'Race Date',
                             color: textSecondary,
-                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 600 },
+                            font: { size: 13, family: 'Inter', weight: 600 },
                             padding: { top: 8 }
                         },
                         ticks: {
                             color: textSecondary,
-                            font: { size: 11, family: 'Plus Jakarta Sans', weight: 500 },
+                            font: { size: 12, family: 'Inter', weight: 500 },
                             padding: 8,
                             maxRotation: 45,
                             minRotation: 0
@@ -7738,7 +7769,7 @@
                         align: 'end',
                         labels: {
                             color: textSecondary,
-                            font: { size: 12, family: 'Plus Jakarta Sans', weight: 500 },
+                            font: { size: 12, family: 'Inter', weight: 500 },
                             boxWidth: 12,
                             boxHeight: 12,
                             padding: 16,
@@ -7751,8 +7782,8 @@
                         backgroundColor: isDark ? '#262626' : '#171717',
                         titleColor: '#fafafa',
                         bodyColor: '#fafafa',
-                        titleFont: { size: 12, weight: 500, family: 'Plus Jakarta Sans' },
-                        bodyFont: { size: 13, weight: 600, family: 'Plus Jakarta Sans' },
+                        titleFont: { size: 12, weight: 500, family: 'Inter' },
+                        bodyFont: { size: 13, weight: 600, family: 'Inter' },
                         padding: 12,
                         cornerRadius: 8,
                         displayColors: true,
@@ -7812,7 +7843,7 @@
             return;
         }
 
-        fetchTopRankings();
+        showHomePage();
     }
 
     async function loadAthleteFromUrl(athleteId) {
