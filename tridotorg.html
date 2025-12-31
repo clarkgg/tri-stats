@@ -1020,6 +1020,221 @@
       color: var(--text-primary);
     }
 
+    /* Table of Contents Navigation */
+    .home-toc {
+      position: sticky;
+      top: calc(56px + var(--space-4));
+      z-index: 10;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-primary);
+      padding: var(--space-4) 0;
+      margin-bottom: var(--space-8);
+      margin-top: calc(-1 * var(--space-6));
+    }
+
+    .home-toc-nav {
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .home-toc-link {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+      font-weight: 500;
+    }
+
+    .home-toc-link:hover {
+      color: var(--text-primary);
+      background: var(--accent-subtle);
+    }
+
+    .home-toc-link.active {
+      color: var(--accent);
+      background: var(--accent-subtle);
+    }
+
+    @media (max-width: 640px) {
+      .home-toc {
+        top: 56px;
+        padding: var(--space-3) 0;
+        margin-top: calc(-1 * var(--space-4));
+      }
+
+      .home-toc-nav {
+        gap: var(--space-2);
+      }
+
+      .home-toc-link {
+        font-size: var(--text-xs);
+        padding: var(--space-1) var(--space-2);
+      }
+    }
+
+    /* Scroll offset for anchor links */
+    .home-section {
+      scroll-margin-top: calc(56px + var(--space-8) + 60px);
+    }
+
+    /* News Articles */
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .news-item {
+      display: flex;
+      flex-direction: row;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-primary);
+      transition: all var(--transition-fast);
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+    }
+
+    .news-item:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--border-secondary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .news-item-image {
+      width: 200px;
+      min-width: 200px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      flex-shrink: 0;
+    }
+
+    .news-item-content {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .news-item-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+
+    .news-item-title {
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .news-item-date {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .news-item-excerpt {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-top: var(--space-2);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .news-item-link {
+      margin-top: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--accent);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .news-item:hover .news-item-link {
+      color: var(--accent-hover);
+    }
+
+    /* Featured first article */
+    .news-item:first-child {
+      flex-direction: column;
+      padding: 0;
+      background: transparent;
+      border: none;
+    }
+
+    .news-item:first-child .news-item-image {
+      width: 100%;
+      min-width: 100%;
+      height: 240px;
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-4);
+    }
+
+    .news-item:first-child .news-item-content {
+      padding: var(--space-4);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-primary);
+    }
+
+    .news-item:first-child:hover .news-item-content {
+      background: var(--bg-tertiary);
+      border-color: var(--border-secondary);
+    }
+
+    .news-item:first-child .news-item-title {
+      font-size: var(--text-lg);
+    }
+
+    .news-item:first-child .news-item-excerpt {
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+      font-size: var(--text-base);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 640px) {
+      .news-item {
+        flex-direction: column;
+        gap: var(--space-3);
+      }
+
+      .news-item-image {
+        width: 100%;
+        min-width: 100%;
+        height: 180px;
+      }
+
+      .news-item:first-child .news-item-image {
+        height: 200px;
+      }
+
+      .news-item:first-child .news-item-title {
+        font-size: var(--text-base);
+      }
+    }
+
     /* Results Section */
     .results-section {
       padding-top: var(--space-6);
@@ -1594,7 +1809,33 @@
       font-weight: 500;
     }
 
+    /* Video Grid */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .video-item {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-primary);
+      transition: all var(--transition-fast);
+    }
+
+    .video-item:hover {
+      border-color: var(--border-secondary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
     @media (max-width: 640px) {
+      .video-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+      }
+
       .lightbox-nav {
         width: 40px;
         height: 40px;
@@ -2892,7 +3133,6 @@
         <button class="quick-btn" onclick="fetchTopRankings()">Rankings</button>
         <button class="quick-btn" onclick="showRandomAthlete()">Random</button>
         <button class="quick-btn" onclick="showHomePage()">Featured Content</button>
-        <a class="quick-btn" href="https://triathlon.org/news" target="_blank" rel="noopener">News ↗</a>
       </div>
       <div class="toolbar-hint">
         <kbd id="keyboard-hint"></kbd>
@@ -2948,48 +3188,90 @@
     // Cache for athlete details to avoid redundant API calls
     const athleteCache = new Map();
 
-    // General API cache with TTL
+    // General API cache with TTL and LRU eviction
     const apiCache = {
       data: new Map(),
+      accessOrder: [], // Track access order for LRU
       TTL: 5 * 60 * 1000, // 5 minutes default
+      MAX_SIZE: 100, // Maximum cache entries
 
       get(key) {
         const entry = this.data.get(key);
         if (!entry) return null;
         if (Date.now() > entry.expires) {
           this.data.delete(key);
+          const index = this.accessOrder.indexOf(key);
+          if (index > -1) this.accessOrder.splice(index, 1);
           return null;
         }
+        // Update access order (move to end)
+        const index = this.accessOrder.indexOf(key);
+        if (index > -1) this.accessOrder.splice(index, 1);
+        this.accessOrder.push(key);
         return entry.value;
       },
 
       set(key, value, ttl = this.TTL) {
+        // Evict oldest if at max size
+        if (this.data.size >= this.MAX_SIZE && !this.data.has(key)) {
+          const oldestKey = this.accessOrder.shift();
+          if (oldestKey) this.data.delete(oldestKey);
+        }
+        
         this.data.set(key, {
           value,
           expires: Date.now() + ttl
         });
+        
+        // Update access order
+        const index = this.accessOrder.indexOf(key);
+        if (index > -1) this.accessOrder.splice(index, 1);
+        this.accessOrder.push(key);
       },
 
       clear() {
         this.data.clear();
+        this.accessOrder = [];
       }
     };
 
-    // Cached fetch wrapper
+    // Request deduplication - track in-flight requests
+    const inFlightRequests = new Map();
+
+    // Cached fetch wrapper with request deduplication
     async function cachedFetch(url, options = {}) {
       const cacheKey = url;
+      
+      // Check cache first
       const cached = apiCache.get(cacheKey);
       if (cached) {
         return { ok: true, json: async () => cached, fromCache: true };
       }
 
-      const response = await fetch(url, options);
-      if (response.ok) {
-        const data = await response.json();
-        apiCache.set(cacheKey, data);
-        return { ok: true, json: async () => data, fromCache: false };
+      // Check if request is already in flight
+      if (inFlightRequests.has(cacheKey)) {
+        return inFlightRequests.get(cacheKey);
       }
-      return response;
+
+      // Create new request promise
+      const requestPromise = (async () => {
+        try {
+          const response = await fetch(url, options);
+          if (response.ok) {
+            const data = await response.json();
+            apiCache.set(cacheKey, data);
+            return { ok: true, json: async () => data, fromCache: false };
+          }
+          return response;
+        } finally {
+          // Remove from in-flight map when done
+          inFlightRequests.delete(cacheKey);
+        }
+      })();
+
+      // Store in-flight request
+      inFlightRequests.set(cacheKey, requestPromise);
+      return requestPromise;
     }
 
     // Comparison state
@@ -4590,6 +4872,15 @@
                     </div>
                 </div>
                 ${loadMoreHtml}
+                <div style="margin-top: var(--space-12); padding-top: var(--space-8); border-top: 1px solid var(--border-primary);">
+                    <div class="home-section-header" style="margin-bottom: var(--space-4);">
+                        <span class="home-section-title">Other Rankings</span>
+                    </div>
+                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                        <a href="https://proseries.ironman.com/standings/2025" target="_blank" rel="noopener" class="quick-btn">Ironman Pro Series ↗</a>
+                        <a href="https://stats.protriathletes.org/rankings" target="_blank" rel="noopener" class="quick-btn">PTO Rankings ↗</a>
+                    </div>
+                </div>
             </section>`;
     }
 
@@ -4692,6 +4983,88 @@
         if (e.key === 'Escape') closeLightbox();
         if (e.key === 'ArrowLeft') navigateLightbox(-1);
         if (e.key === 'ArrowRight') navigateLightbox(1);
+    }
+
+    // Open lightbox for photo grid with athlete navigation option
+    window.openPhotoGridLightbox = function(index) {
+        if (!window.currentPhotoGridImages || window.currentPhotoGridImages.length === 0) return;
+
+        currentLightboxIndex = index;
+        const photos = window.currentPhotoGridImages;
+        const photo = photos[index];
+
+        const overlay = document.createElement('div');
+        overlay.className = 'lightbox-overlay';
+        overlay.id = 'lightbox-overlay';
+        overlay.innerHTML = `
+            <button class="lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+            <button class="lightbox-nav lightbox-prev" onclick="navigatePhotoGridLightbox(-1)" aria-label="Previous" ${index === 0 ? 'disabled' : ''}>‹</button>
+            <div class="lightbox-content">
+                <img class="lightbox-image" src="${photo.full}" alt="Race photo - ${photo.athleteName}" id="lightbox-image">
+                <div class="lightbox-actions" style="position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); display: flex; gap: var(--space-3); z-index: 2002;">
+                    <button class="athlete-link" onclick="closeLightbox(); navigateToAthlete(${photo.athleteId});" style="background: var(--accent); color: var(--bg-primary); padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); border: none; cursor: pointer; font-weight: 500; font-size: var(--text-sm);">
+                        View ${photo.athleteName}'s Profile →
+                    </button>
+                </div>
+            </div>
+            <button class="lightbox-nav lightbox-next" onclick="navigatePhotoGridLightbox(1)" aria-label="Next" ${index === photos.length - 1 ? 'disabled' : ''}>›</button>
+            <div class="lightbox-counter"><span id="lightbox-current">${index + 1}</span> / ${photos.length}</div>
+        `;
+
+        document.body.appendChild(overlay);
+        document.body.style.overflow = 'hidden';
+
+        // Close on overlay click (not on image or buttons)
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeLightbox();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', handlePhotoGridLightboxKeydown);
+    }
+
+    window.navigatePhotoGridLightbox = function(direction) {
+        const photos = window.currentPhotoGridImages;
+        if (!photos) return;
+
+        const newIndex = currentLightboxIndex + direction;
+        if (newIndex < 0 || newIndex >= photos.length) return;
+
+        currentLightboxIndex = newIndex;
+        const photo = photos[newIndex];
+
+        // Update image
+        const imgEl = document.getElementById('lightbox-image');
+        if (imgEl) {
+            imgEl.src = photo.full;
+            imgEl.alt = `Race photo - ${photo.athleteName}`;
+        }
+
+        // Update counter
+        const counterEl = document.getElementById('lightbox-current');
+        if (counterEl) counterEl.textContent = newIndex + 1;
+
+        // Update button states
+        const prevBtn = document.querySelector('.lightbox-prev');
+        const nextBtn = document.querySelector('.lightbox-next');
+        if (prevBtn) prevBtn.disabled = newIndex === 0;
+        if (nextBtn) nextBtn.disabled = newIndex === photos.length - 1;
+
+        // Update action button
+        const actionBtn = document.querySelector('.lightbox-actions button');
+        if (actionBtn) {
+            actionBtn.onclick = () => {
+                closeLightbox();
+                navigateToAthlete(photo.athleteId);
+            };
+            actionBtn.textContent = `View ${photo.athleteName}'s Profile →`;
+        }
+    }
+
+    function handlePhotoGridLightboxKeydown(e) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') navigatePhotoGridLightbox(-1);
+        if (e.key === 'ArrowRight') navigatePhotoGridLightbox(1);
     }
 
     // --- Main search function ---
@@ -4861,6 +5234,49 @@
       }
     };
 
+    // --- Fetch News Articles ---
+    async function fetchNewsArticles(limit = 10) {
+        try {
+            // Try different possible endpoints for news in parallel
+            const endpoints = ['/news', '/articles', '/content/news'];
+            
+            // Try all endpoints in parallel for faster response
+            const results = await Promise.allSettled(
+                endpoints.map(endpoint => 
+                    cachedFetch(`${API_BASE}?endpoint=${endpoint}&per_page=${limit}`)
+                )
+            );
+            
+            // Find first successful response with valid articles
+            for (const result of results) {
+                if (result.status === 'fulfilled') {
+                    const response = result.value;
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        // Check if data structure matches expected format
+                        let articles = null;
+                        if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                            articles = data.data;
+                        } else if (Array.isArray(data) && data.length > 0) {
+                            articles = data;
+                        } else if (data.articles && Array.isArray(data.articles)) {
+                            articles = data.articles;
+                        }
+                        
+                        if (articles && articles.length > 0) {
+                            return articles.slice(0, limit);
+                        }
+                    }
+                }
+            }
+            return null;
+        } catch (error) {
+            console.error('Failed to fetch news:', error);
+            return null;
+        }
+    }
+
     // --- Home Page Function ---
     window.showHomePage = async function() {
         // Clear rankings context when going home
@@ -4870,10 +5286,11 @@
         resultsDiv.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Loading featured content...</div>';
 
         try {
-            // Fetch athlete data for photos (cached)
-            const [menResponse, womenResponse] = await Promise.all([
+            // Fetch athlete data for photos and news in parallel (cached)
+            const [menResponse, womenResponse, newsArticles] = await Promise.all([
               cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.male}`),
-              cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`)
+              cachedFetch(`${API_BASE}?endpoint=/rankings/${RANKING_IDS.female}`),
+              fetchNewsArticles(10)
             ]);
 
             if (!menResponse.ok || !womenResponse.ok) {
@@ -4917,84 +5334,328 @@
             // Shuffle action photos for a fresh look each time
             const shuffledPhotos = actionPhotos.sort(() => 0.5 - Math.random()).slice(0, 12);
 
-            // Build photo grid HTML with action shots - link to internal athlete pages
+            // Store photos for lightbox with athlete info
+            window.currentPhotoGridImages = shuffledPhotos.map(photo => ({
+                thumbnail: photo.thumbnail,
+                full: photo.url,
+                athleteId: photo.athleteId,
+                athleteName: photo.athleteName,
+                athleteCountry: photo.athleteCountry
+            }));
+
+            // Build photo grid HTML with action shots - open lightbox first
             const photoGridHtml = shuffledPhotos.length > 0
-                ? shuffledPhotos.map(photo => `
-                    <a class="photo-card" href="?athlete=${photo.athleteId}" onclick="navigateToAthlete(${photo.athleteId}); return false;">
-                        <img src="${photo.thumbnail}" alt="Race photo - ${photo.athleteName}" onerror="this.parentElement.style.display='none'">
+                ? shuffledPhotos.map((photo, index) => `
+                    <div class="photo-card" onclick="openPhotoGridLightbox(${index})" style="cursor: pointer;">
+                        <img src="${photo.thumbnail}" alt="Race photo - ${photo.athleteName}" loading="lazy" onerror="this.parentElement.style.display='none'">
                         <div class="photo-card-overlay">
                             <div class="photo-card-name">${photo.athleteName}</div>
                             <div class="photo-card-country">${photo.athleteCountry}</div>
                         </div>
-                    </a>
+                    </div>
                 `).join('')
                 : '<p style="color: var(--text-secondary); padding: var(--space-4);">No recent race images available</p>';
 
-            // Channel cards for Watch section
-            const channelCardsHtml = `
-                <div class="channel-grid">
-                    <a class="channel-card" href="https://www.youtube.com/@worldtriathlon" target="_blank" rel="noopener">
-                        <div class="channel-logo"><div class="channel-logo-text wt">WT</div></div>
-                        <div class="channel-info">
-                            <div class="channel-name">World Triathlon</div>
-                            <div class="channel-desc">Official Olympic triathlon coverage</div>
+            // Fetch YouTube videos for Watch section
+            let watchSectionHtml = '';
+            try {
+                const youtubeResponse = await fetch('/api/youtube?action=channelVideos&maxResults=6');
+                if (youtubeResponse.ok) {
+                    const youtubeData = await youtubeResponse.json();
+                    const videos = youtubeData.items || [];
+                    
+                    if (videos.length > 0) {
+                        // Group videos by channel and take first 2 per channel, limit to 6 total
+                        const videosByChannel = {};
+                        videos.forEach(video => {
+                            const channelName = video.channelName || 'Triathlon';
+                            if (!videosByChannel[channelName]) {
+                                videosByChannel[channelName] = [];
+                            }
+                            if (videosByChannel[channelName].length < 2) {
+                                videosByChannel[channelName].push(video);
+                            }
+                        });
+
+                        const videoItems = Object.values(videosByChannel).flat().slice(0, 6);
+                        
+                        watchSectionHtml = `
+                            <div class="video-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6);">
+                                ${videoItems.map(video => {
+                                    const videoId = video.id?.videoId || video.snippet?.resourceId?.videoId || '';
+                                    const title = video.snippet?.title || 'Video';
+                                    const channelTitle = video.snippet?.channelTitle || video.channelName || '';
+                                    
+                                    if (!videoId) return '';
+                                    
+                                    return `
+                                        <div class="video-item" style="background: var(--bg-secondary); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-primary); transition: all var(--transition-fast);">
+                                            <div style="position: relative; padding-bottom: 56.25%; background: var(--bg-tertiary);">
+                                                <iframe 
+                                                    width="100%" 
+                                                    height="100%" 
+                                                    src="https://www.youtube.com/embed/${videoId}" 
+                                                    title="${title}"
+                                                    frameborder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                    allowfullscreen
+                                                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                                    loading="lazy">
+                                                </iframe>
+                                            </div>
+                                            <div style="padding: var(--space-3);">
+                                                <div style="font-size: var(--text-sm); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-1); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${title}</div>
+                                                <div style="font-size: var(--text-xs); color: var(--text-tertiary);">${channelTitle}</div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).filter(v => v).join('')}
+                            </div>
+                            <div class="channel-grid">
+                                <a class="channel-card" href="https://www.youtube.com/@worldtriathlon" target="_blank" rel="noopener">
+                                    <div class="channel-logo"><div class="channel-logo-text wt">WT</div></div>
+                                    <div class="channel-info">
+                                        <div class="channel-name">World Triathlon</div>
+                                        <div class="channel-desc">Official Olympic triathlon coverage</div>
+                                    </div>
+                                </a>
+                                <a class="channel-card" href="https://www.youtube.com/@T100Triathlon" target="_blank" rel="noopener">
+                                    <div class="channel-logo"><div class="channel-logo-text pto">T100</div></div>
+                                    <div class="channel-info">
+                                        <div class="channel-name">T100 / PTO</div>
+                                        <div class="channel-desc">Professional Triathletes Organisation</div>
+                                    </div>
+                                </a>
+                                <a class="channel-card" href="https://www.youtube.com/@ironmantriathlon" target="_blank" rel="noopener">
+                                    <div class="channel-logo"><div class="channel-logo-text im">M</div></div>
+                                    <div class="channel-info">
+                                        <div class="channel-name">Ironman</div>
+                                        <div class="channel-desc">Long-distance triathlon racing</div>
+                                    </div>
+                                </a>
+                                <a class="channel-card" href="https://www.youtube.com/@supertri" target="_blank" rel="noopener">
+                                    <div class="channel-logo"><div class="channel-logo-text slt">SLT</div></div>
+                                    <div class="channel-info">
+                                        <div class="channel-name">Super League Triathlon</div>
+                                        <div class="channel-desc">Fast-paced short course racing</div>
+                                    </div>
+                                </a>
+                            </div>
+                        `;
+                    } else {
+                        // Fallback to channel cards only
+                        watchSectionHtml = `
+                            <div class="channel-grid">
+                                <a class="channel-card" href="https://www.youtube.com/@worldtriathlon" target="_blank" rel="noopener">
+                                    <div class="channel-logo"><div class="channel-logo-text wt">WT</div></div>
+                                    <div class="channel-info">
+                                        <div class="channel-name">World Triathlon</div>
+                                        <div class="channel-desc">Official Olympic triathlon coverage</div>
+                                    </div>
+                                </a>
+                                <a class="channel-card" href="https://www.youtube.com/@T100Triathlon" target="_blank" rel="noopener">
+                                    <div class="channel-logo"><div class="channel-logo-text pto">T100</div></div>
+                                    <div class="channel-info">
+                                        <div class="channel-name">T100 / PTO</div>
+                                        <div class="channel-desc">Professional Triathletes Organisation</div>
+                                    </div>
+                                </a>
+                                <a class="channel-card" href="https://www.youtube.com/@ironmantriathlon" target="_blank" rel="noopener">
+                                    <div class="channel-logo"><div class="channel-logo-text im">M</div></div>
+                                    <div class="channel-info">
+                                        <div class="channel-name">Ironman</div>
+                                        <div class="channel-desc">Long-distance triathlon racing</div>
+                                    </div>
+                                </a>
+                                <a class="channel-card" href="https://www.youtube.com/@supertri" target="_blank" rel="noopener">
+                                    <div class="channel-logo"><div class="channel-logo-text slt">SLT</div></div>
+                                    <div class="channel-info">
+                                        <div class="channel-name">Super League Triathlon</div>
+                                        <div class="channel-desc">Fast-paced short course racing</div>
+                                    </div>
+                                </a>
+                            </div>
+                        `;
+                    }
+                } else {
+                    // Fallback if API fails
+                    watchSectionHtml = `
+                        <div class="channel-grid">
+                            <a class="channel-card" href="https://www.youtube.com/@worldtriathlon" target="_blank" rel="noopener">
+                                <div class="channel-logo"><div class="channel-logo-text wt">WT</div></div>
+                                <div class="channel-info">
+                                    <div class="channel-name">World Triathlon</div>
+                                    <div class="channel-desc">Official Olympic triathlon coverage</div>
+                                </div>
+                            </a>
+                            <a class="channel-card" href="https://www.youtube.com/@T100Triathlon" target="_blank" rel="noopener">
+                                <div class="channel-logo"><div class="channel-logo-text pto">T100</div></div>
+                                <div class="channel-info">
+                                    <div class="channel-name">T100 / PTO</div>
+                                    <div class="channel-desc">Professional Triathletes Organisation</div>
+                                </div>
+                            </a>
+                            <a class="channel-card" href="https://www.youtube.com/@ironmantriathlon" target="_blank" rel="noopener">
+                                <div class="channel-logo"><div class="channel-logo-text im">M</div></div>
+                                <div class="channel-info">
+                                    <div class="channel-name">Ironman</div>
+                                    <div class="channel-desc">Long-distance triathlon racing</div>
+                                </div>
+                            </a>
+                            <a class="channel-card" href="https://www.youtube.com/@supertri" target="_blank" rel="noopener">
+                                <div class="channel-logo"><div class="channel-logo-text slt">SLT</div></div>
+                                <div class="channel-info">
+                                    <div class="channel-name">Super League Triathlon</div>
+                                    <div class="channel-desc">Fast-paced short course racing</div>
+                                </div>
+                            </a>
                         </div>
-                    </a>
-                    <a class="channel-card" href="https://www.youtube.com/@T100Triathlon" target="_blank" rel="noopener">
-                        <div class="channel-logo"><div class="channel-logo-text pto">T100</div></div>
-                        <div class="channel-info">
-                            <div class="channel-name">T100 / PTO</div>
-                            <div class="channel-desc">Professional Triathletes Organisation</div>
-                        </div>
-                    </a>
-                    <a class="channel-card" href="https://www.youtube.com/@ironmantriathlon" target="_blank" rel="noopener">
-                        <div class="channel-logo"><div class="channel-logo-text im">M</div></div>
-                        <div class="channel-info">
-                            <div class="channel-name">Ironman</div>
-                            <div class="channel-desc">Long-distance triathlon racing</div>
-                        </div>
-                    </a>
-                    <a class="channel-card" href="https://www.youtube.com/@supertri" target="_blank" rel="noopener">
-                        <div class="channel-logo"><div class="channel-logo-text slt">SLT</div></div>
-                        <div class="channel-info">
-                            <div class="channel-name">Super League Triathlon</div>
-                            <div class="channel-desc">Fast-paced short course racing</div>
-                        </div>
-                    </a>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to fetch YouTube videos:', error);
+                // Fallback to channel cards
+                watchSectionHtml = `
+                    <div class="channel-grid">
+                        <a class="channel-card" href="https://www.youtube.com/@worldtriathlon" target="_blank" rel="noopener">
+                            <div class="channel-logo"><div class="channel-logo-text wt">WT</div></div>
+                            <div class="channel-info">
+                                <div class="channel-name">World Triathlon</div>
+                                <div class="channel-desc">Official Olympic triathlon coverage</div>
+                            </div>
+                        </a>
+                        <a class="channel-card" href="https://www.youtube.com/@T100Triathlon" target="_blank" rel="noopener">
+                            <div class="channel-logo"><div class="channel-logo-text pto">T100</div></div>
+                            <div class="channel-info">
+                                <div class="channel-name">T100 / PTO</div>
+                                <div class="channel-desc">Professional Triathletes Organisation</div>
+                            </div>
+                        </a>
+                        <a class="channel-card" href="https://www.youtube.com/@ironmantriathlon" target="_blank" rel="noopener">
+                            <div class="channel-logo"><div class="channel-logo-text im">M</div></div>
+                            <div class="channel-info">
+                                <div class="channel-name">Ironman</div>
+                                <div class="channel-desc">Long-distance triathlon racing</div>
+                            </div>
+                        </a>
+                        <a class="channel-card" href="https://www.youtube.com/@supertri" target="_blank" rel="noopener">
+                            <div class="channel-logo"><div class="channel-logo-text slt">SLT</div></div>
+                            <div class="channel-info">
+                                <div class="channel-name">Super League Triathlon</div>
+                                <div class="channel-desc">Fast-paced short course racing</div>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            }
+
+            // Build news section HTML
+            const newsSectionHtml = newsArticles && newsArticles.length > 0 ? `
+                <div class="news-list">
+                    ${newsArticles.map((article, index) => {
+                        // Use World Triathlon API field names
+                        const title = article.news_title || 
+                                     article.title || 
+                                     article.headline || 
+                                     article.name || 
+                                     'Untitled';
+                        
+                        const excerpt = article.news_excerpt || 
+                                       article.excerpt || 
+                                       article.summary || 
+                                       article.description || 
+                                       '';
+                        
+                        const date = article.news_entry_date || 
+                                    article.published_date || 
+                                    article.date || 
+                                    article.created_at ||
+                                    '';
+                        
+                        const link = article.news_url || 
+                                    article.url || 
+                                    article.link || 
+                                    article.permalink || 
+                                    `https://www.triathlon.org/news/${article.news_slug || article.news_id || ''}`;
+                        
+                        // World Triathlon API uses these image fields (in priority order)
+                        const imageUrl = article.news_multipurpose_image || 
+                                        article.news_tab_image || 
+                                        article.news_thumbnail ||
+                                        article.image || 
+                                        article.image_url || 
+                                        article.thumbnail || 
+                                        '';
+                        
+                        // Format date safely
+                        let formattedDate = '';
+                        if (date) {
+                            try {
+                                const dateObj = new Date(date);
+                                if (!isNaN(dateObj.getTime())) {
+                                    formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                }
+                            } catch (e) {
+                                // Invalid date, leave empty
+                            }
+                        }
+                        
+                        // Build image HTML
+                        const imageHtml = imageUrl && imageUrl.startsWith('http') ? 
+                            `<img src="${imageUrl}" alt="${title}" class="news-item-image" loading="lazy" onerror="this.style.display='none'">` : 
+                            '';
+                        
+                        return `
+                            <a href="${link}" target="_blank" rel="noopener" class="news-item">
+                                ${imageHtml}
+                                <div class="news-item-content">
+                                    <div class="news-item-header">
+                                        <div class="news-item-title">${title}</div>
+                                        ${formattedDate ? `<div class="news-item-date">${formattedDate}</div>` : ''}
+                                    </div>
+                                    ${excerpt ? `<div class="news-item-excerpt">${excerpt}</div>` : ''}
+                                    <div class="news-item-link">Read more →</div>
+                                </div>
+                            </a>
+                        `;
+                    }).join('')}
                 </div>
+            ` : `
+                <p style="color: var(--text-secondary); font-size: 14px;">Visit World Triathlon for the latest race results, athlete stories, and event coverage.</p>
             `;
 
             resultsDiv.innerHTML = `
-                <section class="home-section">
+                <div class="home-toc">
+                    <nav class="home-toc-nav">
+                        <a href="#home-news" class="home-toc-link" onclick="scrollToSection('home-news'); return false;">News</a>
+                        <a href="#home-watch" class="home-toc-link" onclick="scrollToSection('home-watch'); return false;">Watch</a>
+                        <a href="#home-photos" class="home-toc-link" onclick="scrollToSection('home-photos'); return false;">Photos</a>
+                    </nav>
+                </div>
+                <section id="home-news" class="home-section">
+                    <div class="home-section-header">
+                        <span class="home-section-title">Latest News</span>
+                        <a href="https://triathlon.org/news" target="_blank" rel="noopener" class="home-section-link">triathlon.org/news ↗</a>
+                    </div>
+                    ${newsSectionHtml}
+                </section>
+                <section id="home-watch" class="home-section">
                     <div class="home-section-header">
                         <span class="home-section-title">Watch</span>
                     </div>
-                    ${channelCardsHtml}
+                    ${watchSectionHtml}
                 </section>
-                <section class="home-section">
+                <section id="home-photos" class="home-section">
                     <div class="home-section-header">
                         <span class="home-section-title">Race Photos</span>
                         <a href="#" class="home-section-link" onclick="showHomePage(); return false;">Refresh ↻</a>
                     </div>
                     <div class="photo-grid">${photoGridHtml}</div>
                 </section>
-                <section class="home-section">
-                    <div class="home-section-header">
-                        <span class="home-section-title">External Rankings</span>
-                    </div>
-                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
-                        <a href="https://proseries.ironman.com/standings/2025" target="_blank" rel="noopener" class="quick-btn">Ironman Pro Series ↗</a>
-                        <a href="https://stats.protriathletes.org/rankings" target="_blank" rel="noopener" class="quick-btn">PTO Rankings ↗</a>
-                    </div>
-                </section>
-                <section class="home-section">
-                    <div class="home-section-header">
-                        <span class="home-section-title">Latest News</span>
-                        <a href="https://triathlon.org/news" target="_blank" rel="noopener" class="home-section-link">triathlon.org/news ↗</a>
-                    </div>
-                    <p style="color: var(--text-secondary); font-size: 14px;">Visit World Triathlon for the latest race results, athlete stories, and event coverage.</p>
-                </section>
             `;
+
+            // Setup scroll spy for active navigation
+            setupHomeScrollSpy();
 
             // Clear any input focus after loading
             setTimeout(() => {
@@ -5004,10 +5665,77 @@
               }
               document.body.focus();
             }, 100);
-
         } catch (error) {
             resultsDiv.innerHTML = `<div class="error-message">${error.message}</div>`;
         }
+    }
+
+    // Scroll to section function
+    window.scrollToSection = function(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            const tocHeight = document.querySelector('.home-toc')?.offsetHeight || 0;
+            const navHeight = 56; // Navigation bar height
+            const offset = tocHeight + navHeight + 20; // Extra spacing
+            
+            const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({
+                top: sectionTop,
+                behavior: 'smooth'
+            });
+            
+            // Update active link
+            document.querySelectorAll('.home-toc-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${sectionId}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+    };
+
+    // Setup scroll spy to highlight active section
+    function setupHomeScrollSpy() {
+        const sections = ['home-news', 'home-watch', 'home-photos'];
+        const tocLinks = document.querySelectorAll('.home-toc-link');
+        
+        if (tocLinks.length === 0) return;
+        
+        const updateActiveLink = () => {
+            const tocHeight = document.querySelector('.home-toc')?.offsetHeight || 0;
+            const navHeight = 56;
+            const scrollOffset = window.pageYOffset + navHeight + tocHeight + 100;
+            
+            let activeSection = sections[0];
+            
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const section = document.getElementById(sections[i]);
+                if (section) {
+                    const sectionTop = section.getBoundingClientRect().top + window.pageYOffset;
+                    if (sectionTop <= scrollOffset) {
+                        activeSection = sections[i];
+                        break;
+                    }
+                }
+            }
+            
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${activeSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        };
+        
+        // Update on scroll
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(updateActiveLink, 10);
+        }, { passive: true });
+        
+        // Initial update
+        updateActiveLink();
     }
 
     // Helper to search and display a single athlete by name
