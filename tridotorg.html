@@ -3582,11 +3582,6 @@
         });
 
         // Calculate correlations between disciplines
-        const swimTimes = results.map(r => r.swim_seconds).filter(t => t !== null);
-        const bikeTimes = results.map(r => r.bike_seconds).filter(t => t !== null);
-        const runTimes = results.map(r => r.run_seconds).filter(t => t !== null);
-        const positions = results.map(r => parseInt(r.position)).filter(p => !isNaN(p));
-
         const calculateCorrelation = (x, y) => {
             if (x.length !== y.length || x.length < 2) return null;
             const n = x.length;
@@ -3602,14 +3597,27 @@
             return denominator === 0 ? null : numerator / denominator;
         };
 
-        if (swimTimes.length === bikeTimes.length && swimTimes.length > 1) {
-            insights.correlations.swim_bike = calculateCorrelation(swimTimes, bikeTimes);
+        const buildPairs = (fieldA, fieldB) => {
+            const pairs = results
+                .map(r => [r[`${fieldA}_seconds`], r[`${fieldB}_seconds`]])
+                .filter(([a, b]) => a !== null && a !== undefined && b !== null && b !== undefined);
+            return {
+                left: pairs.map(([a]) => a),
+                right: pairs.map(([, b]) => b)
+            };
+        };
+
+        const swimBike = buildPairs('swim', 'bike');
+        if (swimBike.left.length > 1) {
+            insights.correlations.swim_bike = calculateCorrelation(swimBike.left, swimBike.right);
         }
-        if (swimTimes.length === runTimes.length && swimTimes.length > 1) {
-            insights.correlations.swim_run = calculateCorrelation(swimTimes, runTimes);
+        const swimRun = buildPairs('swim', 'run');
+        if (swimRun.left.length > 1) {
+            insights.correlations.swim_run = calculateCorrelation(swimRun.left, swimRun.right);
         }
-        if (bikeTimes.length === runTimes.length && bikeTimes.length > 1) {
-            insights.correlations.bike_run = calculateCorrelation(bikeTimes, runTimes);
+        const bikeRun = buildPairs('bike', 'run');
+        if (bikeRun.left.length > 1) {
+            insights.correlations.bike_run = calculateCorrelation(bikeRun.left, bikeRun.right);
         }
 
         return insights;
